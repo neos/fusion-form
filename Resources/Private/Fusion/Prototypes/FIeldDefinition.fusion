@@ -1,4 +1,53 @@
 prototype(Neos.Fusion.Form:FieldDefinition) {
     @class = 'Neos\\Fusion\\Form\\FusionObjects\\FieldDefinitionImplementation'
     form = ${form}
+
+    // API to the outside
+    property = null
+    name = null
+    value = null
+
+
+    // INTERNAL implementation
+    // make property, name, value available throughout the processing
+    @context.property = ${this.property}
+    @context.name = ${this.name}
+    @context.value = ${this.value}
+
+
+    _initialValue = Neos.Fusion.Form:FieldDefinition.InitialValueBuilder
+
+    _currentValue = Neos.Fusion:Case {
+        hasErrors {
+            condition = ${form.mappingResults.errors}
+            // TODO: getPropertyPath??
+        }
+
+        fallbackToInitialValue {
+            condition = true
+            renderer = Neos.Fusion.Form:FieldDefinition.InitialValueBuilder
+        }
+    }
+}
+
+prototype(Neos.Fusion.Form:FieldDefinition.InitialValueBuilder) < prototype(Neos.Fusion:Case) {
+    // external API: expects form, property, value in context
+
+    // internal implementation BEGIN
+
+    // If value is set, return value.
+    value {
+        condition = ${value}
+        renderer = ${value}
+    }
+
+    // If propery is set, return property access
+    property {
+        condition = ${property}
+        renderer = ${Neos.Fusion.Form.Internal.ObjectAccess.getPropertyPath(form.object, property)}
+    }
+
+    // Convert to identity if needed
+    @process.convertToIdentity = ${Neos.Fusion.Form.Internal.IdentityExtraction.convertToIdentity(value)}
+    @process.convertToIdentity.@if.isObject = ${Type.isObject(value)}
 }

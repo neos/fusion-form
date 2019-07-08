@@ -2,3 +2,7 @@ Neos:
   Fusion:
     defaultContext:
       Form: 'Neos\Fusion\Form\Eel\FormHelper'
+
+      # NOT public API
+      'Neos.Fusion.Form.Internal.ObjectAccess': 'Neos\Fusion\Form\Eel\ObjectAccessHelper'
+      'Neos.Fusion.Form.Internal.IdentityExtraction': 'Neos\Fusion\Form\Eel\IdentityExtractionHelper'

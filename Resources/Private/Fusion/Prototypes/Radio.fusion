@@ -1,0 +1,18 @@
+prototype(Neos.Fusion.Form:Radio) < prototype(Neos.Fusion.Form:Field) {
+
+    attributes = Neos.Fusion:DataStructure
+    renderer = afx`
+        <input
+            {...props.attributes}
+            type="radio"
+            name={field.name}
+            value={field.value}
+        />
+    `
+
+    // check against field.value as for automatic selected state
+    prototype(Neos.Fusion.Form:Select.Option) {
+        # selected = ${(field.value && (field.value == this.value)) ? true : false}
+        selected = ${Json.stringify({field:field.value, value:this.value})}
+    }
+}

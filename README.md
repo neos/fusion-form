@@ -29,8 +29,8 @@ This is the base prototype for implementing custom fields.
 
 - `Neos.Fusion.Form:Textfield`
 - `Neos.Fusion.Form:Textarea`
-- `Neos.Fusion.Form:Submit`
-- `Neos.Fusion.Form:Submit.Option`
+- `Neos.Fusion.Form:Select`
+- `Neos.Fusion.Form:Select.Option`
 - `Neos.Fusion.Form:Select.Multiple`
 - `Neos.Fusion.Form:Submit`
 

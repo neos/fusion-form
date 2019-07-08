@@ -46,7 +46,7 @@ class FieldDefinitionImplementation extends AbstractFusionObject
 
         return new FieldDefinition(
             $this->getName($form),
-            $this->getValue($form)
+            $this->fusionValue('_currentValue')
         );
     }
 
@@ -68,39 +68,6 @@ class FieldDefinitionImplementation extends AbstractFusionObject
         return $name;
     }
 
-    /**
-     * @return string|array|null
-     */
-    public function getValue(FormDefinition $form = null)
-    {
-        $value = null;
-        $propertyPath = $this->getPropertyPath($form);
-
-        if ($form && $form->getMappingResults() !== null && $form->getMappingResults()->hasErrors()) {
-            $value = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $propertyPath);
-        }
-
-        if ($value == null) {
-            if ($fusionValue = $this->fusionValue('value')) {
-                $value = $fusionValue;
-            } elseif ($form && $this->fusionValue('property')) {
-                $value = ObjectAccess::getPropertyPath($form->getObject(), $this->fusionValue('property'));
-            }
-        }
-
-        if (is_object($value)) {
-            $identifier = $this->persistenceManager->getIdentifierByObject($value);
-            if ($identifier !== null) {
-                $value = $identifier;
-            }
-        }
-
-        if (is_array($value)) {
-            return $value;
-        } else {
-            return (string)$value;
-        }
-    }
 
     /**
      * Returns the "absolute" property path of the property bound to this field as array.
