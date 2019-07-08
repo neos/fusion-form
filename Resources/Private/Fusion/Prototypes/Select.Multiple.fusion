@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:MultiSelect)  < prototype(Neos.Fusion.Form:Field) {
+prototype(Neos.Fusion.Form:Select.Multiple)  < prototype(Neos.Fusion.Form:Field) {
     attributes = Neos.Fusion:DataStructure
     renderer = afx`
         <select

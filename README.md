@@ -27,12 +27,12 @@ This is the base prototype for implementing custom fields.
 
 **Field Prototyoes:**
 
-- `Neos.Fusion:.Form:Textfield`
-- `Neos.Fusion:.Form:Textarea`
-- `Neos.Fusion:.Form:Submit`
-- `Neos.Fusion:.Form:Submit.Option`
-- `Neos.Fusion:.Form:MultiSubmit`
-- `Neos.Fusion:.Form:Submit`
+- `Neos.Fusion.Form:Textfield`
+- `Neos.Fusion.Form:Textarea`
+- `Neos.Fusion.Form:Submit`
+- `Neos.Fusion.Form:Submit.Option`
+- `Neos.Fusion.Form:Select.Multiple`
+- `Neos.Fusion.Form:Submit`
 
 **Form Eel-Helper:**
 
@@ -62,11 +62,11 @@ test = afx`
                <Neos.Fusion.Form:Select.Option value="455" >-- 456 -- </Neos.Fusion.Form:Select.Option>
            </Neos.Fusion.Form:Select>
 
-           <Neos.Fusion.Form:MultiSelect field.property="baz" >
+           <Neos.Fusion.Form:Select.Multiple field.property="baz" >
                <Neos.Fusion.Form:Select.Option value="123">-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455">-- 456 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="789">-- 789 -- </Neos.Fusion.Form:Select.Option>
-           </Neos.Fusion.Form:MultiSelect>
+           </Neos.Fusion.Form:Select.Multiple>
 
            <Neos.Fusion.Form:Submit />
        </fieldset>
