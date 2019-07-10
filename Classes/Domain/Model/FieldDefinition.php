@@ -35,7 +35,7 @@ class FieldDefinition
      * FieldDefinition constructor.
      *
      * @param string|null $name
-     * @param string|array|null $value
+     * @param mixed|null $value
      * @param bool $multiple
      */
     public function __construct(string $name = null, $value = null, Result $validationResult = null)
@@ -54,7 +54,7 @@ class FieldDefinition
     }
 
     /**
-     * @return string|array|null
+     * @return mixed|null
      */
     public function getValue()
     {

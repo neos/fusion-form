@@ -41,8 +41,10 @@ Definition Factory Prototypes:
 
 **Field Prototypes:**
 
-- `Neos.Fusion.Form:Input`:
-- `Neos.Fusion.Form:Hidden`:
+All field types allow to define `name`, `property`, `value` and `attributes`. 
+
+- `Neos.Fusion.Form:Input`
+- `Neos.Fusion.Form:Hidden`
 - `Neos.Fusion.Form:Textfield`
 - `Neos.Fusion.Form:Textarea`
 - `Neos.Fusion.Form:Password`

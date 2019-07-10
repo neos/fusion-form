@@ -1,13 +1,12 @@
 prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:Field) {
-    attributes = Neos.Fusion:DataStructure
-    value = ''
+    @context.field = ${Form.createFieldDefinition(this.form, this.name, this.property, null)}
     renderer = afx`
         <input
             {...props.attributes}
             type="checkbox"
             name={field.name}
-            value={props.value}
-            checked={field.value == this.value}
+            value={Form.stringifyValue(props.value)}
+            checked={field.value == props.value}
             />
     `
 }

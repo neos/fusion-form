@@ -16,6 +16,7 @@ namespace Neos\Fusion\Form\Eel;
 use Neos\Flow\Annotations as Flow;
 use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Error\Messages\Result;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Utility\ObjectAccess;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Security\Context as SecurityContext;
@@ -37,6 +38,12 @@ class FormHelper implements ProtectedContextAwareInterface
      * @var MvcPropertyMappingConfigurationService
      */
     protected $mvcPropertyMappingConfigurationService;
+
+    /**
+     * @var PersistenceManagerInterface
+     * @Flow\Inject
+     */
+    protected $persistenceManager;
 
     /**
      * @Flow\Inject
@@ -116,19 +123,25 @@ class FormHelper implements ProtectedContextAwareInterface
 
     /**
      * @param mixed $value
-     * @return array|string|null
+     * @return string|null
      */
-    public function stringifyValue($value)
+    public function stringifyValue($value): string
     {
         if (is_object($value)) {
             $identifier = $this->persistenceManager->getIdentifierByObject($value);
             if ($identifier !== null) {
-                $value = $identifier;
+                return $identifier;
             }
         }
 
         if (is_array($value)) {
-            return $value;
+            $helper = $this;
+            return implode(', ', array_map (
+                function($value) use ($helper) {
+                    return $helper->stringifyValue($value);
+                },
+                $value
+            ));
         } else {
             return (string)$value;
         }
@@ -156,23 +169,19 @@ class FormHelper implements ProtectedContextAwareInterface
      * @param FormDefinition|null $form
      * @param string|null $name
      * @param string $property
-     * @param string|null $value
+     * @param mixed|null $value
      * @return FieldDefinition
      */
-    public function createFieldDefinition(FormDefinition $form = null, string $name = null, string $property = null, string $value = null): FieldDefinition
+    public function createFieldDefinition(FormDefinition $form = null, string $name = null, string $property = null, $value = null): FieldDefinition
     {
         // determine path
-        if  ($property) {
+        if ($property) {
             $fieldNameParts = explode('.', $property);
-        } elseif ($name)  {
+        } elseif ($name) {
             $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
-            $fieldNameParts  = explode('.', $path);
+            $fieldNameParts = explode('.', $path);
         } else {
-            return new FieldDefinition(
-                null,
-                $this->stringifyValue($value),
-                null
-            );
+            return new FieldDefinition(null, $value, null);
         }
 
         if ($form && $fieldNameParts) {
@@ -189,7 +198,7 @@ class FormHelper implements ProtectedContextAwareInterface
         }
 
         // determine value
-        $fieldValue = $value;
+        $fieldValue = null;
         if ($form && $form->getMappingResults() !== null && $form->getMappingResults()->hasErrors()) {
             $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
         }
@@ -198,16 +207,8 @@ class FormHelper implements ProtectedContextAwareInterface
             $fieldValue = ObjectAccess::getPropertyPath($form->getObject(), $property);
         }
 
-        if (is_array($fieldValue)) {
-            $helper = $this;
-            $fieldValue = array_map(
-                function($value) use ($helper) {
-                    return $helper->stringifyValue($value);
-                },
-                $fieldValue
-            );
-        } else {
-            $fieldValue = $this->stringifyValue($fieldValue);
+        if ($fieldValue == null) {
+            $fieldValue = $value;
         }
 
         // determine result
