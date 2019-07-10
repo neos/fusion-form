@@ -1,4 +1,0 @@
-prototype(Neos.Fusion.Form:FormDefinition) {
-    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FormDefinitionImplementation'
-    request = ${request}
-}

@@ -1,11 +1,14 @@
 prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
-    @context.form = ${this.form}
-    form = Neos.Fusion.Form:FormDefinition
-    attributes = Neos.Fusion:DataStructure
-
+    @context.form = ${Form.createFormDefinition(this.request, this.name, this.fieldnamePrefix, this.object)}
+    request = ${request}
+    name = null
+    fieldnamePrefix = null
+    object = null
     targetUri = Neos.Fusion:UriBuilder
     method = 'post'
     enctype = null
+
+    attributes = Neos.Fusion:DataStructure
 
     renderer = afx`
         <form

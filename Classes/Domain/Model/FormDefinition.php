@@ -53,7 +53,7 @@ class FormDefinition
      * @param array|null $submittedValues
      * @param Result|null $mappingResults
      */
-    public function __construct(string $name = null,object $object = null, string $fieldNamePrefix = null,  array$submittedValues = null, Result $mappingResults = null)
+    public function __construct(string $name = null,object $object = null, string $fieldNamePrefix = null,  array $submittedValues = null, Result $mappingResults = null)
     {
         $this->name = $name;
         $this->object = $object;
