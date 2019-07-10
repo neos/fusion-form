@@ -1,11 +1,3 @@
-prototype(Neos.Fusion.Form:Textfield)  < prototype(Neos.Fusion.Form:Field) {
-    attributes = Neos.Fusion:DataStructure
-    renderer = afx`
-        <input
-            {...props.attributes}
-            type="text"
-            name={field.name}
-            value={field.value}
-            />
-    `
+prototype(Neos.Fusion.Form:Textfield)  < prototype(Neos.Fusion.Form:Input) {
+    type = "text"
 }

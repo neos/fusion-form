@@ -41,11 +41,21 @@ Definition Factory Prototypes:
 
 **Field Prototypes:**
 
+All field types allow to define `name`, `property`, `value` and `attributes`. 
+
+- `Neos.Fusion.Form:Input`
+- `Neos.Fusion.Form:Hidden`
 - `Neos.Fusion.Form:Textfield`
 - `Neos.Fusion.Form:Textarea`
+- `Neos.Fusion.Form:Password`
+- `Neos.Fusion.Form:Radio`
+- `Neos.Fusion.Form:Checkbox`
+- `Neos.Fusion.Form:Checkbox.Multiple`
 - `Neos.Fusion.Form:Select`
 - `Neos.Fusion.Form:Select.Option`
 - `Neos.Fusion.Form:Select.Multiple`
+- `Neos.Fusion.Form:Upload`
+- `Neos.Fusion.Form:Button`
 - `Neos.Fusion.Form:Submit`
 
 **Form Eel-Helper:**

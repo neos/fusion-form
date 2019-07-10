@@ -1,5 +1,4 @@
 prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:Field) {
-    attributes = Neos.Fusion:DataStructure
     renderer = afx`
         <select
             {...props.attributes}
@@ -12,6 +11,6 @@ prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:Field) {
 
     // check against field.value as for automatic selected state
     prototype(Neos.Fusion.Form:Select.Option) {
-        selected = ${field && (field.value == this.value)}
+        renderer.attributes.selected = ${(field && (Form.stringifyValue(field.value) == Form.stringifyValue(props.value))) ? true : false}
     }
 }

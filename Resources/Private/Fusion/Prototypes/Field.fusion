@@ -5,4 +5,5 @@ prototype(Neos.Fusion.Form:Field)  < prototype(Neos.Fusion:Component) {
     value = null
     property = null
     renderer = ${props.content}
+    attributes = Neos.Fusion:DataStructure
 }

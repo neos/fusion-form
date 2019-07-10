@@ -1,10 +1,10 @@
-prototype(Neos.Fusion.Form:Submit) < prototype(Neos.Fusion.Form:Field) {
-    attributes = Neos.Fusion:DataStructure
+prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:Field) {
+    type = 'text'
 
     renderer = afx`
         <input
             {...props.attributes}
-            type="submit"
+            type={props.type}
             name={field.name}
             value={Form.stringifyValue(props.value || field.value)}
             />

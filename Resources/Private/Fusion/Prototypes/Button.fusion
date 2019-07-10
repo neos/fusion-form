@@ -1,8 +1,6 @@
-prototype(Neos.Fusion.Form:Submit) < prototype(Neos.Fusion.Form:Field) {
-    attributes = Neos.Fusion:DataStructure
-
+prototype(Neos.Fusion.Form:Button) < prototype(Neos.Fusion.Form:Field) {
     renderer = afx`
-        <input
+        <button
             {...props.attributes}
             type="submit"
             name={field.name}

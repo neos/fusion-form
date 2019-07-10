@@ -1,0 +1,12 @@
+prototype(Neos.Fusion.Form:Checkbox.Multiple)  < prototype(Neos.Fusion.Form:Field) {
+    @context.field = ${Form.createFieldDefinition(this.form, this.name, this.property, null)}
+    renderer = afx`
+        <input
+            {...props.attributes}
+            type="checkbox"
+            name={field.name + '[]'}
+            value={Form.stringifyValue(props.value)}
+            checked={(field.value && (Array.indexOf(field.value, props.value) > -1)) ? true : false}
+            />
+    `
+}
