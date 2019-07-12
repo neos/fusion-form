@@ -7,13 +7,6 @@ Pure fusion form rendering with afx support!
 
 **Fusion prototypes**
 
-Definition Factory Prototypes:
-
-- `Neos.Fusion.Form:FormDefinition `: Factory prototype that creates a formDefinition. Accepts `request` (default `${request}`), `name`, `object` and `fieldnamePrefix`.
-- `Neos.Fusion.Form:FieldDefinition `: Factory prototype that creates a fieldDefinition. Accepts `form` (default `${form}`), `name`, `property`, `value`.
-
-**Base protoypes:**
-
 - `Neos.Fusion.Form:Form` Component that instantiates the `form` context which contains `Neos.Fusion:FormDefinition` before 
     props and renderer are evaluated. Then it renders a form-tag with the given `content` and adds the hidden fields for trustedProperties, csrfTokens and referrers.
     
