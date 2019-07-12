@@ -82,12 +82,48 @@ class FormHelper implements ProtectedContextAwareInterface
             libxml_use_internal_errors($useInternalErrorsBackup);
         }
 
-        $elements = $xpath->query("//*[@name]");
+        $elements = $xpath->query("//*[(local-name()='input' or local-name()='select' or local-name()='button' or local-name()='textarea') and @name]");
         $formFieldNames = [];
         foreach($elements as $element) {
-            $formFieldNames[] = (string)$element->getAttribute('name');
+            $name = (string)$element->getAttribute('name');
+            if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
+                $formFieldNames[] = $name;
+            }
         }
         return $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
+    }
+
+    /**
+     * Detect the required empty hidden fieldnames for the given form content
+     *
+     * @param string $content
+     * @param string|null $fieldNamePrefix
+     */
+    public function emptyHiddenFieldnames(string $content, string $fieldNamePrefix = '')
+    {
+        $domDocument = new \DOMDocument('1.0', 'UTF-8');
+        // ignore parsing errors
+        $useInternalErrorsBackup = libxml_use_internal_errors(true);
+        $domDocument->loadHTML($content);
+        $xpath = new \DOMXPath($domDocument);
+        if ($useInternalErrorsBackup !== true) {
+            libxml_use_internal_errors($useInternalErrorsBackup);
+        }
+
+        $elements = $xpath->query("//*[(local-name()='input' and @type='checkbox') or (local-name()='select' and @multiple)]");
+        $hiddenFieldnames = [];
+        foreach($elements as $element) {
+            $name = (string)$element->getAttribute('name');
+            if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
+                if (substr_compare($name, '[]', -2, 2) === 0) {
+                    $hiddenFieldnames[] = substr($name, 0, -2);
+                } else {
+                    $hiddenFieldnames[] = $name;
+                }
+            }
+        }
+
+        return array_unique($hiddenFieldnames);
     }
 
     /**

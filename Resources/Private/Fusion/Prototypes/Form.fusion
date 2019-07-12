@@ -34,6 +34,10 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
                     <input type="hidden" name="__referrer[arguments]" value={Form.argumentsWithHmac(request.arguments, request.argumentNamespace)} />
                 </Neos.Fusion.Form:Fragment>
 
+                <Neos.Fusion:Loop items={Form.emptyHiddenFieldnames(props.content, form.fieldNamePrefix)} itemName="fieldname">
+                    <input type="hidden" name={fieldname} value="" />
+                </Neos.Fusion:Loop>
+
                 <input
                     type="hidden"
                     name={Form.prefixFieldName('__trustedProperties', form.fieldNamePrefix)}
