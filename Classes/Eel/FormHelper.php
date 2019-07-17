@@ -247,11 +247,10 @@ class FormHelper implements ProtectedContextAwareInterface
             $fieldValue = $value;
         }
 
-        // determine result
+        // determine ValidationResult for the single property
+        $fieldResult = null;
         if ($form && $form->getMappingResults() && $form->getMappingResults()->hasErrors()) {
-            $fieldResult = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
-        } else {
-            $fieldResult = null;
+            $fieldResult = $form->getMappingResults()->forProperty($fieldPath);
         }
 
         return new FieldDefinition(
