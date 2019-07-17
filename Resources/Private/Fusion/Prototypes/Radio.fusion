@@ -1,4 +1,9 @@
 prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Field) {
+    // HINT: the "value" argument (4) is null here, because "field.value" should only be filled with the CHOSEN value;
+    //       in these two cases:
+    //       - when an object is bound to the form, and "property" is defined
+    //       - when the form is re-shown in case of a validation error.
+    // We use field.value to determine if we should check the value.
     @context.field = ${Form.createFieldDefinition(this.form, this.name, this.property, null)}
     renderer = afx`
         <input
