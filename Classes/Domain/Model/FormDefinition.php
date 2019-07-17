@@ -13,12 +13,13 @@ namespace Neos\Fusion\Form\Domain\Model;
  * source code.
  */
 
+use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Error\Messages\Result;
 
 /**
  * Used to output an HTML <form> tag which is targeted at the specified action, in the current controller and package.
  */
-class FormDefinition
+class FormDefinition implements ProtectedContextAwareInterface
 {
     /**
      * @var string
@@ -53,7 +54,7 @@ class FormDefinition
      * @param array|null $submittedValues
      * @param Result|null $mappingResults
      */
-    public function __construct(string $name = null,object $object = null, string $fieldNamePrefix = null,  array $submittedValues = null, Result $mappingResults = null)
+    public function __construct(string $name = null, object $object = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $mappingResults = null)
     {
         $this->name = $name;
         $this->object = $object;
@@ -79,8 +80,8 @@ class FormDefinition
     }
 
     /**
-    * @return mixed
-    */
+     * @return mixed
+     */
     public function getObject(): ?object
     {
         return $this->object;
@@ -100,5 +101,22 @@ class FormDefinition
     public function getMappingResults(): ?Result
     {
         return $this->mappingResults;
+    }
+
+    public function hasMappingErrors(): bool
+    {
+        if ($this->getMappingResults()) {
+            return $this->getMappingResults()->hasErrors();
+        }
+        return false;
+    }
+
+    /**
+     * @param string $methodName
+     * @return boolean
+     */
+    public function allowsCallOfMethod($methodName)
+    {
+        return true;
     }
 }
