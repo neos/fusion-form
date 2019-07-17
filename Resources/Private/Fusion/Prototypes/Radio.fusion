@@ -11,7 +11,8 @@ prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Field) {
             type="radio"
             name={field.name}
             value={Form.stringifyValue(props.value)}
-            checked={field.value == props.value}
+            checked="checked"
+            checked.@if.isTrue={field.value == props.value}
             />
     `
 }
