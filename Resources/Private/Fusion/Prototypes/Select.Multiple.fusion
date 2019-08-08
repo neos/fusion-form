@@ -1,4 +1,9 @@
 prototype(Neos.Fusion.Form:Select.Multiple)  < prototype(Neos.Fusion.Form:Field) {
+
+    @propTypes {
+        content = ${PropTypes.string}
+    }
+
     renderer = afx`
         <select
             {...props.attributes}
