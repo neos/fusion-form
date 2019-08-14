@@ -27,6 +27,7 @@ Pure fusion form rendering with afx support!
     form = ${form} 
     name = null
     value = null
+    required = false
     property = null
     ```
     

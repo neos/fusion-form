@@ -9,6 +9,7 @@ prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:Field) {
             {...props.attributes}
             type="text"
             name={field.name}
+            required={props.required}
         >
             {props.content}
         </select>

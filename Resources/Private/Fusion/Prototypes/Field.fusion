@@ -6,6 +6,7 @@ prototype(Neos.Fusion.Form:Field)  < prototype(Neos.Fusion:Component) {
         form = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\FormDefinition')}
         name = ${PropTypes.string}
         value = ${PropTypes.any}
+        required = ${PropTypes.boolean}
         property = ${PropTypes.string}
         attributes = ${PropTypes.any}
     }
@@ -13,6 +14,7 @@ prototype(Neos.Fusion.Form:Field)  < prototype(Neos.Fusion:Component) {
     form = ${form}
     name = null
     value = null
+    required = false
     property = null
     renderer = ${props.content}
     attributes = Neos.Fusion:DataStructure

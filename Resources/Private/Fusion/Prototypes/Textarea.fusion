@@ -4,6 +4,7 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Field) {
             {...props.attributes}
             type="text"
             name={field.name}
+            required={props.required}
         >{Form.stringifyValue(field.value)}</textarea>
     `
 }

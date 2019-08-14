@@ -9,6 +9,7 @@ prototype(Neos.Fusion.Form:Select.Multiple)  < prototype(Neos.Fusion.Form:Field)
             {...props.attributes}
             type="text"
             name={field.name + '[]'}
+            required={props.required}
             multiple={true}
         >
             {props.content}
