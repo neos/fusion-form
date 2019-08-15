@@ -1,10 +1,13 @@
 prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Field) {
-    // HINT: the "value" argument (4) is null here, because "field.value" should only be filled with the CHOSEN value;
-    //       in these two cases:
-    //       - when an object is bound to the form, and "property" is defined
-    //       - when the form is re-shown in case of a validation error.
-    // We use field.value to determine if we should check the value.
-    @context.field = ${Form.createFieldDefinition(this.form, this.name, this.property, null)}
+    @propTypes {
+        checked = ${PropTypes.boolean}
+    }
+
+    checked = false
+    # override checked state for object/submitted values
+    checked.@process.equalsCurrent = ${field.current == field.value}
+    checked.@process.equalsCurrent.@if.hasCurrent = ${field.current}
+
     renderer = afx`
         <input
             {...props.attributes}
@@ -12,10 +15,9 @@ prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Field) {
             class={props.class}
             type="radio"
             name={field.name}
-            value={Form.stringifyValue(props.value)}
+            value={Form.stringifyValue(field.value)}
             required={props.required}
-            checked="checked"
-            checked.@if.isTrue={field.value == props.value}
-            />
+            checked={pros.checked}
+        />
     `
 }

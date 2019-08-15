@@ -27,6 +27,11 @@ class FieldDefinition
     protected $value;
 
     /**
+     * @var string|null
+     */
+    protected $current;
+
+    /**
      * @var bool
      */
     protected $validationResult;
@@ -38,10 +43,11 @@ class FieldDefinition
      * @param mixed|null $value
      * @param bool $multiple
      */
-    public function __construct(string $name = null, $value = null, Result $validationResult = null)
+    public function __construct(string $name = null, $value = null, $current = null, Result $validationResult = null)
     {
         $this->name = $name;
         $this->value = $value;
+        $this->current = $current;
         $this->validationResult = $validationResult;
     }
 
@@ -60,6 +66,15 @@ class FieldDefinition
     {
         return $this->value;
     }
+
+    /**
+     * @return mixed|null
+     */
+    public function getCurrent()
+    {
+        return $this->current;
+    }
+
 
     /**
      * @return Result|null

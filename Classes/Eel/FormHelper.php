@@ -233,18 +233,15 @@ class FormHelper implements ProtectedContextAwareInterface
             $fieldName .= '[' . $nameSegment . ']';
         }
 
-        // determine value, according to the following algorithm:
-        $fieldValue = null;
+        // determine current value, according to the following algorithm:
+        $current = null;
 
         if ($form && $form->getMappingResults() !== null && $form->getMappingResults()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
+            $current = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
         } elseif ($property && $form && $form->getObject()) {
             // 2) else, if "property" is specified, take the value from the bound object.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getObject(), $property);
-        } else {
-            // 3) else, take the "value".
-            $fieldValue = $value;
+            $current = ObjectAccess::getPropertyPath($form->getObject(), $property);
         }
 
         // determine ValidationResult for the single property
@@ -255,7 +252,8 @@ class FormHelper implements ProtectedContextAwareInterface
 
         return new FieldDefinition(
             $fieldName,
-            $fieldValue,
+            $value,
+            $current,
             $fieldResult
         );
     }

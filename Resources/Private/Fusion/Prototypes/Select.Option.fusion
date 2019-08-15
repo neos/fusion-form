@@ -8,8 +8,9 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
 
     selected = false
     value = null
+    content = null
 
     renderer = afx`
-       <option value={Form.stringifyValue(props.value)} selected={props.selected} >{props.content || props.value}</option>
+       <option value={Form.stringifyValue(props.value)} selected={props.selected}>{props.content || props.value}</option>
     `
 }

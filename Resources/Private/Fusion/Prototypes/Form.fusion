@@ -2,7 +2,6 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
     @context.form = ${Form.createFormDefinition(this.request, this.name, this.fieldnamePrefix, this.object)}
 
     @propTypes {
-        @strict = true
         request = ${PropTypes.instanceOf('Neos\Flow\Mvc\ActionRequest')}
         name = ${PropTypes.string}
         fieldnamePrefix = ${PropTypes.string}

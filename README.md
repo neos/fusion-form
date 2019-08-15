@@ -14,7 +14,7 @@ Pure fusion form rendering with afx support!
     name = null
     fieldnamePrefix` = null
     object = null
-    targetUri = Neos.Fusion:UriBuilder
+    action = Neos.Fusion:UriBuilder
     method = 'post'
     enctype = null
     ```
@@ -37,19 +37,17 @@ Pure fusion form rendering with afx support!
 
 **Field Prototypes:**
 
-All field types allow to define `name`, `property`, `value` and `attributes`. 
+All field types allow to define `id`, `class` `name`, `property`, `value` and `attributes`. 
 
 - `Neos.Fusion.Form:Input`
 - `Neos.Fusion.Form:Hidden`
 - `Neos.Fusion.Form:Textfield`
 - `Neos.Fusion.Form:Textarea`
 - `Neos.Fusion.Form:Password`
-- `Neos.Fusion.Form:Radio`
-- `Neos.Fusion.Form:Checkbox`
-- `Neos.Fusion.Form:Checkbox.Multiple`
-- `Neos.Fusion.Form:Select`
-- `Neos.Fusion.Form:Select.Option`
-- `Neos.Fusion.Form:Select.Multiple`
+- `Neos.Fusion.Form:Radio` additional options `checked`:bool
+- `Neos.Fusion.Form:Checkbox` additional options `multiple`:bool and `checked`:bool
+- `Neos.Fusion.Form:Select` additional options `multiple`:bool and `content` for rendering Options via afx
+- `Neos.Fusion.Form:Select.Option` options: `value`, `selected`:bool and `content`
 - `Neos.Fusion.Form:Upload`
 - `Neos.Fusion.Form:Button`
 - `Neos.Fusion.Form:Submit`
@@ -84,11 +82,11 @@ test = afx`
                <Neos.Fusion.Form:Select.Option value="455" >-- 456 -- </Neos.Fusion.Form:Select.Option>
            </Neos.Fusion.Form:Select>
 
-           <Neos.Fusion.Form:Select.Multiple property="baz" >
+           <Neos.Fusion.Form:Select multiple property="baz" >
                <Neos.Fusion.Form:Select.Option value="123">-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455">-- 456 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="789">-- 789 -- </Neos.Fusion.Form:Select.Option>
-           </Neos.Fusion.Form:Select.Multiple>
+           </Neos.Fusion.Form:Select>
 
            <Neos.Fusion.Form:Submit />
        </fieldset>

@@ -1,5 +1,21 @@
 prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:Field) {
-    @context.field = ${Form.createFieldDefinition(this.form, this.name, this.property, null)}
+    @context.__multiple = ${this.multiple}
+
+    @propTypes {
+        multiple = ${PropTypes.boolean}
+        checked = ${PropTypes.boolean}
+    }
+
+    multiple = false
+    checked = false
+    # override checked state for object/submitted values
+    checked.@process.single = ${field.current == field.value}
+    checked.@process.single.@if.isSingle = ${__multiple == false}
+    checked.@process.single.@if.hasCurrent = ${field.current}
+    checked.@process.multiple = ${Array.indexOf(field.current, field.value) > -1}
+    checked.@process.multiple.@if.isMultiple = ${__multiple == true}
+    checked.@process.multiple.@if.hasCurrent = ${field.current}
+
     renderer = afx`
         <input
             {...props.attributes}
@@ -7,9 +23,9 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:Field) {
             class={props.class}
             required={props.required}
             type="checkbox"
-            name={field.name}
-            value={Form.stringifyValue(props.value)}
-            checked={field.value == props.value}
-            />
+            name={field.name + (props.multiple ? '[]' : '')}
+            value={Form.stringifyValue(field.value)}
+            checked={props.checked}
+        />
     `
 }

@@ -2,7 +2,6 @@ prototype(Neos.Fusion.Form:Field)  < prototype(Neos.Fusion:Component) {
     @context.field = ${Form.createFieldDefinition(this.form, this.name, this.property, this.value)}
 
     @propTypes {
-        @strict = true
         form = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\FormDefinition')}
         name = ${PropTypes.string}
         property = ${PropTypes.string}

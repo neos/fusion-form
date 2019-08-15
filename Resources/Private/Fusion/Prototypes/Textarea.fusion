@@ -7,6 +7,6 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Field) {
             type="text"
             name={field.name}
             required={props.required}
-        >{Form.stringifyValue(field.value)}</textarea>
+        >{Form.stringifyValue(field.current || field.value)}</textarea>
     `
 }
