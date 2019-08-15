@@ -5,17 +5,33 @@ prototype(Neos.Fusion.Form:Field)  < prototype(Neos.Fusion:Component) {
         @strict = true
         form = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\FormDefinition')}
         name = ${PropTypes.string}
-        value = ${PropTypes.any}
-        required = ${PropTypes.boolean}
         property = ${PropTypes.string}
+        value = ${PropTypes.any}
+        id = ${PropTypes.string}
+        class = ${PropTypes.string}
+        required = ${PropTypes.boolean}
         attributes = ${PropTypes.any}
+        content = ${PropTypes.string}
     }
 
+    #
+    # values that are used to populate the field context
+    #
     form = ${form}
     name = null
-    value = null
-    required = false
     property = null
-    renderer = ${props.content}
+    value = null
+
+    #
+    # default attributes that all fields should suport
+    #
+    id = null
+    class = null
+    required = false
     attributes = Neos.Fusion:DataStructure
+
+    #
+    # afx content when `Neos.Fusion.Form:Field` is used directly
+    #
+    renderer = ${props.content}
 }

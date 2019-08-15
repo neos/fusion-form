@@ -7,26 +7,44 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
         name = ${PropTypes.string}
         fieldnamePrefix = ${PropTypes.string}
         object = ${PropTypes.any}
-        targetUri = ${PropTypes.string}
+        action = ${PropTypes.string}
         method = ${PropTypes.string}
         enctype = ${PropTypes.string}
+        id = ${PropTypes.string}
+        class = ${PropTypes.string}
         attributes = ${PropTypes.any}
         content = ${PropTypes.string}
     }
 
+    #
+    # values that are used to populate the field context
+    #
     request = ${request}
     name = null
     fieldnamePrefix = null
     object = null
-    targetUri = Neos.Fusion:UriBuilder
+
+    #
+    # html attributes for the form
+    #
+    id = null
+    class = null
+    action = Neos.Fusion:UriBuilder
     method = 'post'
     enctype = null
     attributes = Neos.Fusion:DataStructure
 
+    #
+    # afx content when `Neos.Fusion.Form:Form`
+    #
+    content = null
+
     renderer = afx`
         <form
             {...props.attributes}
-            action={props.targetUri}
+            id={props.id}
+            class={props.class}
+            action={props.action}
             method={props.method}
             enctype={props.enctype}
         >

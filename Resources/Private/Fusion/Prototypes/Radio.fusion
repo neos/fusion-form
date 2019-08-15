@@ -8,6 +8,8 @@ prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Field) {
     renderer = afx`
         <input
             {...props.attributes}
+            id={props.id}
+            class={props.class}
             type="radio"
             name={field.name}
             value={Form.stringifyValue(props.value)}

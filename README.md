@@ -10,7 +10,6 @@ Pure fusion form rendering with afx support!
 - `Neos.Fusion.Form:Form` Component that instantiates the `form` context which contains `Neos.Fusion:FormDefinition` before 
     props and renderer are evaluated. Then it renders a form-tag with the given `content` and adds the hidden fields for trustedProperties, csrfTokens and referrers.
     
-    ```
     request = ${request}
     name = null
     fieldnamePrefix` = null
@@ -25,6 +24,9 @@ Pure fusion form rendering with afx support!
     
     ```
     form = ${form} 
+    id = null
+    class = null
+    attributes = Neos.Fusion:DataStructure
     name = null
     value = null
     required = false
@@ -66,7 +68,9 @@ include: resource://Neos.Fusion.Form/Private/Fusion/Root.fusion
 
 test = afx`
    <Neos.Fusion.Form:Form
-       targetUri.action="update"
+       action.action="update"
+       action.package="Vendor.Site"
+       action.controller="Search"
        object={example}
        name="example"
        method="post"

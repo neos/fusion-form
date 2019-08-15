@@ -7,6 +7,8 @@ prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:Field) {
     renderer = afx`
         <select
             {...props.attributes}
+            id={props.id}
+            class={props.class}
             type="text"
             name={field.name}
             required={props.required}

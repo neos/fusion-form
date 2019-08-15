@@ -9,6 +9,8 @@ prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:Field) {
     renderer = afx`
         <input
             {...props.attributes}
+            id={props.id}
+            class={props.class}
             name={field.name}
             type={props.type}
             required={props.required}

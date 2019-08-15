@@ -3,6 +3,9 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:Field) {
     renderer = afx`
         <input
             {...props.attributes}
+            id={props.id}
+            class={props.class}
+            required={props.required}
             type="checkbox"
             name={field.name}
             value={Form.stringifyValue(props.value)}
