@@ -1,4 +1,5 @@
-prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:Field) {
+prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:FieldComponent) {
+    # this allows the options to determine wether they are selected
     @context.__multiple = ${this.multiple}
 
     @propTypes {
@@ -22,15 +23,5 @@ prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:Field) {
         </select>
     `
 
-    prototype(Neos.Fusion.Form:Select.Option) {
-        # override selected for object/submitted values
-        renderer.attributes.selected.@process.singlevalue = ${(field.current == props.value) ? true : false}
-        renderer.attributes.selected.@process.singlevalue.@if.hasCurrent = ${field.current}
-        renderer.attributes.selected.@process.singlevalue.@if.isSingle = ${!__multiple}
 
-        # override selected for object/submitted multivalues
-        renderer.attributes.selected.@process.multivalue = ${Array.indexOf(field.current, props.value) > -1}
-        renderer.attributes.selected.@process.multivalue.@if.hasCurrent = ${field.current}
-        renderer.attributes.selected.@process.multivalue.@if.isMultiple = ${__multiple}
-    }
 }

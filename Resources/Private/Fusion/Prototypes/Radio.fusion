@@ -1,23 +1,36 @@
-prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Field) {
+prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:FieldComponent) {
     @propTypes {
         checked = ${PropTypes.boolean}
     }
 
     checked = false
-    # override checked state for object/submitted values
-    checked.@process.equalsCurrent = ${field.current == field.value}
-    checked.@process.equalsCurrent.@if.hasCurrent = ${field.current}
 
-    renderer = afx`
-        <input
-            {...props.attributes}
-            id={props.id}
-            class={props.class}
-            type="radio"
-            name={field.name}
-            value={Form.stringifyValue(field.value)}
-            required={props.required}
-            checked={pros.checked}
-        />
-    `
+    renderer = Neos.Fusion:Component {
+        @apply.props = ${props}
+        @apply.override = Neos.Fusion:DataStructure {
+            checked = Neos.Fusion:Case {
+                hasValue {
+                    condition = ${field.value}
+                    renderer = ${field.value == props.value}
+                }
+                default {
+                    condition = true
+                    renderer = ${props.checked}
+                }
+            }
+        }
+
+        renderer = afx`
+            <input
+                {...props.attributes}
+                id={props.id}
+                class={props.class}
+                type="radio"
+                name={field.name}
+                value={Form.stringifyValue(props.value)}
+                required={props.required}
+                checked={props.checked}
+            />
+        `
+    }
 }

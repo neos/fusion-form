@@ -1,6 +1,4 @@
-prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:Field) {
-    @context.__multiple = ${this.multiple}
-
+prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponent) {
     @propTypes {
         multiple = ${PropTypes.boolean}
         checked = ${PropTypes.boolean}
@@ -8,24 +6,37 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:Field) {
 
     multiple = false
     checked = false
-    # override checked state for object/submitted values
-    checked.@process.single = ${field.current == field.value}
-    checked.@process.single.@if.isSingle = ${__multiple == false}
-    checked.@process.single.@if.hasCurrent = ${field.current}
-    checked.@process.multiple = ${Array.indexOf(field.current, field.value) > -1}
-    checked.@process.multiple.@if.isMultiple = ${__multiple == true}
-    checked.@process.multiple.@if.hasCurrent = ${field.current}
 
-    renderer = afx`
-        <input
-            {...props.attributes}
-            id={props.id}
-            class={props.class}
-            required={props.required}
-            type="checkbox"
-            name={field.name + (props.multiple ? '[]' : '')}
-            value={Form.stringifyValue(field.value)}
-            checked={props.checked}
-        />
-    `
+    renderer = Neos.Fusion:Component {
+        @apply.props = ${props}
+        @apply.override = Neos.Fusion:DataStructure {
+            checked = Neos.Fusion:Case {
+                hasSingleValue {
+                    condition = ${field.value && !props.multiple}
+                    renderer = ${field.value == props.value}
+                }
+                hasMultiValue {
+                    condition = ${field.value && props.multiple}
+                    renderer = ${Array.indexOf(field.value, props.value) > -1}
+                }
+                default {
+                    condition = true
+                    renderer = ${props.checked}
+                }
+            }
+        }
+
+        renderer = afx`
+            <input
+                {...props.attributes}
+                id={props.id}
+                class={props.class}
+                required={props.required}
+                type="checkbox"
+                name={field.name + (props.multiple ? '[]' : '')}
+                value={Form.stringifyValue(props.value)}
+                checked={props.checked}
+            />
+        `
+    }
 }

@@ -92,3 +92,44 @@ test = afx`
        </fieldset>
    </Neos.Fusion.Form:Form>
 `
+```
+
+**Render Errors for the whole form**
+
+```
+test = afx`
+    <Neos.Fusion.Form:Form> 
+        <ul @if.hasErrors={form.mappingResults.flattenedErrors}>
+            <Neos.Fusion:Loop items={form.mappingResults.flattenedErrors} itemKey="path" itemName="errors" >
+                <Neos.Fusion:Loop items={errors} itemName="error" >
+                    <li>{path} {error}</li>
+                </Neos.Fusion:Loop>
+            </Neos.Fusion:Loop>
+        </ul>
+    </Neos.Fusion.Form:Form>
+```
+
+**Custom Field Prototype with label, errorClass and error rendering**
+
+```
+prototype(Test.BeModule:ExampleFieldWithLabel) < prototype(Neos.Fusion.Form:Field) {
+
+    content = ''
+    label = ''
+    errorClass = 'error'
+
+    renderer = afx`
+        <div class={field.validationResult.flattenedErrors ? props.errorClass : null}>
+            <label @if.has={props.label}>{props.label}</label>
+            {props.content}
+            <ul @if.hasErrors={field.validationResult.flattenedErrors}>
+                <Neos.Fusion:Loop items={field.validationResult.flattenedErrors} itemName="errors" >
+                    <Neos.Fusion:Loop items={errors} itemName="error" >
+                    <li>{error}</li>
+                    </Neos.Fusion:Loop>
+                </Neos.Fusion:Loop>
+            </ul>
+        </div>
+    `
+}
+```

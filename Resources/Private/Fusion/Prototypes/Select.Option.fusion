@@ -10,7 +10,27 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
     value = null
     content = null
 
-    renderer = afx`
-       <option value={Form.stringifyValue(props.value)} selected={props.selected}>{props.content || props.value}</option>
-    `
+    renderer = Neos.Fusion:Component {
+        @apply.props = ${props}
+        @apply.override = Neos.Fusion:DataStructure {
+            selected = Neos.Fusion:Case {
+                hasSingleValue {
+                    condition = ${field.value && !__multiple}
+                    renderer = ${field.value == props.value}
+                }
+                hasMultiValue {
+                    condition = ${field.value && __multiple}
+                    renderer = ${Array.indexOf(field.value, props.value) > -1}
+                }
+                default {
+                    condition = true
+                    renderer = ${props.selected}
+                }
+            }
+        }
+
+        renderer = afx`
+           <option value={Form.stringifyValue(props.value)} selected={props.selected}>{props.content || props.value}</option>
+        `
+    }
 }
