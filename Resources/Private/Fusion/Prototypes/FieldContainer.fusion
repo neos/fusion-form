@@ -17,8 +17,8 @@ prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion:Component) {
     property = null
 
     id = null
-    class = 'fieldContainer'
-    errorClass = 'error'
+    class = 'neos-control-group'
+    errorClass = 'neos-error'
     label = null
     content = null
 
@@ -35,12 +35,14 @@ prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion:Component) {
 
         renderer = afx`
             <div id={props.id} class={props.class}>
-                <label @if.has={props.label}>{props.label}</label>
-                {props.content}
-                <ul @if.hasErrors={field.errors} class={props.errorClass}>
+                <label class="neos-control-label" @if.has={props.label}>{props.label}</label>
+                <div class="neos-controls">
+                    {props.content}
+                </div>
+                <ul @if.hasErrors={field.errors} class="errors">
                     <Neos.Fusion:Loop items={field.result.flattenedErrors} itemName="errors" >
                         <Neos.Fusion:Loop items={errors} itemName="error" >
-                            <li>{error}</li>
+                            <li><span class="neos-help-block">{error}</span></li>
                         </Neos.Fusion:Loop>
                     </Neos.Fusion:Loop>
                 </ul>
