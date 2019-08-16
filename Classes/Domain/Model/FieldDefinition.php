@@ -29,7 +29,7 @@ class FieldDefinition
     /**
      * @var bool
      */
-    protected $validationResult;
+    protected $result;
 
     /**
      * FieldDefinition constructor.
@@ -38,11 +38,11 @@ class FieldDefinition
      * @param mixed|null $value
      * @param bool $multiple
      */
-    public function __construct(string $name = null, $value = null, Result $validationResult = null)
+    public function __construct(string $name = null, $value = null, Result $result = null)
     {
         $this->name = $name;
         $this->value = $value;
-        $this->validationResult = $validationResult;
+        $this->result = $result;
     }
 
     /**
@@ -64,9 +64,21 @@ class FieldDefinition
     /**
      * @return Result|null
      */
-    public function getValidationResult(): ?Result
+    public function getResult(): ?Result
     {
-        return $this->validationResult;
+        return $this->result;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasErrors(): bool
+    {
+        if ($this->result) {
+            return $this->result->hasErrors();
+        }
+        return false;
+    }
+
 
 }

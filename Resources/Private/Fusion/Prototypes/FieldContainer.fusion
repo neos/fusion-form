@@ -29,16 +29,16 @@ prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion:Component) {
                 @glue = ' '
                 class = ${props.class}
                 errorClass = ${props.errorClass}
-                errorClass.@if.hasErrors = ${field.validationResult.flattenedErrors}
+                errorClass.@if.hasErrors = ${field.errors}
             }
         }
 
         renderer = afx`
-            <div id={props.is} class={props.class}>
+            <div id={props.id} class={props.class}>
                 <label @if.has={props.label}>{props.label}</label>
                 {props.content}
-                <ul @if.hasErrors={field.validationResult.flattenedErrors} class={props.errorClass}>
-                    <Neos.Fusion:Loop items={field.validationResult.flattenedErrors} itemName="errors" >
+                <ul @if.hasErrors={field.errors} class={props.errorClass}>
+                    <Neos.Fusion:Loop items={field.result.flattenedErrors} itemName="errors" >
                         <Neos.Fusion:Loop items={errors} itemName="error" >
                             <li>{error}</li>
                         </Neos.Fusion:Loop>

@@ -238,7 +238,7 @@ class FormHelper implements ProtectedContextAwareInterface
         // determine value, according to the following algorithm:
         $fieldValue = null;
 
-        if ($form && $form->getMappingResults() !== null && $form->getMappingResults()->hasErrors()) {
+        if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
             $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
         } elseif ($property && $form && $form->getObject()) {
@@ -248,8 +248,8 @@ class FormHelper implements ProtectedContextAwareInterface
 
         // determine ValidationResult for the single property
         $fieldResult = null;
-        if ($form && $form->getMappingResults() && $form->getMappingResults()->hasErrors()) {
-            $fieldResult = $form->getMappingResults()->forProperty($fieldPathWithoutPrefix);
+        if ($form && $form->getResult() && $form->getResult()->hasErrors()) {
+            $fieldResult = $form->getResult()->forProperty($fieldPathWithoutPrefix);
         }
 
         return new FieldDefinition(

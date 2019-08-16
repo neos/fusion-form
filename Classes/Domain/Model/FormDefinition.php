@@ -44,7 +44,7 @@ class FormDefinition implements ProtectedContextAwareInterface
     /**
      * @var Result
      */
-    protected $mappingResults;
+    protected $result;
 
     /**
      * FormDefinition constructor.
@@ -52,15 +52,15 @@ class FormDefinition implements ProtectedContextAwareInterface
      * @param object|null $object
      * @param string|null $fieldNamePrefix
      * @param array|null $submittedValues
-     * @param Result|null $mappingResults
+     * @param Result|null $results
      */
-    public function __construct(string $name = null, object $object = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $mappingResults = null)
+    public function __construct(string $name = null, object $object = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null)
     {
         $this->name = $name;
         $this->object = $object;
         $this->fieldNamePrefix = $fieldNamePrefix;
         $this->submittedValues = $submittedValues;
-        $this->mappingResults = $mappingResults;
+        $this->result = $results;
     }
 
     /**
@@ -98,15 +98,15 @@ class FormDefinition implements ProtectedContextAwareInterface
     /**
      * @return Result
      */
-    public function getMappingResults(): ?Result
+    public function getResult(): ?Result
     {
-        return $this->mappingResults;
+        return $this->result;
     }
 
-    public function hasMappingErrors(): bool
+    public function hasErrors(): bool
     {
-        if ($this->getMappingResults()) {
-            return $this->getMappingResults()->hasErrors();
+        if ($this->result) {
+            return $this->result->hasErrors();
         }
         return false;
     }
