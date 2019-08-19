@@ -1,0 +1,31 @@
+prototype(Neos.Fusion.Form:FieldComponent)  < prototype(Neos.Fusion:Component) {
+    @context.field = ${(this.name || this.property) ? Form.createFieldDefinition(this.form, this.name, this.property) : field}
+
+    @propTypes {
+        form = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\FormDefinition')}
+        name = ${PropTypes.string}
+        property = ${PropTypes.string}
+
+        id = ${PropTypes.string}
+        class = ${PropTypes.string}
+        required = ${PropTypes.boolean}
+        value = ${PropTypes.any}
+        attributes = ${PropTypes.any}
+    }
+
+    #
+    # values that are used to populate the field context
+    #
+    form = ${form}
+    name = null
+    property = null
+
+    #
+    # default attributes that all fields item components should suport
+    #
+    id = null
+    class = null
+    required = false
+    value = null
+    attributes = Neos.Fusion:DataStructure
+}

@@ -10,12 +10,11 @@ Pure fusion form rendering with afx support!
 - `Neos.Fusion.Form:Form` Component that instantiates the `form` context which contains `Neos.Fusion:FormDefinition` before 
     props and renderer are evaluated. Then it renders a form-tag with the given `content` and adds the hidden fields for trustedProperties, csrfTokens and referrers.
     
-    ```
     request = ${request}
     name = null
     fieldnamePrefix` = null
     object = null
-    targetUri = Neos.Fusion:UriBuilder
+    action = Neos.Fusion:UriBuilder
     method = 'post'
     enctype = null
     ```
@@ -25,8 +24,12 @@ Pure fusion form rendering with afx support!
     
     ```
     form = ${form} 
+    id = null
+    class = null
+    attributes = Neos.Fusion:DataStructure
     name = null
     value = null
+    required = false
     property = null
     ```
     
@@ -34,19 +37,17 @@ Pure fusion form rendering with afx support!
 
 **Field Prototypes:**
 
-All field types allow to define `name`, `property`, `value` and `attributes`. 
+All field types allow to define `id`, `class` `name`, `property`, `value` and `attributes`. 
 
 - `Neos.Fusion.Form:Input`
 - `Neos.Fusion.Form:Hidden`
 - `Neos.Fusion.Form:Textfield`
 - `Neos.Fusion.Form:Textarea`
 - `Neos.Fusion.Form:Password`
-- `Neos.Fusion.Form:Radio`
-- `Neos.Fusion.Form:Checkbox`
-- `Neos.Fusion.Form:Checkbox.Multiple`
-- `Neos.Fusion.Form:Select`
-- `Neos.Fusion.Form:Select.Option`
-- `Neos.Fusion.Form:Select.Multiple`
+- `Neos.Fusion.Form:Radio` additional options `checked`:bool
+- `Neos.Fusion.Form:Checkbox` additional options `multiple`:bool and `checked`:bool
+- `Neos.Fusion.Form:Select` additional options `multiple`:bool and `content` for rendering Options via afx
+- `Neos.Fusion.Form:Select.Option` options: `value`, `selected`:bool and `content`
 - `Neos.Fusion.Form:Upload`
 - `Neos.Fusion.Form:Button`
 - `Neos.Fusion.Form:Submit`
@@ -65,7 +66,9 @@ include: resource://Neos.Fusion.Form/Private/Fusion/Root.fusion
 
 test = afx`
    <Neos.Fusion.Form:Form
-       targetUri.action="update"
+       action.action="update"
+       action.package="Vendor.Site"
+       action.controller="Search"
        object={example}
        name="example"
        method="post"
@@ -79,13 +82,54 @@ test = afx`
                <Neos.Fusion.Form:Select.Option value="455" >-- 456 -- </Neos.Fusion.Form:Select.Option>
            </Neos.Fusion.Form:Select>
 
-           <Neos.Fusion.Form:Select.Multiple property="baz" >
+           <Neos.Fusion.Form:Select multiple property="baz" >
                <Neos.Fusion.Form:Select.Option value="123">-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455">-- 456 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="789">-- 789 -- </Neos.Fusion.Form:Select.Option>
-           </Neos.Fusion.Form:Select.Multiple>
+           </Neos.Fusion.Form:Select>
 
            <Neos.Fusion.Form:Submit />
        </fieldset>
    </Neos.Fusion.Form:Form>
 `
+```
+
+**Render Errors for the whole form**
+
+```
+test = afx`
+    <Neos.Fusion.Form:Form> 
+        <ul @if.hasErrors={form.mappingResults.flattenedErrors}>
+            <Neos.Fusion:Loop items={form.mappingResults.flattenedErrors} itemKey="path" itemName="errors" >
+                <Neos.Fusion:Loop items={errors} itemName="error" >
+                    <li>{path} {error}</li>
+                </Neos.Fusion:Loop>
+            </Neos.Fusion:Loop>
+        </ul>
+    </Neos.Fusion.Form:Form>
+```
+
+**Custom Field Prototype with label, errorClass and error rendering**
+
+```
+prototype(Test.BeModule:ExampleFieldWithLabel) < prototype(Neos.Fusion.Form:Field) {
+
+    content = ''
+    label = ''
+    errorClass = 'error'
+
+    renderer = afx`
+        <div class={field.validationResult.flattenedErrors ? props.errorClass : null}>
+            <label @if.has={props.label}>{props.label}</label>
+            {props.content}
+            <ul @if.hasErrors={field.validationResult.flattenedErrors}>
+                <Neos.Fusion:Loop items={field.validationResult.flattenedErrors} itemName="errors" >
+                    <Neos.Fusion:Loop items={errors} itemName="error" >
+                    <li>{error}</li>
+                    </Neos.Fusion:Loop>
+                </Neos.Fusion:Loop>
+            </ul>
+        </div>
+    `
+}
+```

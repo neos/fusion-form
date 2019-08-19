@@ -205,10 +205,9 @@ class FormHelper implements ProtectedContextAwareInterface
      * @param FormDefinition|null $form
      * @param string|null $name
      * @param string $property
-     * @param mixed|null $value
      * @return FieldDefinition
      */
-    public function createFieldDefinition(FormDefinition $form = null, string $name = null, string $property = null, $value = null): FieldDefinition
+    public function createFieldDefinition(FormDefinition $form = null, string $name = null, string $property = null): FieldDefinition
     {
         // determine path
         if ($property) {
@@ -217,14 +216,17 @@ class FormHelper implements ProtectedContextAwareInterface
             $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
             $fieldNameParts = explode('.', $path);
         } else {
-            return new FieldDefinition(null, $value, null);
+            return new FieldDefinition(null, null, null);
         }
 
-        if ($form && $fieldNameParts) {
+        if ($form) {
             array_unshift($fieldNameParts, $form->getName());
-            if ($form->getFieldNamePrefix()) {
-                array_unshift($fieldNameParts, $form->getFieldNamePrefix());
-            }
+        }
+
+        $fieldPathWithoutPrefix = implode('.', $fieldNameParts);
+
+        if ($form && $form->getFieldNamePrefix()) {
+            array_unshift($fieldNameParts, $form->getFieldNamePrefix());
         }
 
         $fieldPath = implode('.', $fieldNameParts);
@@ -236,21 +238,18 @@ class FormHelper implements ProtectedContextAwareInterface
         // determine value, according to the following algorithm:
         $fieldValue = null;
 
-        if ($form && $form->getMappingResults() !== null && $form->getMappingResults()->hasErrors()) {
+        if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
             $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
         } elseif ($property && $form && $form->getObject()) {
             // 2) else, if "property" is specified, take the value from the bound object.
             $fieldValue = ObjectAccess::getPropertyPath($form->getObject(), $property);
-        } else {
-            // 3) else, take the "value".
-            $fieldValue = $value;
         }
 
         // determine ValidationResult for the single property
         $fieldResult = null;
-        if ($form && $form->getMappingResults() && $form->getMappingResults()->hasErrors()) {
-            $fieldResult = $form->getMappingResults()->forProperty($fieldPath);
+        if ($form && $form->getResult() && $form->getResult()->hasErrors()) {
+            $fieldResult = $form->getResult()->forProperty($fieldPathWithoutPrefix);
         }
 
         return new FieldDefinition(

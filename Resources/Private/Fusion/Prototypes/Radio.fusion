@@ -1,18 +1,36 @@
-prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Field) {
-    // HINT: the "value" argument (4) is null here, because "field.value" should only be filled with the CHOSEN value;
-    //       in these two cases:
-    //       - when an object is bound to the form, and "property" is defined
-    //       - when the form is re-shown in case of a validation error.
-    // We use field.value to determine if we should check the value.
-    @context.field = ${Form.createFieldDefinition(this.form, this.name, this.property, null)}
-    renderer = afx`
-        <input
-            {...props.attributes}
-            type="radio"
-            name={field.name}
-            value={Form.stringifyValue(props.value)}
-            checked="checked"
-            checked.@if.isTrue={field.value == props.value}
+prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:FieldComponent) {
+    @propTypes {
+        checked = ${PropTypes.boolean}
+    }
+
+    checked = false
+
+    renderer = Neos.Fusion:Component {
+        @apply.props = ${props}
+        @apply.override = Neos.Fusion:DataStructure {
+            checked = Neos.Fusion:Case {
+                hasValue {
+                    condition = ${field.value}
+                    renderer = ${field.value == props.value}
+                }
+                default {
+                    condition = true
+                    renderer = ${props.checked}
+                }
+            }
+        }
+
+        renderer = afx`
+            <input
+                {...props.attributes}
+                id={props.id}
+                class={props.class}
+                type="radio"
+                name={field.name}
+                value={Form.stringifyValue(props.value)}
+                required={props.required}
+                checked={props.checked}
             />
-    `
+        `
+    }
 }

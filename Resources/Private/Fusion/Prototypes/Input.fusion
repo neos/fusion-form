@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:Field) {
+prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:FieldComponent) {
     @propTypes {
         @strict = true
         type = ${PropTypes.string}
@@ -9,9 +9,12 @@ prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:Field) {
     renderer = afx`
         <input
             {...props.attributes}
-            type={props.type}
+            id={props.id}
+            class={props.class}
             name={field.name}
-            value={Form.stringifyValue(props.value || field.value)}
+            type={props.type}
+            required={props.required}
+            value={Form.stringifyValue(field.value || props.value)}
             />
     `
 }
