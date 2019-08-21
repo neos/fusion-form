@@ -219,7 +219,7 @@ class FormHelper implements ProtectedContextAwareInterface
             return new FieldDefinition(null, null, null);
         }
 
-        if ($form) {
+        if ($form && $form->getName()) {
             array_unshift($fieldNameParts, $form->getName());
         }
 
