@@ -223,21 +223,21 @@ class FormHelper implements ProtectedContextAwareInterface
             array_unshift($fieldNameParts, $form->getFieldNamePrefix());
         }
 
-        $fieldPath = implode('.', $fieldNameParts);
+        // render fieldName
         $fieldName = array_shift($fieldNameParts);
         foreach ($fieldNameParts as $nameSegment) {
             $fieldName .= '[' . $nameSegment . ']';
         }
 
         // determine value, according to the following algorithm:
-        $fieldValue = null;
-
         if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
-        } elseif ($property && $form && $form->getData()) {
+            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPathWithoutPrefix);
+        } elseif (($name || $property) && $form && $form->getData()) {
             // 2) else, if "property" is specified, take the value from the bound object.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $property);
+            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $fieldPathWithoutPrefix);
+        } else {
+            $fieldValue = null;
         }
 
         // determine ValidationResult for the single property
