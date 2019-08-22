@@ -11,13 +11,15 @@ Pure fusion form rendering with afx support!
     props and renderer are evaluated. Then it renders a form-tag with the given `content` and adds the hidden fields for trustedProperties, csrfTokens and referrers.
     
     request = ${request}
-    name = null
-    fieldnamePrefix` = null
-    object = null
+    fieldnamePrefix = null
+    data = Neos.Fusion:DataStructure {
+        example = ${example}
+    }
+    
     action = Neos.Fusion:UriBuilder
     method = 'post'
     enctype = null
-    ```
+    ```    
 
 - `Neos.Fusion:.Form:Field`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
     before props and renderer are evaluated. This is the base prototype for implementing custom fields.
@@ -69,20 +71,22 @@ test = afx`
        action.action="update"
        action.package="Vendor.Site"
        action.controller="Search"
-       object={example}
-       name="example"
+       
+       data.exampleValue={exampleValue}
+       data.exampleObject={exampleObject}
+       
        method="post"
        attributes.data-foo="foo"
    >
        <fieldset>
-           <Neos.Fusion.Form:Textfield property="foo" />
+           <Neos.Fusion.Form:Textfield property="exampleValue" />
 
-           <Neos.Fusion.Form:Select property="bar" >
+           <Neos.Fusion.Form:Select property="exampleObject.bar" >
                <Neos.Fusion.Form:Select.Option value="123" >-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455" >-- 456 -- </Neos.Fusion.Form:Select.Option>
            </Neos.Fusion.Form:Select>
 
-           <Neos.Fusion.Form:Select multiple property="baz" >
+           <Neos.Fusion.Form:Select multiple property="exampleObject.baz" >
                <Neos.Fusion.Form:Select.Option value="123">-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455">-- 456 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="789">-- 789 -- </Neos.Fusion.Form:Select.Option>

@@ -185,16 +185,14 @@ class FormHelper implements ProtectedContextAwareInterface
 
     /**
      * @param ActionRequest|null $request
-     * @param string|null $name
      * @param string|null $fieldNamePrefix
-     * @param object|null $object
+     * @param mixed|null $data
      * @return FormDefinition
      */
-    public function createFormDefinition(ActionRequest $request = null, string $name = null, string $fieldNamePrefix = null, object $object = null): FormDefinition
+    public function createFormDefinition(ActionRequest $request = null, string $fieldNamePrefix = null, $data = null): FormDefinition
     {
         return new FormDefinition(
-            $name,
-            $object,
+            $data,
             $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),
             $request ? $request->getInternalArgument('__submittedArguments') : [],
             $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : new Result()
@@ -219,10 +217,6 @@ class FormHelper implements ProtectedContextAwareInterface
             return new FieldDefinition(null, null, null);
         }
 
-        if ($form && $form->getName()) {
-            array_unshift($fieldNameParts, $form->getName());
-        }
-
         $fieldPathWithoutPrefix = implode('.', $fieldNameParts);
 
         if ($form && $form->getFieldNamePrefix()) {
@@ -241,9 +235,9 @@ class FormHelper implements ProtectedContextAwareInterface
         if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
             $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
-        } elseif ($property && $form && $form->getObject()) {
+        } elseif ($property && $form && $form->getData()) {
             // 2) else, if "property" is specified, take the value from the bound object.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getObject(), $property);
+            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $property);
         }
 
         // determine ValidationResult for the single property
