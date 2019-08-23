@@ -158,6 +158,34 @@ class FormHelper implements ProtectedContextAwareInterface
     }
 
     /**
+     * Convert the given html fieldName to a dot seperated path
+     *
+     * @param $name
+     * @return string
+     */
+    public function fieldNameToPath($name): string
+    {
+        $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
+        return trim($path, '.');
+    }
+
+    /**
+     * Convert the given dot seperated $path to an html fieldName
+     *
+     * @param $name
+     * @return string
+     */
+    public function pathToFieldName($path): string
+    {
+        $pathSegments = explode('.', $path);
+        $fieldName = array_shift($pathSegments);
+        foreach ($pathSegments as $pathSegment) {
+            $fieldName .= '[' . $pathSegment . ']';
+        }
+        return $fieldName;
+    }
+
+    /**
      * @param mixed $value
      * @return string|null
      */
@@ -201,41 +229,28 @@ class FormHelper implements ProtectedContextAwareInterface
 
     /**
      * @param FormDefinition|null $form
-     * @param string|null $name
-     * @param string $property
+     * @param string $path
      * @return FieldDefinition
      */
-    public function createFieldDefinition(FormDefinition $form = null, string $name = null, string $property = null): FieldDefinition
+    public function createFieldDefinition(FormDefinition $form = null, string $path = null): FieldDefinition
     {
-        // determine path
-        if ($property) {
-            $fieldNameParts = explode('.', $property);
-        } elseif ($name) {
-            $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
-            $fieldNameParts = explode('.', $path);
-        } else {
+        if (!$path) {
             return new FieldDefinition(null, null, null);
         }
-
-        $fieldPathWithoutPrefix = implode('.', $fieldNameParts);
-
-        if ($form && $form->getFieldNamePrefix()) {
-            array_unshift($fieldNameParts, $form->getFieldNamePrefix());
-        }
-
         // render fieldName
-        $fieldName = array_shift($fieldNameParts);
-        foreach ($fieldNameParts as $nameSegment) {
-            $fieldName .= '[' . $nameSegment . ']';
+        if ($form && $form->getFieldNamePrefix()) {
+            $fieldName = $this->pathToFieldName( $form->getFieldNamePrefix() . '.' . $path);
+        } else {
+            $fieldName = $this->pathToFieldName($path);
         }
 
         // determine value, according to the following algorithm:
         if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPathWithoutPrefix);
-        } elseif (($name || $property) && $form && $form->getData()) {
+            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $path);
+        } elseif ($path && $form && $form->getData()) {
             // 2) else, if "property" is specified, take the value from the bound object.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $fieldPathWithoutPrefix);
+            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $path);
         } else {
             $fieldValue = null;
         }
@@ -243,7 +258,7 @@ class FormHelper implements ProtectedContextAwareInterface
         // determine ValidationResult for the single property
         $fieldResult = null;
         if ($form && $form->getResult() && $form->getResult()->hasErrors()) {
-            $fieldResult = $form->getResult()->forProperty($fieldPathWithoutPrefix);
+            $fieldResult = $form->getResult()->forProperty($path);
         }
 
         return new FieldDefinition(

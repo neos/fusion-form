@@ -10,6 +10,7 @@ Pure fusion form rendering with afx support!
 - `Neos.Fusion.Form:Form` Component that instantiates the `form` context which contains `Neos.Fusion:FormDefinition` before 
     props and renderer are evaluated. Then it renders a form-tag with the given `content` and adds the hidden fields for trustedProperties, csrfTokens and referrers.
     
+    ```
     request = ${request}
     fieldnamePrefix = null
     data = Neos.Fusion:DataStructure {
@@ -21,23 +22,32 @@ Pure fusion form rendering with afx support!
     enctype = null
     ```    
 
-- `Neos.Fusion:.Form:Field`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
-    before props and renderer are evaluated. This is the base prototype for implementing custom fields.
+- `Neos.Fusion:.Form:FieldComponent`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
+    before props and renderer are evaluated. This is the base prototype for implementing custom fields. If no property is defined 
+    the component uses the existing `field` from the context.
     
     ```
     form = ${form} 
-    id = null
-    class = null
-    attributes = Neos.Fusion:DataStructure
     name = null
-    value = null
-    required = false
-    property = null
+    property = ${Form.fieldNameToPath(this.name)}
     ```
     
+- `Neos.Fusion:.Form:FieldContainer`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
+    before props and renderer are evaluated. This component will render a container tag a label a list of error messages. The concrete 
+    fields are passed to the component as afx content and will use the `field` provided by this container.
+    
+    ```
+    form = ${form}  
+    name = null
+    property = ${this.name ? Form.fieldNameToPath(this.name) : null}
+    
+    label = null
+    errorClass = 'error'  
+    ```
+
 - `Neos.Fusion.Form:Fragment`: A Fragment that allows to place afx conditions without extra markup.
 
-**Field Prototypes:**
+**Field Prototypes: based on Neos.Fusion.Form:FieldComponent**
 
 All field types allow to define `id`, `class` `name`, `property`, `value` and `attributes`. 
 
