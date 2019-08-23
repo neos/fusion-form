@@ -66,15 +66,19 @@ class FormHelper implements ProtectedContextAwareInterface
     }
 
     /**
-     * Calculate the trusted properties token for the given form content
+     * Calculate the hidden fields for the given form content
      *
-     * @param string $content
-     * @param string|null $fieldNamePrefix
+     * @param string $content form html body
+     * @param string $fieldNamePrefix
+     * @param string $data
+     * @param array hiddenFields as
      */
-    public function trustedPropertiesToken(string $content, string $fieldNamePrefix = '')
+    public function calculateHiddenFields(string $content, string $fieldNamePrefix = '', $data = null): array
     {
+        $hiddenFields = [];
+
+        // parse given content to render hidden fields for
         $domDocument = new \DOMDocument('1.0', 'UTF-8');
-        // ignore parsing errors
         $useInternalErrorsBackup = libxml_use_internal_errors(true);
         $domDocument->loadHTML($content);
         $xpath = new \DOMXPath($domDocument);
@@ -82,58 +86,55 @@ class FormHelper implements ProtectedContextAwareInterface
             libxml_use_internal_errors($useInternalErrorsBackup);
         }
 
-        $elements = $xpath->query("//*[(local-name()='input' or local-name()='select' or local-name()='button' or local-name()='textarea') and @name]");
-        $formFieldNames = [];
-        foreach($elements as $element) {
-            $name = (string)$element->getAttribute('name');
-            if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
-                $formFieldNames[] = $name;
-            }
-        }
-        return $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
-    }
-
-    /**
-     * Detect the required empty hidden fieldnames for the given form content
-     *
-     * @param string $content
-     * @param string|null $fieldNamePrefix
-     */
-    public function emptyHiddenFieldnames(string $content, string $fieldNamePrefix = '')
-    {
-        $domDocument = new \DOMDocument('1.0', 'UTF-8');
-        // ignore parsing errors
-        $useInternalErrorsBackup = libxml_use_internal_errors(true);
-        $domDocument->loadHTML($content);
-        $xpath = new \DOMXPath($domDocument);
-        if ($useInternalErrorsBackup !== true) {
-            libxml_use_internal_errors($useInternalErrorsBackup);
-        }
-
+        // 1. empty hidden values
         $elements = $xpath->query("//*[(local-name()='input' and @type='checkbox') or (local-name()='select' and @multiple)]");
-        $hiddenFieldnames = [];
         foreach($elements as $element) {
             $name = (string)$element->getAttribute('name');
             if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
                 if (substr_compare($name, '[]', -2, 2) === 0) {
-                    $hiddenFieldnames[] = substr($name, 0, -2);
+                    $fieldName = substr($name, 0, -2);
                 } else {
-                    $hiddenFieldnames[] = $name;
+                    $fieldName = $name;
+                }
+                $hiddenFields[ $fieldName ] = null;
+            }
+        }
+
+        // 2. fieldnames and  hidden identity fields for modifiying properties on persisted objects
+        $allFormFieldNames = [];
+        if ($data) {
+            $elements = $xpath->query("//*[(local-name()='input' or local-name()='select' or local-name()='button' or local-name()='textarea') and @name]");
+            $possiblePathes = [];
+            foreach ($elements as $element) {
+                $name = (string)$element->getAttribute('name');
+                if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
+                    $allFormFieldNames[] = $name;
+                    $path = $this->fieldNameToPath(substr($name, strlen($fieldNamePrefix)));
+                    $pathSegments = explode('.', $path);
+                    for ($i = 1; $i < count($pathSegments); $i++) {
+                        $possiblePathes[] = implode('.', array_slice($pathSegments, 0, $i));
+                    }
+                }
+            }
+            $possiblePathes = array_unique($possiblePathes);
+            foreach ($possiblePathes as $path) {
+                $possibleObject = ObjectAccess::getPropertyPath($data, $path);
+                if (is_object($possibleObject) && !$this->persistenceManager->isNewObject($possibleObject)) {
+                    $identifier = $this->persistenceManager->getIdentifierByObject($possibleObject);
+                    $name = $this->prefixFieldName( $this->pathToFieldName($path), $fieldNamePrefix);
+                    $allFormFieldNames[] = $name  . '[__identity]' ;
+                    $hiddenFields[ $name  . '[__identity]'  ] = $identifier;
                 }
             }
         }
 
-        return array_unique($hiddenFieldnames);
-    }
+        // 3. trusted properties token
+        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
 
-    /**
-     * Returns CSRF token which is required for "unsafe" requests (e.g. POST, PUT, DELETE, ...)
-     *
-     * @return string
-     */
-    public function csrfToken(): string
-    {
-        return $this->securityContext->getCsrfProtectionToken();
+        // 4. csrf token
+        $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();;
+
+        return $hiddenFields;
     }
 
     /**
