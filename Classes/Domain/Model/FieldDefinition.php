@@ -27,6 +27,11 @@ class FieldDefinition
     protected $value;
 
     /**
+     * @var boolean
+     */
+    protected $multiple;
+
+    /**
      * @var bool
      */
     protected $result;
@@ -35,14 +40,16 @@ class FieldDefinition
      * FieldDefinition constructor.
      *
      * @param string|null $name
-     * @param mixed|null $value
+     * @param array|string|null $value
      * @param bool $multiple
+     * @param Result $result
      */
-    public function __construct(string $name = null, $value = null, Result $result = null)
+    public function __construct(string $name = null, $value = null, $multiple = false, Result $result = null)
     {
         $this->name = $name;
         $this->value = $value;
         $this->result = $result;
+        $this->multiple = $multiple;
     }
 
     /**
@@ -54,11 +61,19 @@ class FieldDefinition
     }
 
     /**
-     * @return mixed|null
+     * @return string|array|null
      */
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultiple(): bool
+    {
+        return $this->multiple;
     }
 
     /**

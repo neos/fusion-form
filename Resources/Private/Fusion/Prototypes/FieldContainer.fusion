@@ -1,10 +1,11 @@
 prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion:Component) {
-    @context.field = ${Form.createFieldDefinition(this.form, this.property)}
+    @context.field = ${Form.createFieldDefinition(this.form, this.property, this.multiple)}
 
     @propTypes {
         form = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\FormDefinition')}
         name = ${PropTypes.string}
         property = ${PropTypes.string}
+        multiple = ${PropTypes.boolean}
         id = ${PropTypes.string}
         class = ${PropTypes.string}
         errorClass = ${PropTypes.string}
@@ -15,6 +16,7 @@ prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion:Component) {
     form = ${form}
     name = null
     property = ${this.name ? Form.fieldNameToPath(this.name) : null}
+    multiple = false
 
     id = null
     class = 'neos-control-group'

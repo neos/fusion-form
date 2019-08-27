@@ -14,7 +14,7 @@ prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:FieldComponent) 
             name={field.name}
             type={props.type}
             required={props.required}
-            value={Form.stringifyValue(field.value || props.value)}
+            value={field.value || Form.stringifyValue(props.value)}
             />
     `
 }

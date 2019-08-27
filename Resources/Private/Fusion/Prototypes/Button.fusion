@@ -12,7 +12,7 @@ prototype(Neos.Fusion.Form:Button) < prototype(Neos.Fusion.Form:FieldComponent) 
             class={props.class}
             type="submit"
             name={field.name}
-            value={Form.stringifyValue(props.value)}
+            value={field.value}
         >{props.content}</button>
     `
 }

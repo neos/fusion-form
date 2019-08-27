@@ -15,12 +15,12 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
         @apply.override = Neos.Fusion:DataStructure {
             selected = Neos.Fusion:Case {
                 hasSingleValue {
-                    condition = ${field.value && !__multiple}
-                    renderer = ${field.value == props.value}
+                    condition = ${field.value && !field.multiple}
+                    renderer = ${Form.stringifyValue(props.value) == field.value}
                 }
                 hasMultiValue {
-                    condition = ${field.value && __multiple}
-                    renderer = ${Array.indexOf(field.value, props.value) > -1}
+                    condition = ${field.value && field.multiple}
+                    renderer = ${Array.indexOf(field.value, Form.stringifyValue(props.value)) > -1}
                 }
                 default {
                     condition = true

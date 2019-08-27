@@ -1,4 +1,6 @@
 prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponent) {
+    content = ''
+
     renderer = afx`
         <textarea
             {...props.attributes}
@@ -7,6 +9,6 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponen
             type="text"
             name={field.name}
             required={props.required}
-        >{Form.stringifyValue(field.value || props.value)}</textarea>
+        >{field.value || props.content}</textarea>
     `
 }

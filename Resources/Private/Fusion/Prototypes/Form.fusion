@@ -46,31 +46,14 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
             enctype={props.enctype}
         >
             <div style="display: none">
-                <Neos.Fusion.Form:Fragment>
-                    <input type="hidden" name={request.argumentNamespace + "[__referrer][@package]"} value={request.controllerPackageKey} />
-                    <input type="hidden" name={request.argumentNamespace + "[__referrer][@subpackage]"} value={request.controllerSubpackageKey} />
-                    <input type="hidden" name={request.argumentNamespace + "[__referrer][@controller]"} value={request.controllerName} />
-                    <input type="hidden" name={request.argumentNamespace + "[__referrer][@action]"} value={request.controllerActionName} />
-                    <input type="hidden" name={request.argumentNamespace + "[__referrer][arguments]"} value={Form.argumentsWithHmac(request.arguments)} />
-                </Neos.Fusion.Form:Fragment>
-
-                <Neos.Fusion.Form:Fragment @if.isNotMainRequest={request != request.mainRequest}>
-                    <input type="hidden" name="__referrer[@package]" value={request.parentRequest.controllerPackageKey} />
-                    <input type="hidden" name="__referrer[@subpackage]" value={request.parentRequest.controllerSubpackageKey} />
-                    <input type="hidden" name="__referrer[@controller]" value={request.parentRequest.controllerName} />
-                    <input type="hidden" name="__referrer[@action]" value={request.parentRequest.controllerActionName} />
-                    <input type="hidden" name="__referrer[arguments]" value={Form.argumentsWithHmac(request.parentRequest.arguments, request.argumentNamespace)} />
-                </Neos.Fusion.Form:Fragment>
-
                 <Neos.Fusion:Loop
-                    items={Form.calculateHiddenFields(props.content, form.fieldNamePrefix, props.data)}
+                    items={Form.calculateHiddenFields(request, form.fieldNamePrefix, props.data, props.content)}
                     itemKey="fieldName"
                     itemName="fieldValue"
                 >
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
             </div>
-
             {props.content}
         </form>
     `

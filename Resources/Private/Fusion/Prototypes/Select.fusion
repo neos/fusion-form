@@ -1,23 +1,18 @@
 prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:FieldComponent) {
-    # this allows the options to determine wether they are selected
-    @context.__multiple = ${this.multiple}
-
     @propTypes {
         content = ${PropTypes.string}
-        multiple = ${PropTypes.boolean}
     }
 
     content = null
-    multiple = false
 
     renderer = afx`
         <select
             {...props.attributes}
             id={props.id}
             class={props.class}
-            name={field.name + (props.multiple ? '[]' : '')}
+            name={field.name}
             required={props.required}
-            multiple={props.multiple}
+            multiple={field.multiple}
         >
             {props.content}
         </select>
