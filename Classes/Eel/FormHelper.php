@@ -57,7 +57,7 @@ class FormHelper implements ProtectedContextAwareInterface
      * @param array $arguments
      * @param string|null $fieldNamePrefix
      */
-    public function argumentsWithHmac(array $arguments = [], string $excludeNamespace = '')
+    protected function argumentsWithHmac(array $arguments = [], string $excludeNamespace = '')
     {
         if ($excludeNamespace !== null && isset($arguments[$excludeNamespace])) {
             unset($arguments[$excludeNamespace]);
@@ -68,12 +68,13 @@ class FormHelper implements ProtectedContextAwareInterface
     /**
      * Calculate the hidden fields for the given form content
      *
+     * @param ActionRequest $request
      * @param string $content form html body
      * @param string $fieldNamePrefix
      * @param string $data
      * @param array hiddenFields as
      */
-    public function calculateHiddenFields(string $content, string $fieldNamePrefix = '', $data = null): array
+    public function calculateHiddenFields(ActionRequest $request = null, string $fieldNamePrefix = '', $data = null, string $content = ''): array
     {
         $hiddenFields = [];
 
@@ -86,7 +87,21 @@ class FormHelper implements ProtectedContextAwareInterface
             libxml_use_internal_errors($useInternalErrorsBackup);
         }
 
-        // 1. empty hidden values
+        // 0. __request parameters
+        while ($request) {
+            $referrerPathPrefix = $request->getArgumentNamespace() ?  $request->getArgumentNamespace() . '.__referrer' : '__referrer';
+            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@package')] = $request->getControllerPackageKey();
+            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@subpackage')] = $request->getControllerSubpackageKey();
+            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@controller')] = $request->getControllerName();
+            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@action')] = $request->getControllerActionName();
+            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.arguments')] = $this->argumentsWithHmac($request->getArguments(), $request->getArgumentNamespace());
+            if ($request->isMainRequest()) {
+                break;
+            }
+            $request = $request->getParentRequest();
+        }
+
+        // 1. empty hidden values for checkbox and multi-select values
         $elements = $xpath->query("//*[(local-name()='input' and @type='checkbox') or (local-name()='select' and @multiple)]");
         foreach($elements as $element) {
             $name = (string)$element->getAttribute('name');
