@@ -66,15 +66,19 @@ class FormHelper implements ProtectedContextAwareInterface
     }
 
     /**
-     * Calculate the trusted properties token for the given form content
+     * Calculate the hidden fields for the given form content
      *
-     * @param string $content
-     * @param string|null $fieldNamePrefix
+     * @param string $content form html body
+     * @param string $fieldNamePrefix
+     * @param string $data
+     * @param array hiddenFields as
      */
-    public function trustedPropertiesToken(string $content, string $fieldNamePrefix = '')
+    public function calculateHiddenFields(string $content, string $fieldNamePrefix = '', $data = null): array
     {
+        $hiddenFields = [];
+
+        // parse given content to render hidden fields for
         $domDocument = new \DOMDocument('1.0', 'UTF-8');
-        // ignore parsing errors
         $useInternalErrorsBackup = libxml_use_internal_errors(true);
         $domDocument->loadHTML($content);
         $xpath = new \DOMXPath($domDocument);
@@ -82,58 +86,55 @@ class FormHelper implements ProtectedContextAwareInterface
             libxml_use_internal_errors($useInternalErrorsBackup);
         }
 
-        $elements = $xpath->query("//*[(local-name()='input' or local-name()='select' or local-name()='button' or local-name()='textarea') and @name]");
-        $formFieldNames = [];
-        foreach($elements as $element) {
-            $name = (string)$element->getAttribute('name');
-            if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
-                $formFieldNames[] = $name;
-            }
-        }
-        return $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
-    }
-
-    /**
-     * Detect the required empty hidden fieldnames for the given form content
-     *
-     * @param string $content
-     * @param string|null $fieldNamePrefix
-     */
-    public function emptyHiddenFieldnames(string $content, string $fieldNamePrefix = '')
-    {
-        $domDocument = new \DOMDocument('1.0', 'UTF-8');
-        // ignore parsing errors
-        $useInternalErrorsBackup = libxml_use_internal_errors(true);
-        $domDocument->loadHTML($content);
-        $xpath = new \DOMXPath($domDocument);
-        if ($useInternalErrorsBackup !== true) {
-            libxml_use_internal_errors($useInternalErrorsBackup);
-        }
-
+        // 1. empty hidden values
         $elements = $xpath->query("//*[(local-name()='input' and @type='checkbox') or (local-name()='select' and @multiple)]");
-        $hiddenFieldnames = [];
         foreach($elements as $element) {
             $name = (string)$element->getAttribute('name');
             if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
                 if (substr_compare($name, '[]', -2, 2) === 0) {
-                    $hiddenFieldnames[] = substr($name, 0, -2);
+                    $fieldName = substr($name, 0, -2);
                 } else {
-                    $hiddenFieldnames[] = $name;
+                    $fieldName = $name;
+                }
+                $hiddenFields[ $fieldName ] = null;
+            }
+        }
+
+        // 2. fieldnames and  hidden identity fields for modifiying properties on persisted objects
+        $allFormFieldNames = [];
+        if ($data) {
+            $elements = $xpath->query("//*[(local-name()='input' or local-name()='select' or local-name()='button' or local-name()='textarea') and @name]");
+            $possiblePathes = [];
+            foreach ($elements as $element) {
+                $name = (string)$element->getAttribute('name');
+                if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
+                    $allFormFieldNames[] = $name;
+                    $path = $this->fieldNameToPath(substr($name, strlen($fieldNamePrefix)));
+                    $pathSegments = explode('.', $path);
+                    for ($i = 1; $i < count($pathSegments); $i++) {
+                        $possiblePathes[] = implode('.', array_slice($pathSegments, 0, $i));
+                    }
+                }
+            }
+            $possiblePathes = array_unique($possiblePathes);
+            foreach ($possiblePathes as $path) {
+                $possibleObject = ObjectAccess::getPropertyPath($data, $path);
+                if (is_object($possibleObject) && !$this->persistenceManager->isNewObject($possibleObject)) {
+                    $identifier = $this->persistenceManager->getIdentifierByObject($possibleObject);
+                    $name = $this->prefixFieldName( $this->pathToFieldName($path), $fieldNamePrefix);
+                    $allFormFieldNames[] = $name  . '[__identity]' ;
+                    $hiddenFields[ $name  . '[__identity]'  ] = $identifier;
                 }
             }
         }
 
-        return array_unique($hiddenFieldnames);
-    }
+        // 3. trusted properties token
+        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
 
-    /**
-     * Returns CSRF token which is required for "unsafe" requests (e.g. POST, PUT, DELETE, ...)
-     *
-     * @return string
-     */
-    public function csrfToken(): string
-    {
-        return $this->securityContext->getCsrfProtectionToken();
+        // 4. csrf token
+        $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();;
+
+        return $hiddenFields;
     }
 
     /**
@@ -155,6 +156,34 @@ class FormHelper implements ProtectedContextAwareInterface
             }
             return $fieldName;
         }
+    }
+
+    /**
+     * Convert the given html fieldName to a dot seperated path
+     *
+     * @param $name
+     * @return string
+     */
+    public function fieldNameToPath($name): string
+    {
+        $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
+        return trim($path, '.');
+    }
+
+    /**
+     * Convert the given dot seperated $path to an html fieldName
+     *
+     * @param $name
+     * @return string
+     */
+    public function pathToFieldName($path): string
+    {
+        $pathSegments = explode('.', $path);
+        $fieldName = array_shift($pathSegments);
+        foreach ($pathSegments as $pathSegment) {
+            $fieldName .= '[' . $pathSegment . ']';
+        }
+        return $fieldName;
     }
 
     /**
@@ -185,16 +214,14 @@ class FormHelper implements ProtectedContextAwareInterface
 
     /**
      * @param ActionRequest|null $request
-     * @param string|null $name
      * @param string|null $fieldNamePrefix
-     * @param object|null $object
+     * @param mixed|null $data
      * @return FormDefinition
      */
-    public function createFormDefinition(ActionRequest $request = null, string $name = null, string $fieldNamePrefix = null, object $object = null): FormDefinition
+    public function createFormDefinition(ActionRequest $request = null, string $fieldNamePrefix = null, $data = null): FormDefinition
     {
         return new FormDefinition(
-            $name,
-            $object,
+            $data,
             $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),
             $request ? $request->getInternalArgument('__submittedArguments') : [],
             $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : new Result()
@@ -203,53 +230,36 @@ class FormHelper implements ProtectedContextAwareInterface
 
     /**
      * @param FormDefinition|null $form
-     * @param string|null $name
-     * @param string $property
+     * @param string $path
      * @return FieldDefinition
      */
-    public function createFieldDefinition(FormDefinition $form = null, string $name = null, string $property = null): FieldDefinition
+    public function createFieldDefinition(FormDefinition $form = null, string $path = null): FieldDefinition
     {
-        // determine path
-        if ($property) {
-            $fieldNameParts = explode('.', $property);
-        } elseif ($name) {
-            $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
-            $fieldNameParts = explode('.', $path);
-        } else {
+        if (!$path) {
             return new FieldDefinition(null, null, null);
         }
-
-        if ($form && $form->getName()) {
-            array_unshift($fieldNameParts, $form->getName());
-        }
-
-        $fieldPathWithoutPrefix = implode('.', $fieldNameParts);
-
+        // render fieldName
         if ($form && $form->getFieldNamePrefix()) {
-            array_unshift($fieldNameParts, $form->getFieldNamePrefix());
-        }
-
-        $fieldPath = implode('.', $fieldNameParts);
-        $fieldName = array_shift($fieldNameParts);
-        foreach ($fieldNameParts as $nameSegment) {
-            $fieldName .= '[' . $nameSegment . ']';
+            $fieldName = $this->pathToFieldName( $form->getFieldNamePrefix() . '.' . $path);
+        } else {
+            $fieldName = $this->pathToFieldName($path);
         }
 
         // determine value, according to the following algorithm:
-        $fieldValue = null;
-
         if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $fieldPath);
-        } elseif ($property && $form && $form->getObject()) {
+            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $path);
+        } elseif ($path && $form && $form->getData()) {
             // 2) else, if "property" is specified, take the value from the bound object.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getObject(), $property);
+            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $path);
+        } else {
+            $fieldValue = null;
         }
 
         // determine ValidationResult for the single property
         $fieldResult = null;
         if ($form && $form->getResult() && $form->getResult()->hasErrors()) {
-            $fieldResult = $form->getResult()->forProperty($fieldPathWithoutPrefix);
+            $fieldResult = $form->getResult()->forProperty($path);
         }
 
         return new FieldDefinition(

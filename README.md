@@ -10,32 +10,44 @@ Pure fusion form rendering with afx support!
 - `Neos.Fusion.Form:Form` Component that instantiates the `form` context which contains `Neos.Fusion:FormDefinition` before 
     props and renderer are evaluated. Then it renders a form-tag with the given `content` and adds the hidden fields for trustedProperties, csrfTokens and referrers.
     
+    ```
     request = ${request}
-    name = null
-    fieldnamePrefix` = null
-    object = null
+    fieldnamePrefix = null
+    data = Neos.Fusion:DataStructure {
+        example = ${example}
+    }
+    
     action = Neos.Fusion:UriBuilder
     method = 'post'
     enctype = null
-    ```
+    ```    
 
-- `Neos.Fusion:.Form:Field`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
-    before props and renderer are evaluated. This is the base prototype for implementing custom fields.
+- `Neos.Fusion:.Form:FieldComponent`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
+    before props and renderer are evaluated. This is the base prototype for implementing custom fields. If no property is defined 
+    the component uses the existing `field` from the context.
     
     ```
     form = ${form} 
-    id = null
-    class = null
-    attributes = Neos.Fusion:DataStructure
     name = null
-    value = null
-    required = false
-    property = null
+    property = ${Form.fieldNameToPath(this.name)}
     ```
     
+- `Neos.Fusion:.Form:FieldContainer`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
+    before props and renderer are evaluated. This component will render a container tag a label a list of error messages. The concrete 
+    fields are passed to the component as afx content and will use the `field` provided by this container.
+    
+    ```
+    form = ${form}  
+    name = null
+    property = ${this.name ? Form.fieldNameToPath(this.name) : null}
+    
+    label = null
+    errorClass = 'error'  
+    ```
+
 - `Neos.Fusion.Form:Fragment`: A Fragment that allows to place afx conditions without extra markup.
 
-**Field Prototypes:**
+**Field Prototypes: based on Neos.Fusion.Form:FieldComponent**
 
 All field types allow to define `id`, `class` `name`, `property`, `value` and `attributes`. 
 
@@ -69,20 +81,22 @@ test = afx`
        action.action="update"
        action.package="Vendor.Site"
        action.controller="Search"
-       object={example}
-       name="example"
+       
+       data.exampleValue={exampleValue}
+       data.exampleObject={exampleObject}
+       
        method="post"
        attributes.data-foo="foo"
    >
        <fieldset>
-           <Neos.Fusion.Form:Textfield property="foo" />
+           <Neos.Fusion.Form:Textfield property="exampleValue" />
 
-           <Neos.Fusion.Form:Select property="bar" >
+           <Neos.Fusion.Form:Select property="exampleObject.bar" >
                <Neos.Fusion.Form:Select.Option value="123" >-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455" >-- 456 -- </Neos.Fusion.Form:Select.Option>
            </Neos.Fusion.Form:Select>
 
-           <Neos.Fusion.Form:Select multiple property="baz" >
+           <Neos.Fusion.Form:Select multiple property="exampleObject.baz" >
                <Neos.Fusion.Form:Select.Option value="123">-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455">-- 456 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="789">-- 789 -- </Neos.Fusion.Form:Select.Option>

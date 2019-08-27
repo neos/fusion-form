@@ -22,14 +22,9 @@ use Neos\Error\Messages\Result;
 class FormDefinition implements ProtectedContextAwareInterface
 {
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
      * @var mixed
      */
-    protected $object;
+    protected $data;
 
     /**
      * @var string
@@ -48,27 +43,25 @@ class FormDefinition implements ProtectedContextAwareInterface
 
     /**
      * FormDefinition constructor.
-     * @param string|null $name
-     * @param object|null $object
+     * @param mixed|null $data
      * @param string|null $fieldNamePrefix
      * @param array|null $submittedValues
      * @param Result|null $results
      */
-    public function __construct(string $name = null, object $object = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null)
+    public function __construct($data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null)
     {
-        $this->name = $name;
-        $this->object = $object;
+        $this->data = $data;
         $this->fieldNamePrefix = $fieldNamePrefix;
         $this->submittedValues = $submittedValues;
         $this->result = $results;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getName(): ?string
+    public function getData()
     {
-        return $this->name;
+        return $this->data;
     }
 
     /**
@@ -77,14 +70,6 @@ class FormDefinition implements ProtectedContextAwareInterface
     public function getFieldNamePrefix(): ?string
     {
         return $this->fieldNamePrefix;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getObject(): ?object
-    {
-        return $this->object;
     }
 
     /**

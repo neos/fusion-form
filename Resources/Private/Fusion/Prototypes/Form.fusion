@@ -1,11 +1,10 @@
 prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
-    @context.form = ${Form.createFormDefinition(this.request, this.name, this.fieldnamePrefix, this.object)}
+    @context.form = ${Form.createFormDefinition(this.request, this.fieldnamePrefix, this.data)}
 
     @propTypes {
         request = ${PropTypes.instanceOf('Neos\Flow\Mvc\ActionRequest')}
-        name = ${PropTypes.string}
         fieldnamePrefix = ${PropTypes.string}
-        object = ${PropTypes.any}
+        data = ${PropTypes.any}
         action = ${PropTypes.string}
         method = ${PropTypes.string}
         enctype = ${PropTypes.string}
@@ -19,9 +18,8 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
     # values that are used to populate the field context
     #
     request = ${request}
-    name = null
     fieldnamePrefix = null
-    object = null
+    data = Neos.Fusion:DataStructure
 
     #
     # html attributes for the form
@@ -64,20 +62,14 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
                     <input type="hidden" name="__referrer[arguments]" value={Form.argumentsWithHmac(request.parentRequest.arguments, request.argumentNamespace)} />
                 </Neos.Fusion.Form:Fragment>
 
-                <Neos.Fusion:Loop items={Form.emptyHiddenFieldnames(props.content, form.fieldNamePrefix)} itemName="fieldname">
-                    <input type="hidden" name={fieldname} value="" />
+                <Neos.Fusion:Loop
+                    items={Form.calculateHiddenFields(props.content, form.fieldNamePrefix, props.data)}
+                    itemKey="fieldName"
+                    itemName="fieldValue"
+                >
+                    <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
-
-                <input
-                    type="hidden"
-                    name={Form.prefixFieldName('__trustedProperties', form.fieldNamePrefix)}
-                    value={Form.trustedPropertiesToken(props.content, form.fieldNamePrefix)}
-                    />
-
-                <input type="hidden" name="__csrfToken" value={Form.csrfToken()} />
             </div>
-
-
 
             {props.content}
         </form>
