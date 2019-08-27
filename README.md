@@ -30,6 +30,7 @@ Pure fusion form rendering with afx support!
     form = ${form} 
     name = null
     property = ${Form.fieldNameToPath(this.name)}
+    multiple = false
     ```
     
 - `Neos.Fusion:.Form:FieldContainer`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
@@ -40,7 +41,8 @@ Pure fusion form rendering with afx support!
     form = ${form}  
     name = null
     property = ${this.name ? Form.fieldNameToPath(this.name) : null}
-    
+    multiple = false
+
     label = null
     errorClass = 'error'  
     ```
@@ -54,12 +56,12 @@ All field types allow to define `id`, `class` `name`, `property`, `value` and `a
 - `Neos.Fusion.Form:Input`
 - `Neos.Fusion.Form:Hidden`
 - `Neos.Fusion.Form:Textfield`
-- `Neos.Fusion.Form:Textarea`
+- `Neos.Fusion.Form:Textarea` option `content` for rendering content via afx
 - `Neos.Fusion.Form:Password`
-- `Neos.Fusion.Form:Radio` additional options `checked`:bool
-- `Neos.Fusion.Form:Checkbox` additional options `multiple`:bool and `checked`:bool
-- `Neos.Fusion.Form:Select` additional options `multiple`:bool and `content` for rendering Options via afx
-- `Neos.Fusion.Form:Select.Option` options: `value`, `selected`:bool and `content`
+- `Neos.Fusion.Form:Radio` additional option `checked`:bool
+- `Neos.Fusion.Form:Checkbox` additional option `checked`:bool
+- `Neos.Fusion.Form:Select` additional option `content` for rendering of options via afx
+- `Neos.Fusion.Form:Select.Option` options `value`:any, `selected`:bool
 - `Neos.Fusion.Form:Upload`
 - `Neos.Fusion.Form:Button`
 - `Neos.Fusion.Form:Submit`

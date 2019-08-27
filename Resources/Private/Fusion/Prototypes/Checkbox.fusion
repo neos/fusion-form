@@ -1,10 +1,8 @@
 prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponent) {
     @propTypes {
-        multiple = ${PropTypes.boolean}
         checked = ${PropTypes.boolean}
     }
 
-    multiple = false
     checked = false
 
     renderer = Neos.Fusion:Component {
@@ -12,11 +10,11 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
         @apply.override = Neos.Fusion:DataStructure {
             checked = Neos.Fusion:Case {
                 hasSingleValue {
-                    condition = ${field.value && !props.multiple}
+                    condition = ${field.value && !field.multiple}
                     renderer = ${field.value == props.value}
                 }
                 hasMultiValue {
-                    condition = ${field.value && props.multiple}
+                    condition = ${field.value && field.multiple}
                     renderer = ${Array.indexOf(field.value, props.value) > -1}
                 }
                 default {
@@ -33,7 +31,7 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
                 class={props.class}
                 required={props.required}
                 type="checkbox"
-                name={field.name + (props.multiple ? '[]' : '')}
+                name={field.name}
                 value={Form.stringifyValue(props.value)}
                 checked={props.checked}
             />

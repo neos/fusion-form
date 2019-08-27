@@ -246,9 +246,10 @@ class FormHelper implements ProtectedContextAwareInterface
     /**
      * @param FormDefinition|null $form
      * @param string $path
+     * @param bool $multiple
      * @return FieldDefinition
      */
-    public function createFieldDefinition(FormDefinition $form = null, string $path = null): FieldDefinition
+    public function createFieldDefinition(FormDefinition $form = null, string $path = null, bool $multiple = false): FieldDefinition
     {
         if (!$path) {
             return new FieldDefinition(null, null, null);
@@ -259,16 +260,19 @@ class FormHelper implements ProtectedContextAwareInterface
         } else {
             $fieldName = $this->pathToFieldName($path);
         }
+        if ($multiple) {
+            $fieldName .= '[]';
+        }
 
         // determine value, according to the following algorithm:
         if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $path);
+            $value = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $path);
         } elseif ($path && $form && $form->getData()) {
             // 2) else, if "property" is specified, take the value from the bound object.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $path);
+            $value = ObjectAccess::getPropertyPath($form->getData(), $path);
         } else {
-            $fieldValue = null;
+            $value = null;
         }
 
         // determine ValidationResult for the single property
@@ -277,9 +281,22 @@ class FormHelper implements ProtectedContextAwareInterface
             $fieldResult = $form->getResult()->forProperty($path);
         }
 
+        // apply stringify to values but respect multivalues
+        if ($multiple) {
+            $fieldValue = [];
+            if (is_array($value) || $value instanceof \ArrayAccess) {
+                foreach ($value as $part) {
+                    $fieldValue[] = $this->stringifyValue($part);
+                }
+            }
+        } else {
+            $fieldValue = $this->stringifyValue($value);
+        }
+
         return new FieldDefinition(
             $fieldName,
             $fieldValue,
+            $multiple,
             $fieldResult
         );
     }

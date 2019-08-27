@@ -54,7 +54,6 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
             </div>
-
             {props.content}
         </form>
     `
