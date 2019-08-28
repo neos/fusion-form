@@ -51,19 +51,6 @@ class FormHelper implements ProtectedContextAwareInterface
      */
     protected $hashService;
 
-    /**
-     * Calculate the trusted properties token for the given form content
-     *
-     * @param array $arguments
-     * @param string|null $fieldNamePrefix
-     */
-    protected function argumentsWithHmac(array $arguments = [], string $excludeNamespace = '')
-    {
-        if ($excludeNamespace !== null && isset($arguments[$excludeNamespace])) {
-            unset($arguments[$excludeNamespace]);
-        }
-        return $this->hashService->appendHmac(base64_encode(serialize($arguments)));
-    }
 
     /**
      * Calculate the hidden fields for the given form content
@@ -72,7 +59,7 @@ class FormHelper implements ProtectedContextAwareInterface
      * @param string $content form html body
      * @param array hiddenFields as key value pairs
      */
-    public function calculateHiddenFields(FormDefinition $form = null, string $content = ''): array
+    public function calculateHiddenFields(FormDefinition $form = null, string $content = null): array
     {
         $hiddenFields = [];
 
@@ -88,12 +75,14 @@ class FormHelper implements ProtectedContextAwareInterface
 
         // parse given content to render hidden fields for
         $domDocument = new \DOMDocument('1.0', 'UTF-8');
-        $useInternalErrorsBackup = libxml_use_internal_errors(true);
-        $domDocument->loadHTML($content);
-        $xpath = new \DOMXPath($domDocument);
-        if ($useInternalErrorsBackup !== true) {
-            libxml_use_internal_errors($useInternalErrorsBackup);
+        if ($content) {
+            $useInternalErrorsBackup = libxml_use_internal_errors(true);
+            $domDocument->loadHTML($content);
+            if ($useInternalErrorsBackup !== true) {
+                libxml_use_internal_errors($useInternalErrorsBackup);
+            }
         }
+        $xpath = new \DOMXPath($domDocument);
 
         // 0. __request parameters
         while ($request) {
@@ -102,7 +91,7 @@ class FormHelper implements ProtectedContextAwareInterface
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@subpackage')] = $request->getControllerSubpackageKey();
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@controller')] = $request->getControllerName();
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@action')] = $request->getControllerActionName();
-            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.arguments')] = $this->argumentsWithHmac($request->getArguments(), $request->getArgumentNamespace());
+            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.arguments')] = $this->getArgumentsWithHmac($request->getArguments(), $request->getArgumentNamespace());
             if ($request->isMainRequest()) {
                 break;
             }
@@ -111,7 +100,7 @@ class FormHelper implements ProtectedContextAwareInterface
 
         // 1. empty hidden values for checkbox and multi-select values
         $elements = $xpath->query("//*[(local-name()='input' and @type='checkbox') or (local-name()='select' and @multiple)]");
-        foreach($elements as $element) {
+        foreach ($elements as $element) {
             $name = (string)$element->getAttribute('name');
             if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
                 if (substr_compare($name, '[]', -2, 2) === 0) {
@@ -144,7 +133,7 @@ class FormHelper implements ProtectedContextAwareInterface
                 $possibleObject = ObjectAccess::getPropertyPath($data, $path);
                 if (is_object($possibleObject) && !$this->persistenceManager->isNewObject($possibleObject)) {
                     $identifier = $this->persistenceManager->getIdentifierByObject($possibleObject);
-                    $name = $this->prefixFieldName( $this->pathToFieldName($path), $fieldNamePrefix);
+                    $name = $this->prefixFieldName($this->pathToFieldName($path), $fieldNamePrefix);
                     $allFormFieldNames[] = $name  . '[__identity]' ;
                     $hiddenFields[ $name  . '[__identity]'  ] = $identifier;
                 }
@@ -152,12 +141,46 @@ class FormHelper implements ProtectedContextAwareInterface
         }
 
         // 3. trusted properties token
-        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
+        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->getTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
 
         // 4. csrf token
-        $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();;
+        $hiddenFields['__csrfToken'] = $this->getCsrfProtectionToken();
 
         return $hiddenFields;
+    }
+
+    /**
+     * @param $fieldNames
+     * @param $fieldNamePrefix
+     * @return string
+     * @throws \Neos\Flow\Security\Exception\InvalidArgumentForHashGenerationException
+     */
+    protected function getTrustedPropertiesToken($fieldNames, $fieldNamePrefix): string
+    {
+        $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($fieldNames, $fieldNamePrefix);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    protected function getCsrfProtectionToken(): string
+    {
+        return $this->securityContext->getCsrfProtectionToken();
+    }
+
+    /**
+     * Calculate the trusted properties token for the given form content
+     *
+     * @param array $arguments
+     * @param string|null $fieldNamePrefix
+     */
+    protected function getArgumentsWithHmac(array $arguments = [], string $excludeNamespace = '')
+    {
+        if ($excludeNamespace !== null && isset($arguments[$excludeNamespace])) {
+            unset($arguments[$excludeNamespace]);
+        }
+        return $this->hashService->appendHmac(base64_encode(serialize($arguments)));
     }
 
     /**
@@ -224,8 +247,8 @@ class FormHelper implements ProtectedContextAwareInterface
 
         if (is_array($value)) {
             $helper = $this;
-            return implode(', ', array_map (
-                function($value) use ($helper) {
+            return implode(', ', array_map(
+                function ($value) use ($helper) {
                     return $helper->stringifyValue($value);
                 },
                 $value
@@ -265,7 +288,7 @@ class FormHelper implements ProtectedContextAwareInterface
         }
         // render fieldName
         if ($form && $form->getFieldNamePrefix()) {
-            $fieldName = $this->pathToFieldName( $form->getFieldNamePrefix() . '.' . $path);
+            $fieldName = $this->pathToFieldName($form->getFieldNamePrefix() . '.' . $path);
         } else {
             $fieldName = $this->pathToFieldName($path);
         }
@@ -318,5 +341,4 @@ class FormHelper implements ProtectedContextAwareInterface
     {
         return true;
     }
-
 }
