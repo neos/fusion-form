@@ -15,16 +15,29 @@ class FormHelperTest extends TestCase
 
     public function setUp()
     {
-        $this->formHelper = new FormHelper();
+        $this->formHelper = $this->getMockBuilder(FormHelper::class)
+            ->setMethods(['getTrustedPropertiesToken', 'getCsrfProtectionToken', 'getArgumentsWithHmac'])
+            ->getMock();
     }
 
     /**
      * @test
      */
-    public function calculateHiddenFieldsReturnsEmptyResultIfNoFormOrContentIsGiven()
+    public function calculateHiddenFieldsReturnsOnlyCsrfAndTrustedPropertiesTokenIfNoFormOrContentIsGiven()
     {
-        //$result = $this->formHelper->calculateHiddenFields(null, null);
-        $result = [];
-        $this->assertEquals([], $result);
+        $this->formHelper->expects($this->once())
+            ->method('getCsrfProtectionToken')
+            ->with()
+            ->willReturn('foo');
+
+        $this->formHelper->expects($this->once())
+            ->method('getTrustedPropertiesToken')
+            ->with([])
+            ->willReturn('bar');
+
+        $result = $this->formHelper->calculateHiddenFields(null, null);
+
+        $expectation = ['__trustedProperties' => 'bar', '__csrfToken' => 'foo'];
+        $this->assertEquals($expectation, $result);
     }
 }

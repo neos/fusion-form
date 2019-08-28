@@ -51,19 +51,6 @@ class FormHelper implements ProtectedContextAwareInterface
      */
     protected $hashService;
 
-    /**
-     * Calculate the trusted properties token for the given form content
-     *
-     * @param array $arguments
-     * @param string|null $fieldNamePrefix
-     */
-    protected function argumentsWithHmac(array $arguments = [], string $excludeNamespace = '')
-    {
-        if ($excludeNamespace !== null && isset($arguments[$excludeNamespace])) {
-            unset($arguments[$excludeNamespace]);
-        }
-        return $this->hashService->appendHmac(base64_encode(serialize($arguments)));
-    }
 
     /**
      * Calculate the hidden fields for the given form content
@@ -104,7 +91,7 @@ class FormHelper implements ProtectedContextAwareInterface
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@subpackage')] = $request->getControllerSubpackageKey();
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@controller')] = $request->getControllerName();
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@action')] = $request->getControllerActionName();
-            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.arguments')] = $this->argumentsWithHmac($request->getArguments(), $request->getArgumentNamespace());
+            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.arguments')] = $this->getArgumentsWithHmac($request->getArguments(), $request->getArgumentNamespace());
             if ($request->isMainRequest()) {
                 break;
             }
@@ -154,13 +141,46 @@ class FormHelper implements ProtectedContextAwareInterface
         }
 
         // 3. trusted properties token
-        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
+        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->getTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
 
         // 4. csrf token
-        $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();
-        ;
+        $hiddenFields['__csrfToken'] = $this->getCsrfProtectionToken();
 
         return $hiddenFields;
+    }
+
+    /**
+     * @param $fieldNames
+     * @param $fieldNamePrefix
+     * @return string
+     * @throws \Neos\Flow\Security\Exception\InvalidArgumentForHashGenerationException
+     */
+    protected function getTrustedPropertiesToken($fieldNames, $fieldNamePrefix): string
+    {
+        $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($fieldNames, $fieldNamePrefix);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    protected function getCsrfProtectionToken(): string
+    {
+        return $this->securityContext->getCsrfProtectionToken();
+    }
+
+    /**
+     * Calculate the trusted properties token for the given form content
+     *
+     * @param array $arguments
+     * @param string|null $fieldNamePrefix
+     */
+    protected function getArgumentsWithHmac(array $arguments = [], string $excludeNamespace = '')
+    {
+        if ($excludeNamespace !== null && isset($arguments[$excludeNamespace])) {
+            unset($arguments[$excludeNamespace]);
+        }
+        return $this->hashService->appendHmac(base64_encode(serialize($arguments)));
     }
 
     /**
