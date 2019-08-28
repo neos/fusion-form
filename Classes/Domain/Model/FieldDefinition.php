@@ -94,6 +94,4 @@ class FieldDefinition
         }
         return false;
     }
-
-
 }
