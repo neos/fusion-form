@@ -28,7 +28,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
     class = null
     action = Neos.Fusion:UriBuilder
     method = 'post'
-    enctype = null
+    enctype = 'multipart/form-data'
     attributes = Neos.Fusion:DataStructure
 
     #
@@ -47,7 +47,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
         >
             <div style="display: none">
                 <Neos.Fusion:Loop
-                    items={Form.calculateHiddenFields(request, form.fieldNamePrefix, props.data, props.content)}
+                    items={Form.calculateHiddenFields(form, props.content)}
                     itemKey="fieldName"
                     itemName="fieldValue"
                 >

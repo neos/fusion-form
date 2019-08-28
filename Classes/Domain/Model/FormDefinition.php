@@ -15,12 +15,18 @@ namespace Neos\Fusion\Form\Domain\Model;
 
 use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Error\Messages\Result;
+use Neos\Flow\Mvc\ActionRequest;
 
 /**
  * Used to output an HTML <form> tag which is targeted at the specified action, in the current controller and package.
  */
 class FormDefinition implements ProtectedContextAwareInterface
 {
+    /**
+     * @var ActionRequest
+     */
+    protected $request;
+
     /**
      * @var mixed
      */
@@ -43,17 +49,27 @@ class FormDefinition implements ProtectedContextAwareInterface
 
     /**
      * FormDefinition constructor.
+     * @param ActionRequest $request
      * @param mixed|null $data
      * @param string|null $fieldNamePrefix
      * @param array|null $submittedValues
      * @param Result|null $results
      */
-    public function __construct($data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null)
+    public function __construct( ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null)
     {
+        $this->request = $request;
         $this->data = $data;
         $this->fieldNamePrefix = $fieldNamePrefix;
         $this->submittedValues = $submittedValues;
         $this->result = $results;
+    }
+
+    /**
+     * @return ActionRequest
+     */
+    public function getRequest(): ?ActionRequest
+    {
+        return $this->request;
     }
 
     /**

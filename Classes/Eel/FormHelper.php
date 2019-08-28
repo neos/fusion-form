@@ -70,13 +70,21 @@ class FormHelper implements ProtectedContextAwareInterface
      *
      * @param ActionRequest $request
      * @param string $content form html body
-     * @param string $fieldNamePrefix
-     * @param string $data
-     * @param array hiddenFields as
+     * @param array hiddenFields as key value pairs
      */
-    public function calculateHiddenFields(ActionRequest $request = null, string $fieldNamePrefix = '', $data = null, string $content = ''): array
+    public function calculateHiddenFields(FormDefinition $form = null, string $content = ''): array
     {
         $hiddenFields = [];
+
+        if ($form) {
+            $request = $form->getRequest();
+            $fieldNamePrefix = $form->getFieldNamePrefix();
+            $data = $form->getData();
+        } else {
+            $request = null;
+            $fieldNamePrefix = null;
+            $data = null;
+        }
 
         // parse given content to render hidden fields for
         $domDocument = new \DOMDocument('1.0', 'UTF-8');
@@ -236,6 +244,7 @@ class FormHelper implements ProtectedContextAwareInterface
     public function createFormDefinition(ActionRequest $request = null, string $fieldNamePrefix = null, $data = null): FormDefinition
     {
         return new FormDefinition(
+            $request,
             $data,
             $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),
             $request ? $request->getInternalArgument('__submittedArguments') : [],
