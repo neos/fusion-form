@@ -113,7 +113,7 @@ class FormHelper implements ProtectedContextAwareInterface
 
         // 1. empty hidden values for checkbox and multi-select values
         $elements = $xpath->query("//*[(local-name()='input' and @type='checkbox') or (local-name()='select' and @multiple)]");
-        foreach($elements as $element) {
+        foreach ($elements as $element) {
             $name = (string)$element->getAttribute('name');
             if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
                 if (substr_compare($name, '[]', -2, 2) === 0) {
@@ -146,7 +146,7 @@ class FormHelper implements ProtectedContextAwareInterface
                 $possibleObject = ObjectAccess::getPropertyPath($data, $path);
                 if (is_object($possibleObject) && !$this->persistenceManager->isNewObject($possibleObject)) {
                     $identifier = $this->persistenceManager->getIdentifierByObject($possibleObject);
-                    $name = $this->prefixFieldName( $this->pathToFieldName($path), $fieldNamePrefix);
+                    $name = $this->prefixFieldName($this->pathToFieldName($path), $fieldNamePrefix);
                     $allFormFieldNames[] = $name  . '[__identity]' ;
                     $hiddenFields[ $name  . '[__identity]'  ] = $identifier;
                 }
@@ -157,7 +157,8 @@ class FormHelper implements ProtectedContextAwareInterface
         $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
 
         // 4. csrf token
-        $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();;
+        $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();
+        ;
 
         return $hiddenFields;
     }
@@ -226,8 +227,8 @@ class FormHelper implements ProtectedContextAwareInterface
 
         if (is_array($value)) {
             $helper = $this;
-            return implode(', ', array_map (
-                function($value) use ($helper) {
+            return implode(', ', array_map(
+                function ($value) use ($helper) {
                     return $helper->stringifyValue($value);
                 },
                 $value
@@ -267,7 +268,7 @@ class FormHelper implements ProtectedContextAwareInterface
         }
         // render fieldName
         if ($form && $form->getFieldNamePrefix()) {
-            $fieldName = $this->pathToFieldName( $form->getFieldNamePrefix() . '.' . $path);
+            $fieldName = $this->pathToFieldName($form->getFieldNamePrefix() . '.' . $path);
         } else {
             $fieldName = $this->pathToFieldName($path);
         }
@@ -320,5 +321,4 @@ class FormHelper implements ProtectedContextAwareInterface
     {
         return true;
     }
-
 }

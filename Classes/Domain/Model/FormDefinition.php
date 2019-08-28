@@ -55,7 +55,7 @@ class FormDefinition implements ProtectedContextAwareInterface
      * @param array|null $submittedValues
      * @param Result|null $results
      */
-    public function __construct( ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null)
+    public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null)
     {
         $this->request = $request;
         $this->data = $data;
