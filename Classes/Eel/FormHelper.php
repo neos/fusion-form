@@ -69,7 +69,7 @@ class FormHelper implements ProtectedContextAwareInterface
             $data = $form->getData();
         } else {
             $request = null;
-            $fieldNamePrefix = null;
+            $fieldNamePrefix = '';
             $data = null;
         }
 
@@ -110,7 +110,7 @@ class FormHelper implements ProtectedContextAwareInterface
                 } else {
                     $fieldName = $name;
                 }
-                $hiddenFields[ $fieldName ] = null;
+                $hiddenFields[ $fieldName ] = "";
             }
         }
 

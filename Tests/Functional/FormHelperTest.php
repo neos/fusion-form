@@ -1,6 +1,7 @@
 <?php
 namespace Neos\Fusion\Form\Tests\Functional;
 
+use phpDocumentor\Reflection\Types\Object_;
 use PHPUnit\Framework\TestCase;
 use Neos\Fusion\Form\Domain\Model\FormDefinition;
 use Neos\Fusion\Form\Domain\Model\FieldDefinition;
@@ -84,10 +85,10 @@ class FormHelperTest extends TestCase
             ->with([])
             ->willReturn('bar');
 
-        $result = $this->formHelper->calculateHiddenFields(null, null);
+        $hiddenFields = $this->formHelper->calculateHiddenFields(null, null);
 
         $expectation = ['__trustedProperties' => 'bar', '__csrfToken' => 'foo'];
-        $this->assertEquals($expectation, $result);
+        $this->assertEquals($expectation, $hiddenFields);
     }
 
     /**
@@ -106,12 +107,12 @@ class FormHelperTest extends TestCase
 
         $form = new FormDefinition($request);
 
-        $result = $this->formHelper->calculateHiddenFields($form, null);
+        $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
 
-        $this->assertEquals('Vendor.Example', $result['__referrer[@package]']);
-        $this->assertEquals('Application', $result['__referrer[@subpackage]']);
-        $this->assertEquals('Main', $result['__referrer[@controller]']);
-        $this->assertEquals('List', $result['__referrer[@action]']);
+        $this->assertEquals('Vendor.Example', $hiddenFields['__referrer[@package]']);
+        $this->assertEquals('Application', $hiddenFields['__referrer[@subpackage]']);
+        $this->assertEquals('Main', $hiddenFields['__referrer[@controller]']);
+        $this->assertEquals('List', $hiddenFields['__referrer[@action]']);
     }
 
     /**
@@ -137,16 +138,156 @@ class FormHelperTest extends TestCase
 
         $form = new FormDefinition($request);
 
-        $result = $this->formHelper->calculateHiddenFields($form, null);
+        $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
 
-        $this->assertEquals('Vendor.Foo', $result['__referrer[@package]']);
-        $this->assertEquals('Application', $result['__referrer[@subpackage]']);
-        $this->assertEquals('Parent', $result['__referrer[@controller]']);
-        $this->assertEquals('Somthing', $result['__referrer[@action]']);
+        $this->assertEquals('Vendor.Foo', $hiddenFields['__referrer[@package]']);
+        $this->assertEquals('Application', $hiddenFields['__referrer[@subpackage]']);
+        $this->assertEquals('Parent', $hiddenFields['__referrer[@controller]']);
+        $this->assertEquals('Somthing', $hiddenFields['__referrer[@action]']);
 
-        $this->assertEquals('Vendor.Bar', $result['childNamespace[__referrer][@package]']);
-        $this->assertEquals('', $result['childNamespace[__referrer][@subpackage]']);
-        $this->assertEquals('Child', $result['childNamespace[__referrer][@controller]']);
-        $this->assertEquals('SomthingElse', $result['childNamespace[__referrer][@action]']);
+        $this->assertEquals('Vendor.Bar', $hiddenFields['childNamespace[__referrer][@package]']);
+        $this->assertEquals('', $hiddenFields['childNamespace[__referrer][@subpackage]']);
+        $this->assertEquals('Child', $hiddenFields['childNamespace[__referrer][@controller]']);
+        $this->assertEquals('SomthingElse', $hiddenFields['childNamespace[__referrer][@action]']);
+    }
+
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsEmptyFieldsForCheckboxesAndMultipleSelect()
+    {
+        $content = <<<CONTENT
+            <select name="select[multiple][]" multiple></select>
+            <input name="input[checkbox]" type="checkbox" value="foo" />
+            <input name="input[checkbox]" type="checkbox" value="bar" />
+            <input name="input[checkbox]" type="checkbox" value="baz" />   
+            <input name="input[checkboxMultiple][]" type="checkbox" value="foo" />
+            <input name="input[checkboxMultiple][]" type="checkbox" value="bar" />
+            <input name="input[checkboxMultiple][]" type="checkbox" value="baz" />
+    
+CONTENT;
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);
+
+        $this->assertEquals("", $hiddenFields['select[multiple]']);
+        $this->assertEquals("", $hiddenFields['input[checkbox]']);
+        $this->assertEquals("", $hiddenFields['input[checkboxMultiple]']);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsDoesNotAddsEmptyFieldsForOtherFormControls()
+    {
+        $content = <<<CONTENT
+            <select name="select[single]"></select>
+            <input name="input[text]" type="text" />            
+            <input name="input[radio]" type="radio" value="foo" />
+            <input name="input[radio]" type="radio" value="bar" />
+            <input name="input[radio]" type="radio" value="baz" /> 
+CONTENT;
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);
+
+        $this->assertArrayNotHasKey('select[single]', $hiddenFields);
+        $this->assertArrayNotHasKey('input[text]', $hiddenFields);
+        $this->assertArrayNotHasKey('input[radio]', $hiddenFields);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsIdentityFieldsForPersistedObjectsInFormData()
+    {
+        $object1 = (object) ['id' => 12345, 'isNew' => false];
+        $object2 = (object) ['id' => 56789, 'isNew' => false];
+
+        $this->persistenceManager->method('isNewObject')
+            ->will($this->returnCallback(function ($item) {
+                return $item->isNew;
+            }));
+        $this->persistenceManager->method('getIdentifierByObject')
+            ->will($this->returnCallback(function ($item) {
+                return $item->id;
+            }));
+
+        $data = ['item1' => $object1, 'item2' => $object2];
+
+        $form = new FormDefinition(null, $data, '');
+
+        $content = <<<CONTENT
+            <input name="item1[text]" type="text" />
+            <input name="item2[text]" type="text" />
+CONTENT;
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+
+        $this->assertEquals("12345", $hiddenFields['item1[__identity]']);
+        $this->assertEquals("56789", $hiddenFields['item2[__identity]']);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsIdentityIgnoresUnusedObjectsInFormData()
+    {
+        $object1 = (object) ['id' => "12345", 'isNew' => false];
+        $object2 = (object) ['id' => "56789", 'isNew' => false];
+
+        $this->persistenceManager->method('isNewObject')
+            ->will($this->returnCallback(function ($item) {
+                return $item->isNew;
+            }));
+        $this->persistenceManager->method('getIdentifierByObject')
+            ->will($this->returnCallback(function ($item) {
+                return $item->id;
+            }));
+
+        $data = ['item1' => $object1, 'item2' => $object2];
+
+        $form = new FormDefinition(null, $data, '');
+        $content = <<<CONTENT
+            <input name="item1[text]" type="text" />
+            <input name="item3[text]" type="text" />
+CONTENT;
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+
+        $this->assertEquals("12345", $hiddenFields['item1[__identity]']);
+        $this->assertArrayNotHasKey('item2[__identity]', $hiddenFields);
+        $this->assertArrayNotHasKey('item3[__identity]', $hiddenFields);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsIdentityFieldsForNewObjectsInFormData()
+    {
+        $object1 = (object) ['id' => 12345, 'isNew' => true];
+        $object2 = (object) ['id' => 56789, 'isNew' => true];
+
+        $this->persistenceManager->method('isNewObject')
+            ->will($this->returnCallback(function ($item) {
+                return $item->isNew;
+            }));
+        $this->persistenceManager->method('getIdentifierByObject')
+            ->will($this->returnCallback(function ($item) {
+                return $item->id;
+            }));
+
+        $data = ['item1' => $object1, 'item2' => $object2];
+
+        $form = new FormDefinition(null, $data, '');
+
+        $content = <<<CONTENT
+            <input name="item1[text]" type="text" />
+            <input name="item2[text]" type="text" />
+CONTENT;
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+
+        $this->assertArrayNotHasKey('item1[__identity]', $hiddenFields);
+        $this->assertArrayNotHasKey('item2[__identity]', $hiddenFields);
     }
 }
