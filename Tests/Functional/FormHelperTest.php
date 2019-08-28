@@ -11,6 +11,9 @@ use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
 
+use Neos\Flow\Http\Request as HttpRequest;
+use Neos\Flow\Mvc\ActionRequest;
+
 class FormHelperTest extends TestCase
 {
     /**
@@ -85,5 +88,65 @@ class FormHelperTest extends TestCase
 
         $expectation = ['__trustedProperties' => 'bar', '__csrfToken' => 'foo'];
         $this->assertEquals($expectation, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithActionRequestIsGiven()
+    {
+        $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $request->method('getControllerPackageKey')->willReturn('Vendor.Example');
+        $request->method('getControllerSubpackageKey')->willReturn('Application');
+        $request->method('getControllerName')->willReturn('Main');
+        $request->method('getControllerActionName')->willReturn('List');
+        $request->method('isMainRequest')->willReturn(true);
+        $request->method('getArguments')->willReturn([]);
+        $request->method('getArgumentNamespace')->willReturn('');
+
+        $form = new FormDefinition($request);
+
+        $result = $this->formHelper->calculateHiddenFields($form, null);
+
+        $this->assertEquals('Vendor.Example', $result['__referrer[@package]']);
+        $this->assertEquals('Application', $result['__referrer[@subpackage]']);
+        $this->assertEquals('Main', $result['__referrer[@controller]']);
+        $this->assertEquals('List', $result['__referrer[@action]']);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithNestedActionRequestIsGiven()
+    {
+        $parentRequest = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $parentRequest->method('getControllerPackageKey')->willReturn('Vendor.Foo');
+        $parentRequest->method('getControllerSubpackageKey')->willReturn('Application');
+        $parentRequest->method('getControllerName')->willReturn('Parent');
+        $parentRequest->method('getControllerActionName')->willReturn('Somthing');
+        $parentRequest->method('isMainRequest')->willReturn(true);
+
+        $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $request->method('getControllerPackageKey')->willReturn('Vendor.Bar');
+        $request->method('getControllerSubpackageKey')->willReturn('');
+        $request->method('getControllerName')->willReturn('Child');
+        $request->method('getControllerActionName')->willReturn('SomthingElse');
+        $request->method('getArgumentNamespace')->willReturn('childNamespace');
+        $request->method('isMainRequest')->willReturn(false);
+        $request->method('getParentRequest')->willReturn($parentRequest);
+
+        $form = new FormDefinition($request);
+
+        $result = $this->formHelper->calculateHiddenFields($form, null);
+
+        $this->assertEquals('Vendor.Foo', $result['__referrer[@package]']);
+        $this->assertEquals('Application', $result['__referrer[@subpackage]']);
+        $this->assertEquals('Parent', $result['__referrer[@controller]']);
+        $this->assertEquals('Somthing', $result['__referrer[@action]']);
+
+        $this->assertEquals('Vendor.Bar', $result['childNamespace[__referrer][@package]']);
+        $this->assertEquals('', $result['childNamespace[__referrer][@subpackage]']);
+        $this->assertEquals('Child', $result['childNamespace[__referrer][@controller]']);
+        $this->assertEquals('SomthingElse', $result['childNamespace[__referrer][@action]']);
     }
 }

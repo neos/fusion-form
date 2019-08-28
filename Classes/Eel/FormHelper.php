@@ -86,12 +86,14 @@ class FormHelper implements ProtectedContextAwareInterface
 
         // 0. __request parameters
         while ($request) {
-            $referrerPathPrefix = $request->getArgumentNamespace() ?  $request->getArgumentNamespace() . '.__referrer' : '__referrer';
+            $referrerPathPrefix = $request->getArgumentNamespace() ? $request->getArgumentNamespace() . '.__referrer' : '__referrer';
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@package')] = $request->getControllerPackageKey();
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@subpackage')] = $request->getControllerSubpackageKey();
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@controller')] = $request->getControllerName();
             $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@action')] = $request->getControllerActionName();
-            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.arguments')] = $this->getArgumentsWithHmac($request->getArguments(), $request->getArgumentNamespace());
+            if ($request->getArguments()) {
+                $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.arguments')] = $this->getArgumentsWithHmac($request->getArguments(), $request->getArgumentNamespace());
+            }
             if ($request->isMainRequest()) {
                 break;
             }
