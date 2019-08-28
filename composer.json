@@ -8,7 +8,6 @@
     "require": {
         "neos/fusion": "^4.3.0 || dev-master",
         "neos/fusion-afx": "^1.2 || dev-master",
-        "neos/eel": "*",
         "neos/utility-arrays": "*",
         "neos/utility-objecthandling": "*"
     },

@@ -141,33 +141,14 @@ class FormHelper implements ProtectedContextAwareInterface
         }
 
         // 3. trusted properties token
-        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->getTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
+        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
 
         // 4. csrf token
-        $hiddenFields['__csrfToken'] = $this->getCsrfProtectionToken();
+        $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();
 
         return $hiddenFields;
     }
 
-    /**
-     * @param $fieldNames
-     * @param $fieldNamePrefix
-     * @return string
-     * @throws \Neos\Flow\Security\Exception\InvalidArgumentForHashGenerationException
-     */
-    protected function getTrustedPropertiesToken($fieldNames, $fieldNamePrefix): string
-    {
-        $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($fieldNames, $fieldNamePrefix);
-    }
-
-    /**
-     * @return string
-     * @throws \Exception
-     */
-    protected function getCsrfProtectionToken(): string
-    {
-        return $this->securityContext->getCsrfProtectionToken();
-    }
 
     /**
      * Calculate the trusted properties token for the given form content
