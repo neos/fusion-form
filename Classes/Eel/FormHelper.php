@@ -72,7 +72,7 @@ class FormHelper implements ProtectedContextAwareInterface
      * @param string $content form html body
      * @param array hiddenFields as key value pairs
      */
-    public function calculateHiddenFields(FormDefinition $form = null, string $content = ''): array
+    public function calculateHiddenFields(FormDefinition $form = null, string $content = null): array
     {
         $hiddenFields = [];
 
@@ -88,12 +88,14 @@ class FormHelper implements ProtectedContextAwareInterface
 
         // parse given content to render hidden fields for
         $domDocument = new \DOMDocument('1.0', 'UTF-8');
-        $useInternalErrorsBackup = libxml_use_internal_errors(true);
-        $domDocument->loadHTML($content);
-        $xpath = new \DOMXPath($domDocument);
-        if ($useInternalErrorsBackup !== true) {
-            libxml_use_internal_errors($useInternalErrorsBackup);
+        if ($content) {
+            $useInternalErrorsBackup = libxml_use_internal_errors(true);
+            $domDocument->loadHTML($content);
+            if ($useInternalErrorsBackup !== true) {
+                libxml_use_internal_errors($useInternalErrorsBackup);
+            }
         }
+        $xpath = new \DOMXPath($domDocument);
 
         // 0. __request parameters
         while ($request) {

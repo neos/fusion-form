@@ -6,11 +6,14 @@
         "GPL-3.0-or-later"
     ],
     "require": {
-        "neos/fusion": "*",
-        "neos/fusion-afx": "*",
+        "neos/fusion": "^4.3.0 || dev-master",
+        "neos/fusion-afx": "^1.2 || dev-master",
         "neos/eel": "*",
         "neos/utility-arrays": "*",
         "neos/utility-objecthandling": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.1"
     },
     "autoload": {
         "psr-4": {
@@ -23,5 +26,14 @@
         }
     },
     "extra": {
+    },
+    "scripts": {
+        "test:functional": [
+            "composer install",
+            "vendor/bin/phpunit Tests/Functional"
+        ],
+        "test": [
+            "composer test:functional"
+        ]
     }
 }
