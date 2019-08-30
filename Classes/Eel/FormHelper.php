@@ -85,19 +85,28 @@ class FormHelper implements ProtectedContextAwareInterface
         $xpath = new \DOMXPath($domDocument);
 
         // 0. __request parameters
-        while ($request) {
-            $referrerPathPrefix = $request->getArgumentNamespace() ? $request->getArgumentNamespace() . '.__referrer' : '__referrer';
-            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@package')] = $request->getControllerPackageKey();
-            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@subpackage')] = $request->getControllerSubpackageKey();
-            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@controller')] = $request->getControllerName();
-            $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.@action')] = $request->getControllerActionName();
-            if ($request->getArguments()) {
-                $hiddenFields[$this->pathToFieldName($referrerPathPrefix . '.arguments')] = $this->getArgumentsWithHmac($request->getArguments(), $request->getArgumentNamespace());
+        if ($request) {
+            $childRequestArgumentNamespace = null;
+            while ($request) {
+                $requestArgumentNamespace = $request->getArgumentNamespace();
+                $hiddenFields[$this->prefixFieldName('__referrer[@package]', $requestArgumentNamespace)] = $request->getControllerPackageKey();
+                $hiddenFields[$this->prefixFieldName('__referrer[@subpackage]', $requestArgumentNamespace)] = $request->getControllerSubpackageKey();
+                $hiddenFields[$this->prefixFieldName('__referrer[@controller]', $requestArgumentNamespace)] = $request->getControllerName();
+                $hiddenFields[$this->prefixFieldName('__referrer[@action]', $requestArgumentNamespace)] = $request->getControllerActionName();
+                if ($requestArguments = $request->getArguments()) {
+                    if ($childRequestArgumentNamespace && isset($requestArguments[$childRequestArgumentNamespace])) {
+                        unset($requestArguments[$childRequestArgumentNamespace]);
+                    }
+                    if ($requestArguments) {
+                        $hiddenFields[$this->prefixFieldName('__referrer[arguments]', $requestArgumentNamespace)] = $this->hashService->appendHmac(base64_encode(serialize($requestArguments)));
+                    }
+                }
+                if ($request->isMainRequest()) {
+                    break;
+                }
+                $childRequestArgumentNamespace = $requestArgumentNamespace;
+                $request = $request->getParentRequest();
             }
-            if ($request->isMainRequest()) {
-                break;
-            }
-            $request = $request->getParentRequest();
         }
 
         // 1. empty hidden values for checkbox and multi-select values
@@ -151,21 +160,6 @@ class FormHelper implements ProtectedContextAwareInterface
         $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();
 
         return $hiddenFields;
-    }
-
-
-    /**
-     * Calculate the trusted properties token for the given form content
-     *
-     * @param array $arguments
-     * @param string|null $fieldNamePrefix
-     */
-    protected function getArgumentsWithHmac(array $arguments = [], string $excludeNamespace = '')
-    {
-        if ($excludeNamespace !== null && isset($arguments[$excludeNamespace])) {
-            unset($arguments[$excludeNamespace]);
-        }
-        return $this->hashService->appendHmac(base64_encode(serialize($arguments)));
     }
 
     /**
