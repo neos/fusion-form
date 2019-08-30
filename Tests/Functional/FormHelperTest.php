@@ -94,6 +94,51 @@ class FormHelperTest extends TestCase
     /**
      * @test
      */
+    public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsInContent()
+    {
+        $content = <<<CONTENT
+            <input name="foo" />
+            <input name="bar[baz]" />
+CONTENT;
+
+        $this->mvcPropertyMappingConfigurationService
+            ->expects($this->once())
+            ->method('generateTrustedPropertiesToken')
+            ->with(['foo', 'bar[baz]'])
+            ->willReturn('--example--');
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);
+
+        $this->assertEquals($hiddenFields['__trustedProperties'], '--example--');
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsWithFieldnamePrefix()
+    {
+        $form = new FormDefinition(null, null, 'prefix');
+
+        $content = <<<CONTENT
+            <input name="prefix[foo]" />
+            <input name="prefix[bar][baz]" />
+            <input name="different" />
+CONTENT;
+
+        $this->mvcPropertyMappingConfigurationService
+            ->expects($this->once())
+            ->method('generateTrustedPropertiesToken')
+            ->with(['prefix[foo]', 'prefix[bar][baz]'], 'prefix')
+            ->willReturn('--example--');
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+
+        $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
+    }
+
+    /**
+     * @test
+     */
     public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithActionRequestIsGiven()
     {
         $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
@@ -165,7 +210,6 @@ class FormHelperTest extends TestCase
             <input name="input[checkboxMultiple][]" type="checkbox" value="foo" />
             <input name="input[checkboxMultiple][]" type="checkbox" value="bar" />
             <input name="input[checkboxMultiple][]" type="checkbox" value="baz" />
-    
 CONTENT;
 
         $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);

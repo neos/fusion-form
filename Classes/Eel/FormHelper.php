@@ -114,15 +114,15 @@ class FormHelper implements ProtectedContextAwareInterface
             }
         }
 
-        // 2. fieldnames and  hidden identity fields for modifiying properties on persisted objects
-        $allFormFieldNames = [];
-        if ($data) {
+        // 2. fieldnames and hidden identity fields for modifying properties on persisted objects
+        $formFieldNamesForTrustedPropertiesToken = [];
+        if ($content) {
             $elements = $xpath->query("//*[(local-name()='input' or local-name()='select' or local-name()='button' or local-name()='textarea') and @name]");
             $possiblePathes = [];
             foreach ($elements as $element) {
                 $name = (string)$element->getAttribute('name');
                 if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
-                    $allFormFieldNames[] = $name;
+                    $formFieldNamesForTrustedPropertiesToken[] = $name;
                     $path = $this->fieldNameToPath(substr($name, strlen($fieldNamePrefix)));
                     $pathSegments = explode('.', $path);
                     for ($i = 1; $i < count($pathSegments); $i++) {
@@ -130,20 +130,22 @@ class FormHelper implements ProtectedContextAwareInterface
                     }
                 }
             }
-            $possiblePathes = array_unique($possiblePathes);
-            foreach ($possiblePathes as $path) {
-                $possibleObject = ObjectAccess::getPropertyPath($data, $path);
-                if (is_object($possibleObject) && !$this->persistenceManager->isNewObject($possibleObject)) {
-                    $identifier = $this->persistenceManager->getIdentifierByObject($possibleObject);
-                    $name = $this->prefixFieldName($this->pathToFieldName($path), $fieldNamePrefix);
-                    $allFormFieldNames[] = $name  . '[__identity]' ;
-                    $hiddenFields[ $name  . '[__identity]'  ] = $identifier;
+            if ($data) {
+                $possiblePathes = array_unique($possiblePathes);
+                foreach ($possiblePathes as $path) {
+                    $possibleObject = ObjectAccess::getPropertyPath($data, $path);
+                    if (is_object($possibleObject) && !$this->persistenceManager->isNewObject($possibleObject)) {
+                        $identifier = $this->persistenceManager->getIdentifierByObject($possibleObject);
+                        $name = $this->prefixFieldName($this->pathToFieldName($path), $fieldNamePrefix);
+                        $formFieldNamesForTrustedPropertiesToken[] = $name . '[__identity]';
+                        $hiddenFields[$name . '[__identity]'] = $identifier;
+                    }
                 }
             }
         }
 
         // 3. trusted properties token
-        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($allFormFieldNames), $fieldNamePrefix);
+        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($formFieldNamesForTrustedPropertiesToken), $fieldNamePrefix);
 
         // 4. csrf token
         $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();
