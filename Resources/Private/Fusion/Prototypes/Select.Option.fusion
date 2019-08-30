@@ -1,6 +1,5 @@
 prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
     @propTypes {
-        @strict = true
         content = ${PropTypes.string}
         value = ${PropTypes.any}
         selected = ${PropTypes.boolean}
