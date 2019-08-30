@@ -169,14 +169,14 @@ CONTENT;
         $parentRequest->method('getControllerPackageKey')->willReturn('Vendor.Foo');
         $parentRequest->method('getControllerSubpackageKey')->willReturn('Application');
         $parentRequest->method('getControllerName')->willReturn('Parent');
-        $parentRequest->method('getControllerActionName')->willReturn('Somthing');
+        $parentRequest->method('getControllerActionName')->willReturn('Something');
         $parentRequest->method('isMainRequest')->willReturn(true);
 
         $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
         $request->method('getControllerPackageKey')->willReturn('Vendor.Bar');
         $request->method('getControllerSubpackageKey')->willReturn('');
         $request->method('getControllerName')->willReturn('Child');
-        $request->method('getControllerActionName')->willReturn('SomthingElse');
+        $request->method('getControllerActionName')->willReturn('SomethingElse');
         $request->method('getArgumentNamespace')->willReturn('childNamespace');
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
@@ -188,12 +188,12 @@ CONTENT;
         $this->assertEquals('Vendor.Foo', $hiddenFields['__referrer[@package]']);
         $this->assertEquals('Application', $hiddenFields['__referrer[@subpackage]']);
         $this->assertEquals('Parent', $hiddenFields['__referrer[@controller]']);
-        $this->assertEquals('Somthing', $hiddenFields['__referrer[@action]']);
+        $this->assertEquals('Something', $hiddenFields['__referrer[@action]']);
 
         $this->assertEquals('Vendor.Bar', $hiddenFields['childNamespace[__referrer][@package]']);
         $this->assertEquals('', $hiddenFields['childNamespace[__referrer][@subpackage]']);
         $this->assertEquals('Child', $hiddenFields['childNamespace[__referrer][@controller]']);
-        $this->assertEquals('SomthingElse', $hiddenFields['childNamespace[__referrer][@action]']);
+        $this->assertEquals('SomethingElse', $hiddenFields['childNamespace[__referrer][@action]']);
     }
 
 
