@@ -2,3 +2,8 @@ Neos:
   Fusion:
     defaultContext:
       Form: 'Neos\Fusion\Form\Eel\FormHelper'
+
+  Neos:
+    fusion:
+      autoInclude:
+        Neos.Fusion.Form: true
