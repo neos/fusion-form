@@ -1,6 +1,5 @@
 prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:FieldComponent) {
     @propTypes {
-        @strict = true
         type = ${PropTypes.string}
     }
 

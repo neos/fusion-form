@@ -94,6 +94,51 @@ class FormHelperTest extends TestCase
     /**
      * @test
      */
+    public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsInContent()
+    {
+        $content = <<<CONTENT
+            <input name="foo" />
+            <input name="bar[baz]" />
+CONTENT;
+
+        $this->mvcPropertyMappingConfigurationService
+            ->expects($this->once())
+            ->method('generateTrustedPropertiesToken')
+            ->with(['foo', 'bar[baz]'])
+            ->willReturn('--example--');
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);
+
+        $this->assertEquals($hiddenFields['__trustedProperties'], '--example--');
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsWithFieldnamePrefix()
+    {
+        $form = new FormDefinition(null, null, 'prefix');
+
+        $content = <<<CONTENT
+            <input name="prefix[foo]" />
+            <input name="prefix[bar][baz]" />
+            <input name="different" />
+CONTENT;
+
+        $this->mvcPropertyMappingConfigurationService
+            ->expects($this->once())
+            ->method('generateTrustedPropertiesToken')
+            ->with(['prefix[foo]', 'prefix[bar][baz]'], 'prefix')
+            ->willReturn('--example--');
+
+        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+
+        $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
+    }
+
+    /**
+     * @test
+     */
     public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithActionRequestIsGiven()
     {
         $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
@@ -113,6 +158,7 @@ class FormHelperTest extends TestCase
         $this->assertEquals('Application', $hiddenFields['__referrer[@subpackage]']);
         $this->assertEquals('Main', $hiddenFields['__referrer[@controller]']);
         $this->assertEquals('List', $hiddenFields['__referrer[@action]']);
+        $this->assertArrayNotHasKey('__referrer[arguments]', $hiddenFields);
     }
 
     /**
@@ -124,14 +170,14 @@ class FormHelperTest extends TestCase
         $parentRequest->method('getControllerPackageKey')->willReturn('Vendor.Foo');
         $parentRequest->method('getControllerSubpackageKey')->willReturn('Application');
         $parentRequest->method('getControllerName')->willReturn('Parent');
-        $parentRequest->method('getControllerActionName')->willReturn('Somthing');
+        $parentRequest->method('getControllerActionName')->willReturn('Something');
         $parentRequest->method('isMainRequest')->willReturn(true);
 
         $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
         $request->method('getControllerPackageKey')->willReturn('Vendor.Bar');
         $request->method('getControllerSubpackageKey')->willReturn('');
         $request->method('getControllerName')->willReturn('Child');
-        $request->method('getControllerActionName')->willReturn('SomthingElse');
+        $request->method('getControllerActionName')->willReturn('SomethingElse');
         $request->method('getArgumentNamespace')->willReturn('childNamespace');
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
@@ -143,14 +189,61 @@ class FormHelperTest extends TestCase
         $this->assertEquals('Vendor.Foo', $hiddenFields['__referrer[@package]']);
         $this->assertEquals('Application', $hiddenFields['__referrer[@subpackage]']);
         $this->assertEquals('Parent', $hiddenFields['__referrer[@controller]']);
-        $this->assertEquals('Somthing', $hiddenFields['__referrer[@action]']);
+        $this->assertEquals('Something', $hiddenFields['__referrer[@action]']);
 
         $this->assertEquals('Vendor.Bar', $hiddenFields['childNamespace[__referrer][@package]']);
         $this->assertEquals('', $hiddenFields['childNamespace[__referrer][@subpackage]']);
         $this->assertEquals('Child', $hiddenFields['childNamespace[__referrer][@controller]']);
-        $this->assertEquals('SomthingElse', $hiddenFields['childNamespace[__referrer][@action]']);
+        $this->assertEquals('SomethingElse', $hiddenFields['childNamespace[__referrer][@action]']);
+
+        $this->assertArrayNotHasKey('__referrer[arguments]', $hiddenFields);
+        $this->assertArrayNotHasKey('childNamespace[__referrer][arguments]', $hiddenFields);
     }
 
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsReferrerFieldArgumentsIfFormWithNestedActionRequestIsGiven()
+    {
+        $childRequestArguments = ['foo' => 456, 'bar' => 'another string'];
+        $parentRequestArguments = ['foo' => 123, 'bar' => 'string'];
+        $parentWithChildRequestArguments = array_merge($parentRequestArguments, ['childNamespace' => $childRequestArguments]);
+
+        $parentRequest = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $parentRequest->method('getControllerPackageKey')->willReturn('Vendor.Foo');
+        $parentRequest->method('getControllerSubpackageKey')->willReturn('Application');
+        $parentRequest->method('getControllerName')->willReturn('Parent');
+        $parentRequest->method('getControllerActionName')->willReturn('Something');
+        $parentRequest->method('getArguments')->willReturn($parentWithChildRequestArguments);
+        $parentRequest->method('getArgumentNamespace')->willReturn('');
+        $parentRequest->method('isMainRequest')->willReturn(true);
+
+        $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $request->method('getControllerPackageKey')->willReturn('Vendor.Bar');
+        $request->method('getControllerSubpackageKey')->willReturn('');
+        $request->method('getControllerName')->willReturn('Child');
+        $request->method('getControllerActionName')->willReturn('SomethingElse');
+        $request->method('getArguments')->willReturn($childRequestArguments);
+        $request->method('getArgumentNamespace')->willReturn('childNamespace');
+        $request->method('isMainRequest')->willReturn(false);
+        $request->method('getParentRequest')->willReturn($parentRequest);
+
+        // only arguments in each requests namespace are passed to the hashing service
+        // so for the parent request the child request namespace is excluded
+        $this->hashService
+            ->method('appendHmac')
+            ->withConsecutive(
+                [base64_encode(serialize($childRequestArguments))],
+                [base64_encode(serialize($parentRequestArguments))]
+            )
+            ->willReturn('--argumentsWithHmac--');
+
+        $form = new FormDefinition($request);
+        $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
+
+        $this->assertEquals('--argumentsWithHmac--', $hiddenFields['__referrer[arguments]']);
+        $this->assertEquals('--argumentsWithHmac--', $hiddenFields['childNamespace[__referrer][arguments]']);
+    }
 
     /**
      * @test
@@ -165,7 +258,6 @@ class FormHelperTest extends TestCase
             <input name="input[checkboxMultiple][]" type="checkbox" value="foo" />
             <input name="input[checkboxMultiple][]" type="checkbox" value="bar" />
             <input name="input[checkboxMultiple][]" type="checkbox" value="baz" />
-    
 CONTENT;
 
         $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);
