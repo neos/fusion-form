@@ -29,7 +29,6 @@ Pure fusion form rendering with afx support!
     ```
     form = ${form} 
     name = null
-    property = ${Form.fieldNameToPath(this.name)}
     multiple = false
     ```
     
@@ -40,7 +39,6 @@ Pure fusion form rendering with afx support!
     ```
     form = ${form}  
     name = null
-    property = ${this.name ? Form.fieldNameToPath(this.name) : null}
     multiple = false
 
     label = null
@@ -51,7 +49,7 @@ Pure fusion form rendering with afx support!
 
 **Field Prototypes: based on Neos.Fusion.Form:FieldComponent**
 
-All field types allow to define `id`, `class` `name`, `property`, `value` and `attributes`. 
+All field types allow to define `form`, `name` and `multiple` from the FieldComponent.  
 
 - `Neos.Fusion.Form:Input`
 - `Neos.Fusion.Form:Hidden`
