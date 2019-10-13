@@ -209,8 +209,8 @@ Example::
 
     renderer = afx`
         <Neos.Fusion.Form:Select name="user[gender]">
-            <Neos.Fusion.Form:Select.Option valuer="male">Male</Neos.Fusion.Form:Select.Option>
-            <Neos.Fusion.Form:Select.Option valuer="female">Female</Neos.Fusion.Form:Select.Option>
-            <Neos.Fusion.Form:Select.Option valuer="diverse">Diverse</Neos.Fusion.Form:Select.Option>
+            <Neos.Fusion.Form:Select.Option value="male">Male</Neos.Fusion.Form:Select.Option>
+            <Neos.Fusion.Form:Select.Option value="female">Female</Neos.Fusion.Form:Select.Option>
+            <Neos.Fusion.Form:Select.Option value="diverse">Diverse</Neos.Fusion.Form:Select.Option>
         </Neos.Fusion.Form:Select>
     `
