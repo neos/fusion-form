@@ -6,8 +6,8 @@ Pure fusion form rendering with afx support!
 **Development targets** 
 
 The main target for the development of the fusion form package is to make rendering
-of forms with data binding and error rendering easyly possiboe in fusion and
-provide all hidden fields flow needs to perform validation and security magic.
+of forms with data binding and error rendering easyly possible in pure fusion+afx and
+provide the hidden fields flow needs to perform validation, security and persistence magic.
 
 We also want to make it simple to define custom form controls for your project and
 implement your own label and error rendering. 
@@ -66,19 +66,16 @@ test = afx`
        
        data.exampleValue={exampleValue}
        data.exampleObject={exampleObject}
-       
-       method="post"
-       attributes.data-foo="foo"
-   >
+       >
        <fieldset>
-           <Neos.Fusion.Form:Textfield property="exampleValue" />
+           <Neos.Fusion.Form:Textfield name="exampleValue" />
 
-           <Neos.Fusion.Form:Select property="exampleObject.bar" >
+           <Neos.Fusion.Form:Select name="exampleObject[bar]" >
                <Neos.Fusion.Form:Select.Option value="123" >-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455" >-- 456 -- </Neos.Fusion.Form:Select.Option>
            </Neos.Fusion.Form:Select>
 
-           <Neos.Fusion.Form:Select multiple property="exampleObject.baz" >
+           <Neos.Fusion.Form:Select multiple name="exampleObject[baz]" >
                <Neos.Fusion.Form:Select.Option value="123">-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455">-- 456 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="789">-- 789 -- </Neos.Fusion.Form:Select.Option>

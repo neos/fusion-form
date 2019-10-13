@@ -19,12 +19,12 @@ In addition the form component will also:
 - Render hidden `__identity` fields for all fields that are bound to properties of persisted objects.
 - Render hidden `empty` fields for `checkbox` and `submit[multiple]` fields make sure unselected values are send to the controller.
 
-:data: (mixed) The data-structure the form is bound to. Can contain objects, scalar and nested values.
+:data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
 :action: (string, defaults to `Neos.Fusion:UriBuilder`)
 :method: (string, defaults to 'post')
 :enctype: (string, defaults to 'multipart/form-data')
-:request: (\Neos\Flow\Mvc\ActionRequest, defaults to the current request in the fusion context) The action request object the form is rendered for.
-:fieldnamePrefix: (string, defauklt to the argumentNamespace of the `request`) The prefix for all fieldnames in this form.
+:request: (\Neos\Flow\Mvc\ActionRequest, defaults to the current `request` in the fusion context) The action request object the form is rendered for.
+:fieldnamePrefix: (string, defaults to the `argumentNamespace` of the `request`) The prefix for all fieldnames in this form.
 
 :content: (string) The content of the form. This can be any html that contains form fields. Usually this is defined via afx.
 :id: (string) The id-attribute for the form-tag.
@@ -117,12 +117,16 @@ Extends Neos_Fusion_Form__Input_ and uses the default type `text`.
 
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos_Fusion_Form__FieldComponent`_.
 
+.. _Neos_Fusion_Form__Upload:
+
 Neos.Fusion.Form:Upload
 -----------------------
 
 Extends Neos_Fusion_Form__Input_ and uses the default type `file`.
 
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos_Fusion_Form__FieldComponent`_.
+
+.. _Neos_Fusion_Form__Password:
 
 Neos.Fusion.Form:Password
 -------------------------
@@ -131,6 +135,8 @@ Extends Neos_Fusion_Form__Input_ and uses the default type `password`.
 
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos_Fusion_Form__FieldComponent`_.
 
+.. _Neos_Fusion_Form__Hidden:
+
 Neos.Fusion.Form:Hidden
 -----------------------
 
@@ -138,12 +144,16 @@ Extends Neos_Fusion_Form__Input_ and uses the default type `hidden`.
 
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos_Fusion_Form__FieldComponent`_.
 
+.. _Neos_Fusion_Form__Submit:
+
 Neos.Fusion.Form:Submit
 -----------------------
 
 Extends Neos_Fusion_Form__Input_ and uses the default type `submit`.
 
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos_Fusion_Form__FieldComponent`_.
+
+.. _Neos_Fusion_Form__Checkbox:
 
 Neos.Fusion.Form:Checkbox
 -------------------------
@@ -154,6 +164,8 @@ Render an input of type "checkbox".
 
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos_Fusion_Form__FieldComponent`_.
 
+.. _Neos_Fusion_Form__Radio:
+
 Neos.Fusion.Form:Radio
 ----------------------
 
@@ -163,6 +175,7 @@ Render an input of type "radio".
 
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos_Fusion_Form__FieldComponent`_.
 
+.. _Neos_Fusion_Form__Textarea:
 
 Neos.Fusion.Form:Textarea
 -------------------------
@@ -172,7 +185,6 @@ Render an textarea tag.
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos_Fusion_Form__FieldComponent`_.
 
 .. _Neos_Fusion_Form__Select:
-
 
 Neos.Fusion.Form:Select
 -----------------------
