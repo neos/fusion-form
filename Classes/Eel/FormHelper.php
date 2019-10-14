@@ -74,24 +74,28 @@ class FormHelper implements ProtectedContextAwareInterface
      * Create a field definition object
      *
      * @param FormDefinition|null $form
-     * @param string $path
+     * @param string $name
      * @param bool $multiple
      * @return FieldDefinition
      */
-    public function createFieldDefinition(FormDefinition $form = null, string $path = null, bool $multiple = false): FieldDefinition
+    public function createFieldDefinition(FormDefinition $form = null, string $name = null, bool $multiple = false): FieldDefinition
     {
-        if (!$path) {
+        if (!$name) {
             return new FieldDefinition(null, null, null);
         }
+
         // render fieldName
         if ($form && $form->getFieldNamePrefix()) {
-            $fieldName = $this->pathToFieldName($form->getFieldNamePrefix() . '.' . $path);
+            $fieldName = $this->prefixFieldName($name, $form->getFieldNamePrefix());
         } else {
-            $fieldName = $this->pathToFieldName($path);
+            $fieldName = $name;
         }
         if ($multiple) {
             $fieldName .= '[]';
         }
+
+        // create property path from fieldname
+        $path = $this->fieldNameToPath($name);
 
         // determine value, according to the following algorithm:
         if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
@@ -325,9 +329,8 @@ class FormHelper implements ProtectedContextAwareInterface
      *
      * @param $name
      * @return string
-     * @TODO: decide wether this really has to be exposed as public method
      */
-    public function fieldNameToPath($name): string
+    protected function fieldNameToPath($name): string
     {
         $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
         return trim($path, '.');
