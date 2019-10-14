@@ -1,55 +1,37 @@
 Fusion Form
 -----------
 
-Pure fusion form rendering with afx support! 
+Pure fusion form rendering with afx support!
 
-!!! ATTENTION all this is WIP and can change at any time !!!
+**Development targets** 
+
+The main target for the development of the fusion form package is to make rendering
+of forms with data binding and error rendering easyly possible in pure fusion+afx and
+provide the hidden fields flow needs to perform validation, security and persistence magic.
+
+We also want to make it simple to define custom form controls for your project and
+implement your own label and error rendering. 
+
+**Important Deviations from Fluid Form ViewHelpers**
+
+The following deviations are probably the ones fluid developers will stumble 
+over. There are many more deviations but those are breaking concept changes you
+should be aware of.
+
+- Instead of binding a `object` a `data` DataStructure is bound to the form.
+- The fields use `name` to establish the reference to data and validation instead of `property`.
+- Select options are defined as afx children and not `options`.
 
 **Fusion prototypes**
 
-- `Neos.Fusion.Form:Form` Component that instantiates the `form` context which contains `Neos.Fusion:FormDefinition` before 
-    props and renderer are evaluated. Then it renders a form-tag with the given `content` and adds the hidden fields for trustedProperties, csrfTokens and referrers.
-    
-    ```
-    request = ${request}
-    fieldnamePrefix = null
-    data = Neos.Fusion:DataStructure {
-        example = ${example}
-    }
-    
-    action = Neos.Fusion:UriBuilder
-    method = 'post'
-    enctype = null
-    ```    
+The full fusion documentation can be found [here](Documentation/FusionForm.rst)
 
-- `Neos.Fusion:.Form:FieldComponent`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
-    before props and renderer are evaluated. This is the base prototype for implementing custom fields. If no property is defined 
-    the component uses the existing `field` from the context.
-    
-    ```
-    form = ${form} 
-    name = null
-    multiple = false
-    ```
-    
-- `Neos.Fusion:.Form:FieldContainer`: Component that instantiates the `field` context which contains `Neos.Fusion:FieldDefinition` 
-    before props and renderer are evaluated. This component will render a container tag a label a list of error messages. The concrete 
-    fields are passed to the component as afx content and will use the `field` provided by this container.
-    
-    ```
-    form = ${form}  
-    name = null
-    multiple = false
-
-    label = null
-    errorClass = 'error'  
-    ```
-
+- `Neos.Fusion.Form:Form`: The main form container.
+- `Neos.Fusion:.Form:FieldComponent`: Component to implement field controls in fusion.
+- `Neos.Fusion:.Form:FieldContainer`: A field wrapper with label and error rendering that accepts fields as `content`.
 - `Neos.Fusion.Form:Fragment`: A Fragment that allows to place afx conditions without extra markup.
 
 **Field Prototypes: based on Neos.Fusion.Form:FieldComponent**
-
-All field types allow to define `form`, `name` and `multiple` from the FieldComponent.  
 
 - `Neos.Fusion.Form:Input`
 - `Neos.Fusion.Form:Hidden`
@@ -84,19 +66,16 @@ test = afx`
        
        data.exampleValue={exampleValue}
        data.exampleObject={exampleObject}
-       
-       method="post"
-       attributes.data-foo="foo"
-   >
+       >
        <fieldset>
-           <Neos.Fusion.Form:Textfield property="exampleValue" />
+           <Neos.Fusion.Form:Textfield name="exampleValue" />
 
-           <Neos.Fusion.Form:Select property="exampleObject.bar" >
+           <Neos.Fusion.Form:Select name="exampleObject[bar]" >
                <Neos.Fusion.Form:Select.Option value="123" >-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455" >-- 456 -- </Neos.Fusion.Form:Select.Option>
            </Neos.Fusion.Form:Select>
 
-           <Neos.Fusion.Form:Select multiple property="exampleObject.baz" >
+           <Neos.Fusion.Form:Select multiple name="exampleObject[baz]" >
                <Neos.Fusion.Form:Select.Option value="123">-- 123 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="455">-- 456 -- </Neos.Fusion.Form:Select.Option>
                <Neos.Fusion.Form:Select.Option value="789">-- 789 -- </Neos.Fusion.Form:Select.Option>
