@@ -5,36 +5,21 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
 
     checked = false
 
-    renderer = Neos.Fusion:Component {
-        @apply.props = ${props}
-        @apply.override = Neos.Fusion:DataStructure {
-            checked = Neos.Fusion:Case {
-                hasSingleValue {
-                    condition = ${field.value && !field.multiple}
-                    renderer = ${field.value == props.value}
-                }
-                hasMultiValue {
-                    condition = ${field.value && field.multiple}
-                    renderer = ${Array.indexOf(field.value, props.value) > -1}
-                }
-                default {
-                    condition = true
-                    renderer = ${props.checked}
-                }
-            }
-        }
+    renderer = afx`
+        <input
+            id={props.id}
+            class={props.class}
+            required={props.required}
+            type="checkbox"
+            name={field.name}
+            value={Form.stringifyValue(props.value)}
+            checked={props.checked}
+            checked.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.value)) > -1}
+            checked.@process.multiValue.@if.has={field.value && field.multiple}
+            checked.@process.singleValue={Form.stringifyValue(field.value) == Form.stringifyValue(props.value)}
+            checked.@process.singleValue.@if.has={field.value && !field.multiple}
+            {...props.attributes}
+        />
+    `
 
-        renderer = afx`
-            <input
-                {...props.attributes}
-                id={props.id}
-                class={props.class}
-                required={props.required}
-                type="checkbox"
-                name={field.name}
-                value={Form.stringifyValue(props.value)}
-                checked={props.checked}
-            />
-        `
-    }
 }

@@ -29,7 +29,6 @@ The full fusion documentation can be found [here](Documentation/FusionForm.rst)
 - `Neos.Fusion.Form:Form`: The main form container.
 - `Neos.Fusion:.Form:FieldComponent`: Component to implement field controls in fusion.
 - `Neos.Fusion:.Form:FieldContainer`: A field wrapper with label and error rendering that accepts fields as `content`.
-- `Neos.Fusion.Form:Fragment`: A Fragment that allows to place afx conditions without extra markup.
 
 **Field Prototypes: based on Neos.Fusion.Form:FieldComponent**
 
