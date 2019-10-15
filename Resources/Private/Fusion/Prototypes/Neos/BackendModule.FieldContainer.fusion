@@ -1,0 +1,74 @@
+prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.Fusion:Component) {
+    @context.field = ${Form.createField(form, this.name, this.multiple)}
+
+    @propTypes {
+        form = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\Form')}
+        name = ${PropTypes.string}
+        multiple = ${PropTypes.boolean}
+        label = ${PropTypes.string}
+        content = ${PropTypes.string}
+    }
+
+    #
+    #
+    #
+    name = null
+    multiple = false
+
+    # label
+    label = null
+
+    #
+    # afx content
+    #
+    content = null
+
+    #
+    # translations source and package for labels
+    #
+    labelTranslation = Neos.Fusion:DataStructure {
+        package = 'Neos.Neos'
+        source = 'Main'
+    }
+
+    #
+    # translations source and package for errors
+    #
+    errorTranslation = Neos.Fusion:DataStructure {
+        package = 'Neos.Neos'
+        source = 'Main'
+    }
+
+    renderer = afx`
+        <div class={field.errors ? "neos-control-group neos-error" : "neos-control-group"}>
+            <label class="neos-control-label" for={field.name} @if.has={props.label}>
+                {I18n.translate(null, props.label, [], props.labelTranslation.source, props.labelTranslation.package)}
+            </label>
+            <div class="neos-controls">
+                {props.content}
+            </div>
+            <ul @if.hasErrors={field.errors} class="errors">
+                <Neos.Fusion:Loop items={field.result.flattenedErrors} itemName="errors" >
+                    <Neos.Fusion:Loop items={errors} itemName="error" >
+                        <li>
+                            <span class="neos-help-block">
+                                {I18n.translate(error.code, error, [], props.errorTranslation.source, props.errorTranslation.package)}
+                            </span>
+                        </li>
+                    </Neos.Fusion:Loop>
+                </Neos.Fusion:Loop>
+            </ul>
+        </div>
+    `
+
+    #
+    # Fields that are rendered inside field container are adjusted
+    #
+    prototype(Neos.Fusion.Form:FieldComponent) {
+        // if no specific name is given the field from the container is reused
+        field = ${this.name ? null : field}
+        // if specific id is given the name from the field is rendered as id
+        id = ${field.name}
+    }
+}
+

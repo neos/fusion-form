@@ -1,15 +1,19 @@
 prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
-    @context.form = ${Form.createFormDefinition(this.request, this.fieldnamePrefix, this.data)}
+
+    #
+    # populate form context to be available during prop evaluation
+    #
+    @context.form = ${Form.createForm(request, this.fieldnamePrefix, this.data)}
 
     @propTypes {
-        request = ${PropTypes.instanceOf('Neos\Flow\Mvc\ActionRequest')}
         fieldnamePrefix = ${PropTypes.string}
         data = ${PropTypes.any}
-        action = ${PropTypes.string}
+        actionUri = ${PropTypes.string}
         method = ${PropTypes.string}
         enctype = ${PropTypes.string}
         id = ${PropTypes.string}
         class = ${PropTypes.string}
+        name = ${PropTypes.string}
         attributes = ${PropTypes.any}
         content = ${PropTypes.string}
     }
@@ -17,7 +21,6 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
     #
     # values that are used to populate the field context
     #
-    request = ${request}
     fieldnamePrefix = null
     data = Neos.Fusion:DataStructure
 
@@ -26,24 +29,26 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
     #
     id = null
     class = null
-    action = Neos.Fusion:UriBuilder
+    name = null
+    actionUri = Neos.Fusion:UriBuilder
     method = 'post'
     enctype = 'multipart/form-data'
     attributes = Neos.Fusion:DataStructure
 
     #
-    # afx content when `Neos.Fusion.Form:Form`
+    # form content
     #
     content = null
 
     renderer = afx`
         <form
-            {...props.attributes}
             id={props.id}
             class={props.class}
-            action={props.action}
+            name={props.name}
+            action={props.actionUri}
             method={props.method}
             enctype={props.enctype}
+            {...props.attributes}
         >
             <div style="display: none">
                 <Neos.Fusion:Loop
@@ -53,13 +58,19 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
                 >
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
+                <Neos.Fusion:Join
+                    @if.isNoGetRequest={props.method != 'get'}
+                >
+                    <input
+                        @cache.mode="uncached"
+                        @cache.context={[]}
+                        type="hidden"
+                        name="__csrfToken"
+                        value={Security.csrfToken()}
+                    />
+                </Neos.Fusion:Join>
             </div>
             {props.content}
         </form>
     `
-}
-
-// this should go to fusion itself on the long run
-prototype(Neos.Fusion.Form:Fragment) < prototype(Neos.Fusion:Component) {
-  renderer = ${props.content}
 }

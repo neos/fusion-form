@@ -1,12 +1,3 @@
-prototype(Neos.Fusion.Form:Submit) < prototype(Neos.Fusion.Form:FieldComponent) {
-    renderer = afx`
-        <input
-            {...props.attributes}
-            id={props.id}
-            class={props.class}
-            type="submit"
-            name={field.name}
-            value={field.value}
-            />
-    `
+prototype(Neos.Fusion.Form:Submit) < prototype(Neos.Fusion.Form:Input) {
+    type="submit"
 }

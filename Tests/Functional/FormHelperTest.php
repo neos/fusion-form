@@ -1,18 +1,14 @@
 <?php
 namespace Neos\Fusion\Form\Tests\Functional;
 
-use phpDocumentor\Reflection\Types\Object_;
 use PHPUnit\Framework\TestCase;
-use Neos\Fusion\Form\Domain\Model\FormDefinition;
-use Neos\Fusion\Form\Domain\Model\FieldDefinition;
+use Neos\Fusion\Form\Domain\Model\Form;
+use Neos\Fusion\Form\Domain\Model\Field;
 use Neos\Fusion\Form\Eel\FormHelper;
 
 use Neos\Flow\Persistence\PersistenceManagerInterface;
-use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
-
-use Neos\Flow\Http\Request as HttpRequest;
 use Neos\Flow\Mvc\ActionRequest;
 
 class FormHelperTest extends TestCase
@@ -23,7 +19,6 @@ class FormHelperTest extends TestCase
     protected $formHelper;
 
     protected $persistenceManager;
-    protected $securityContext;
     protected $hashService;
     protected $mvcPropertyMappingConfigurationService;
 
@@ -32,12 +27,10 @@ class FormHelperTest extends TestCase
         $formHelper = new FormHelper();
 
         $this->persistenceManager = $this->createMock(PersistenceManagerInterface::class);
-        $this->securityContext = $this->createMock(SecurityContext::class);
         $this->hashService = $this->createMock(HashService::class);
         $this->mvcPropertyMappingConfigurationService = $this->createMock(MvcPropertyMappingConfigurationService::class);
 
         $this->injectDependency($formHelper, 'persistenceManager', $this->persistenceManager);
-        $this->injectDependency($formHelper, 'securityContext', $this->securityContext);
         $this->injectDependency($formHelper, 'hashService', $this->hashService);
         $this->injectDependency($formHelper, 'mvcPropertyMappingConfigurationService', $this->mvcPropertyMappingConfigurationService);
 
@@ -73,13 +66,8 @@ class FormHelperTest extends TestCase
     /**
      * @test
      */
-    public function calculateHiddenFieldsReturnsOnlyCsrfAndTrustedPropertiesTokenIfNoFormOrContentIsGiven()
+    public function calculateHiddenFieldsReturnsOnlyTrustedPropertiesTokenIfNoFormOrContentIsGiven()
     {
-        $this->securityContext->expects($this->once())
-            ->method('getCsrfProtectionToken')
-            ->with()
-            ->willReturn('foo');
-
         $this->mvcPropertyMappingConfigurationService->expects($this->once())
             ->method('generateTrustedPropertiesToken')
             ->with([])
@@ -87,7 +75,7 @@ class FormHelperTest extends TestCase
 
         $hiddenFields = $this->formHelper->calculateHiddenFields(null, null);
 
-        $expectation = ['__trustedProperties' => 'bar', '__csrfToken' => 'foo'];
+        $expectation = ['__trustedProperties' => 'bar'];
         $this->assertEquals($expectation, $hiddenFields);
     }
 
@@ -117,7 +105,7 @@ CONTENT;
      */
     public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsWithFieldnamePrefix()
     {
-        $form = new FormDefinition(null, null, 'prefix');
+        $form = new Form(null, null, 'prefix');
 
         $content = <<<CONTENT
             <input name="prefix[foo]" />
@@ -150,7 +138,7 @@ CONTENT;
         $request->method('getArguments')->willReturn([]);
         $request->method('getArgumentNamespace')->willReturn('');
 
-        $form = new FormDefinition($request);
+        $form = new Form($request);
 
         $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
 
@@ -182,7 +170,7 @@ CONTENT;
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
 
-        $form = new FormDefinition($request);
+        $form = new Form($request);
 
         $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
 
@@ -238,7 +226,7 @@ CONTENT;
             )
             ->willReturn('--argumentsWithHmac--');
 
-        $form = new FormDefinition($request);
+        $form = new Form($request);
         $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
 
         $this->assertEquals('--argumentsWithHmac--', $hiddenFields['__referrer[arguments]']);
@@ -306,7 +294,7 @@ CONTENT;
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
-        $form = new FormDefinition(null, $data, '');
+        $form = new Form(null, $data, '');
 
         $content = <<<CONTENT
             <input name="item1[text]" type="text" />
@@ -338,7 +326,7 @@ CONTENT;
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
-        $form = new FormDefinition(null, $data, '');
+        $form = new Form(null, $data, '');
         $content = <<<CONTENT
             <input name="item1[text]" type="text" />
             <input name="item3[text]" type="text" />
@@ -370,7 +358,7 @@ CONTENT;
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
-        $form = new FormDefinition(null, $data, '');
+        $form = new Form(null, $data, '');
 
         $content = <<<CONTENT
             <input name="item1[text]" type="text" />

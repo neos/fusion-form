@@ -19,20 +19,13 @@ use Neos\Error\Messages\Result;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Utility\ObjectAccess;
 use Neos\Flow\Mvc\ActionRequest;
-use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
-use Neos\Fusion\Form\Domain\Model\FieldDefinition;
-use Neos\Fusion\Form\Domain\Model\FormDefinition;
+use Neos\Fusion\Form\Domain\Model\Field;
+use Neos\Fusion\Form\Domain\Model\Form;
 
 class FormHelper implements ProtectedContextAwareInterface
 {
-    /**
-     * @Flow\Inject
-     * @var SecurityContext
-     */
-    protected $securityContext;
-
     /**
      * @Flow\Inject
      * @var MvcPropertyMappingConfigurationService
@@ -57,11 +50,11 @@ class FormHelper implements ProtectedContextAwareInterface
      * @param ActionRequest|null $request
      * @param string|null $fieldNamePrefix
      * @param mixed|null $data
-     * @return FormDefinition
+     * @return Form
      */
-    public function createFormDefinition(ActionRequest $request = null, string $fieldNamePrefix = null, $data = null): FormDefinition
+    public function createForm(ActionRequest $request = null, string $fieldNamePrefix = null, $data = null): Form
     {
-        return new FormDefinition(
+        return new Form(
             $request,
             $data,
             $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),
@@ -73,15 +66,15 @@ class FormHelper implements ProtectedContextAwareInterface
     /**
      * Create a field definition object
      *
-     * @param FormDefinition|null $form
+     * @param Form|null $form
      * @param string $name
      * @param bool $multiple
-     * @return FieldDefinition
+     * @return Field
      */
-    public function createFieldDefinition(FormDefinition $form = null, string $name = null, bool $multiple = false): FieldDefinition
+    public function createField(Form $form = null, string $name = null, bool $multiple = false): Field
     {
         if (!$name) {
-            return new FieldDefinition(null, null, null);
+            return new Field(null, null, null);
         }
 
         // render fieldName
@@ -100,12 +93,12 @@ class FormHelper implements ProtectedContextAwareInterface
         // determine value, according to the following algorithm:
         if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
             // 1) if a validation error has occurred, pull the value from the submitted form values.
-            $value = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $path);
+            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $path);
         } elseif ($path && $form && $form->getData()) {
             // 2) else, if "property" is specified, take the value from the bound object.
-            $value = ObjectAccess::getPropertyPath($form->getData(), $path);
+            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $path);
         } else {
-            $value = null;
+            $fieldValue = null;
         }
 
         // determine ValidationResult for the single property
@@ -114,19 +107,7 @@ class FormHelper implements ProtectedContextAwareInterface
             $fieldResult = $form->getResult()->forProperty($path);
         }
 
-        // apply stringify to values but respect multivalues
-        if ($multiple) {
-            $fieldValue = [];
-            if (is_array($value) || $value instanceof \ArrayAccess) {
-                foreach ($value as $part) {
-                    $fieldValue[] = $this->stringifyValue($part);
-                }
-            }
-        } else {
-            $fieldValue = $this->stringifyValue($value);
-        }
-
-        return new FieldDefinition(
+        return new Field(
             $fieldName,
             $fieldValue,
             $multiple,
@@ -141,7 +122,7 @@ class FormHelper implements ProtectedContextAwareInterface
      * @param string $content form html body
      * @param array hiddenFields as key value pairs
      */
-    public function calculateHiddenFields(FormDefinition $form = null, string $content = null): array
+    public function calculateHiddenFields(Form $form = null, string $content = null): array
     {
         $hiddenFields = [];
 
@@ -172,7 +153,7 @@ class FormHelper implements ProtectedContextAwareInterface
         // The referrer parameters allow flow framework to send the user back to the previous request
         // if the validation of submitted data was not successfull. In such a case the request will be
         // forwarded to the previous request where the __submittedArguments and
-        // __submittedArgumentValidationResults can be handled from Form.createFieldDefinition or custom logic.
+        // __submittedArgumentValidationResults can be handled from Form.createField or custom logic.
         //
         if ($request) {
             $childRequestArgumentNamespace = null;
@@ -265,13 +246,6 @@ class FormHelper implements ProtectedContextAwareInterface
         //
         $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($formFieldNames), $fieldNamePrefix);
 
-        //
-        // 5. CSRF token
-        //
-        // A token that is unique to a the user session
-        //
-        $hiddenFields['__csrfToken'] = $this->securityContext->getCsrfProtectionToken();
-
         return $hiddenFields;
     }
 
@@ -289,17 +263,26 @@ class FormHelper implements ProtectedContextAwareInterface
                 return $identifier;
             }
         }
+        return (string)$value;
+    }
 
+    /**
+    * Convert an array of values to an array of string representation for beeing rendered as an html form value
+    *
+    * @param array $value
+    * @return array|null
+    */
+    public function stringifyArray(array $value = null): array
+    {
         if (is_array($value)) {
-            $helper = $this;
-            return implode(', ', array_map(
-                function ($value) use ($helper) {
-                    return $helper->stringifyValue($value);
+            return array_map(
+                function ($value) {
+                    return $this->stringifyValue($value);
                 },
                 $value
-            ));
+            );
         } else {
-            return (string)$value;
+            return null;
         }
     }
 
