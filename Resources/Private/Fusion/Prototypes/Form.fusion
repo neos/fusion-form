@@ -1,9 +1,6 @@
 prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
 
-    #
-    # populate form context to be available during prop evaluation
-    #
-    @context.form = ${Form.createForm(request, this.fieldnamePrefix, this.data)}
+    @context.form = ${this.form}
 
     @propTypes {
         fieldnamePrefix = ${PropTypes.string}
@@ -23,6 +20,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
     #
     fieldnamePrefix = null
     data = Neos.Fusion:DataStructure
+    form = ${Form.createForm(request, this.fieldnamePrefix, this.data)}
 
     #
     # html attributes for the form

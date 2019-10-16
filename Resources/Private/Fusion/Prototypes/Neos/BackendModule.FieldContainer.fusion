@@ -1,26 +1,14 @@
-prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.Fusion:Component) {
-    @context.field = ${Form.createField(form, this.name, this.multiple)}
+prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.Fusion.Form:FieldComponent) {
 
     @propTypes {
-        form = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\Form')}
-        name = ${PropTypes.string}
-        multiple = ${PropTypes.boolean}
         label = ${PropTypes.string}
         content = ${PropTypes.string}
     }
 
     #
+    # label and afx content
     #
-    #
-    name = null
-    multiple = false
-
-    # label
     label = null
-
-    #
-    # afx content
-    #
     content = null
 
     #
@@ -60,12 +48,12 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     `
 
     #
-    # Fields that are rendered inside field container are adjusted
+    # FieldComponent that are rendered inside field container are adjusted
+    # if no specific name is given the field from the container is reused
+    # if nop specific id is given the name from the comntainer is used
     #
     prototype(Neos.Fusion.Form:FieldComponent) {
-        // if no specific name is given the field from the container is reused
-        @context.field = ${this.name ? Form.createField(form, this.name, this.multiple) : field}
-        // if specific id is given the name from the field is rendered as id
+        field = ${this.name ? Form.createField(form, this.name, this.multiple) : field}
         id = ${field.name}
     }
 }
