@@ -13,7 +13,7 @@ namespace Neos\Fusion\Form\Domain\Model;
 
 use Neos\Error\Messages\Result;
 
-class FieldDefinition
+class Field
 {
 
     /**
@@ -37,7 +37,7 @@ class FieldDefinition
     protected $result;
 
     /**
-     * FieldDefinition constructor.
+     * Field constructor.
      *
      * @param string|null $name
      * @param array|string|null $value

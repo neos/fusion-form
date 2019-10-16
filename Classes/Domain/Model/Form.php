@@ -20,7 +20,7 @@ use Neos\Flow\Mvc\ActionRequest;
 /**
  * Used to output an HTML <form> tag which is targeted at the specified action, in the current controller and package.
  */
-class FormDefinition implements ProtectedContextAwareInterface
+class Form implements ProtectedContextAwareInterface
 {
     /**
      * @var ActionRequest
@@ -48,7 +48,7 @@ class FormDefinition implements ProtectedContextAwareInterface
     protected $result;
 
     /**
-     * FormDefinition constructor.
+     * Form constructor.
      * @param ActionRequest $request
      * @param mixed|null $data
      * @param string|null $fieldNamePrefix
