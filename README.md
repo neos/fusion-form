@@ -39,8 +39,10 @@ Usage
 
 **Frontend**
 
-To render forms in the frontend a prototype is used that accepts the props
-`customer`, `shipment` an `targetAction`.
+This example defines a ShipmentForm component that accepts the props `customer`,
+`shipment` and `targetAction`. The form content is defined as afx. The form data is defined 
+with both values `customer` and `shipment` that are both modified and sent to the target
+controller.
 
 ```
 prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
@@ -84,12 +86,15 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
 
 **Backend Module**
 
-In backend modules the `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
-prototype is used to render fields with labels and error messages.
+Forms for backend modules basically work the same as in the frontend 
+but the additional prototyoe `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
+can be used to render fields with translated labels and error messages
+using the dafault markup of the neos backend.
 
 HINT: To render a backend module with fusion you have to set the 
 `defaultViwObjectName` to the `Neos\Fusion\View\FusionView::class` in the
-controller class.
+controller class and be aware that you have to include all required fusion
+explicitly.
 
 ATTENTION: This prototype is not meant to be used in the frontend. Create 
 project specific field containers instead.
