@@ -34,40 +34,6 @@ Fusion prototypes
 
 The full fusion documentation can be found [here](Documentation/FusionForm.rst)
 
-- `Neos.Fusion.Form:Form`: The main form container.
-- `Neos.Fusion:.Form:FieldComponent`: Component to implement field controls in fusion.
-
-**Field Prototypes: based on Neos.Fusion.Form:FieldComponent**
-
-- `Neos.Fusion.Form:Input`
-- `Neos.Fusion.Form:Hidden`
-- `Neos.Fusion.Form:Textfield`
-- `Neos.Fusion.Form:Textarea` option `content` for rendering content via afx
-- `Neos.Fusion.Form:Password`
-- `Neos.Fusion.Form:Radio` additional option `checked`:bool
-- `Neos.Fusion.Form:Checkbox` additional option `checked`:bool
-- `Neos.Fusion.Form:Select` additional option `content` for rendering of options via afx
-- `Neos.Fusion.Form:Select.Option` options `value`:any, `selected`:bool
-- `Neos.Fusion.Form:Upload`
-- `Neos.Fusion.Form:Button`
-- `Neos.Fusion.Form:Submit`
-
-**Backend prototypes**
-
-- `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` : A container with label and error rendering to be used in neos backend modules
-
-Form Eel-Helper
----------------
-
-The package contains an eel helper that is used to instantiate the `@context.form` 
-and `@context.field` domain objects for fusion. 
-
-- `Form.createForm(request, string fieldnamePrefix, mixed data)` create a \Neos\Fusion\Form\Domain\Model\Form object
-- `Form.createField(form, string name, bool multiple = false)` create a \Neos\Fusion\Form\Domain\Model\Field object
-- `Form.calculateHiddenFields(form, string content)` returns an key-value array for the referrer, trustedProperties hidden fields based of the given form and content 
-- `Form.stringifyValue(value)` Convert the value to string, entities are converted to the identifier. 
-- `Form.stringifyArray(array)` Convert an array of values to an array of stringified values using `stringifyValue` 
-
 Usage
 -----
 
@@ -145,7 +111,7 @@ Form.Test.FusionController.index = Form.Test:Backend.UserForm
 Form.Test.FusionController.updateUser = Form.Test:Backend.UserForm
 
 #
-# The rendereing of the form is centralizes in a single prototype 
+# The rendering of the form is centralizes in a single prototype 
 # that expects the values `title`, `user` and `targetAction` in the context
 #
 prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
@@ -185,3 +151,109 @@ prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
 }
 ```
 
+Extending Neos.Fusion-Form:
+---------------------------
+
+**Custom Form Fields**
+
+The most obvious extension point is the definition of custom fieldtypes.
+To do so you have to extend the `Neos.Fusion.Form:FieldContainer` prototype
+and implement the renderer you need. 
+
+For the rendering you have access to the `field` in the fusion context which 
+allows you to get the current `value`. You should use this value to 
+access bound data and values that were already submitted. The `field.value`
+hast to be stringified for the html rendering as the bound data may be of any
+type. 
+
+```
+prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponent) {
+    content = ''
+
+    renderer = afx`
+        <textarea
+            id={props.id}
+            class={props.class}
+            type="text"
+            name={field.name}
+            required={props.required}
+            {...props.attributes}
+        >
+            {Form.stringifyValue(field.value || props.content)}
+        </textarea>
+    `
+}
+```
+
+**Custom Container with translated labels and errors**
+
+A custom field container is a component that renders label and errors for
+a field but expects the field itself as afx content. This pattern allows
+to centralize error and label rendering while the field-controls are still 
+decided for each field separately.
+
+```
+prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldComponent) {
+
+    name = null
+    multiple = false
+    label = null
+    content = null
+
+    renderer = afx`
+        <div class={field.errors ? "error"}>
+            <label for={field.name} @if.has={props.label}>
+                {I18n.translate(props.label, props.label, [], 'Main', 'Vendor.Site')}
+            </label>
+            
+           {props.content}
+            
+            <ul @if.hasErrors={field.errors} class="errors">
+                <Neos.Fusion:Loop items={field.result.flattenedErrors} itemName="errors" >
+                    <Neos.Fusion:Loop items={errors} itemName="error" >
+                        <li>
+                            {I18n.translate(error.code, error, [], 'ValidationErrors', 'Vendor.Site')}
+                        </li>
+                    </Neos.Fusion:Loop>
+                </Neos.Fusion:Loop>
+            </ul>
+        </div>
+    `
+
+    #
+    # FieldComponent that are rendered inside field container are adjusted
+    # if no specific name is given the field from the container is reused
+    # if nop specific id is given the name from the comntainer is used
+    #
+    prototype(Neos.Fusion.Form:FieldComponent) {
+        field = ${this.name ? Form.createField(form, this.name, this.multiple) : field}
+        id = ${field.name}
+    }
+}
+```
+
+Using such components is done similar to the `Neos.Fusion.Form:Neos.BackendModule.FieldContainer`
+
+```
+prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldComponent) {
+    renderer = afx`
+
+        <Neos.Fusion.Form:Form>
+     
+            <Vendor.Site:Form.FieldContainer name="user[firstName]" label="user.firstName">
+                <Neos.Fusion.Form:Input />
+            </Vendor.Site:Form.FieldContainer>
+
+            <Vendor.Site:Form.FieldContainer name="user[firstName]" label="user.lastName">
+                <Neos.Fusion.Form:Input />
+            </Vendor.Site:Form.FieldContainer>
+
+            <Vendor.Site:Form.FieldContainer name="user[roles]" label="user.role" multiple>
+                <label>Restricted Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:RestrictedEditor" /></label>
+                <label>Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:Editor" /></label>
+                <label>Administrator <Neos.Fusion.Form:Checkbox value="Neos.Neos:Administrator" /></label>
+            </Vendor.Site:Form.FieldContainer>
+        </Neos.Fusion.Form:Form>
+    `
+}                       
+```

@@ -1,9 +1,6 @@
 prototype(Neos.Fusion.Form:FieldComponent)  < prototype(Neos.Fusion:Component) {
 
-    #
-    # populate field context to be available during prop evaluation
-    #
-    @context.field = ${Form.createField(form, this.name, this.multiple)}
+    @context.field = ${this.field}
 
     @propTypes {
         field = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\Field')}
@@ -21,6 +18,7 @@ prototype(Neos.Fusion.Form:FieldComponent)  < prototype(Neos.Fusion:Component) {
     #
     name = null
     multiple = false
+    field = ${Form.createField(form, this.name, this.multiple)}
 
     #
     # generic attributes that all fields item components should support
