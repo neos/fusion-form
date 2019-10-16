@@ -6,20 +6,26 @@ Pure fusion form rendering with afx support!
 Development targets 
 -------------------
 
-The main target for the development of the fusion form package is to make rendering
-of forms with data binding and error rendering easyly possible in pure fusion+afx and
-provide the hidden fields flow needs to perform validation, security and persistence magic.
+The main target for the development of the fusion form package is to make 
+rendering of forms with data binding and error rendering possible in pure 
+fusion with afx. 
 
-We also want to make it simple to define custom form controls for your project and
-implement your own label and error rendering. 
+The rendering of forms should be extensible by new control types and 
+the generated markup should reusable and allow full control via fusion.
+
+The hidden fields Neos.Flow needs to perform validation, security and 
+persistence magic have to be generated.
+
+Unneeded limitation of the previous fluid forms like binding to a single 
+object should be removed.
 
 **Important Deviations from Fluid Form ViewHelpers**
 
-The following deviations are probably the ones fluid developers will stumble 
-over. There are many more deviations but those are breaking concept changes you
-should be aware of.
+The following deviations are probably the ones fluid developers will 
+stumble over. There are many more deviations but those are breaking 
+concept changes you should be aware of.
 
-- Instead of binding a `object` a `data` DataStructure is bound to the form.
+- Instead of binding a single `object` a `data` DataStructure is bound to the form.
 - The fields use `name` to establish the reference to data and validation instead of `property`.
 - Select options are defined as afx children and not `options`.
 
@@ -67,6 +73,48 @@ Usage
 
 **Frontend**
 
+To render forms in the frontend a prototype is used that accepts the props
+`customer`, `shipment` an `targetAction`.
+
+```
+prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
+    customer = null
+    shipment = null
+    targetAction = null
+    
+    renderer = afx`
+        <Neos.Fusion.Form:Form data.customer={props.customer} data.shipment={props.shipment} actionUri.action={props.targetAction} >
+
+            <label for="firstName" >First Name</label>	
+            <Neos.Fusion.Form:Input id="firstName" name="customer[lastName]" />
+    
+            <label for="lastName">Last Name</label>
+            <Neos.Fusion.Form:Input id="lastName" name="customer[lastName]" />
+    
+            <label>Shipment method</label>
+            <label><Neos.Fusion.Form:Radio name="shipment[method]" value="ups" />UPS</label>
+            <label><Neos.Fusion.Form:Radio name="shipment[method]" value="dhl" />DHL</label>
+            <label><Neos.Fusion.Form:Radio name="shipment[method]" value="pickup" />Pickup</label>
+    
+            <label for="street">Street</label>
+            <Neos.Fusion.Form:Input id="street" name="customer[street]" />
+            
+            <label for="city">City</label>
+            <Neos.Fusion.Form:Input id="city" name="customer[city]" />
+    
+            <label for="country" >Country</label>
+            <Neos.Fusion.Form:Select id=country name="shipment[country]">
+                <Neos.Fusion.Form:Select.Option value="de" >Germany</Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option value="at" >Austria</Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option value="ch" > Switzerland </Neos.Fusion.Form:Select.Option>
+            </Neos.Fusion.Form:Select>    
+                
+            <Neos.Fusion.Form:Button>Submit Order</Neos.Fusion.Form:Button>
+
+        </Neos.Fusion.Form:Form>
+    `
+}
+```
 
 **Backend Module**
 
@@ -74,7 +122,7 @@ In backend modules the `Neos.Fusion.Form:Neos.BackendModule.FieldContainer`
 prototype is used to render fields with labels and error messages.
 
 HINT: To render a backend module with fusion you have to set the 
-`defaultViewObjectName` to the `Neos\Fusion\View\FusionView::class` in the
+`defaultViwObjectName` to the `Neos\Fusion\View\FusionView::class` in the
 controller class.
 
 ATTENTION: This prototype is not meant to be used in the frontend. Create 
