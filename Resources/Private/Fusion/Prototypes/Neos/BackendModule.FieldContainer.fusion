@@ -24,25 +24,23 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     content = null
 
     #
-    # translations source and package for labels
+    # translations source and package for labels and errors
     #
-    labelTranslation = Neos.Fusion:DataStructure {
-        package = 'Neos.Neos'
-        source = 'Main'
-    }
-
-    #
-    # translations source and package for errors
-    #
-    errorTranslation = Neos.Fusion:DataStructure {
-        package = 'Neos.Neos'
-        source = 'Main'
+    translation =  Neos.Fusion:DataStructure {
+        label = Neos.Fusion:DataStructure {
+            package = 'Neos.Neos'
+            source = 'Modules'
+        }
+        error = Neos.Fusion:DataStructure {
+            package = 'Neos.Flow'
+            source = 'ValidationErrors'
+        }
     }
 
     renderer = afx`
         <div class={field.errors ? "neos-control-group neos-error" : "neos-control-group"}>
             <label class="neos-control-label" for={field.name} @if.has={props.label}>
-                {I18n.translate(null, props.label, [], props.labelTranslation.source, props.labelTranslation.package)}
+                {I18n.translate(props.label, props.label, [], props.translation.label.source, props.translation.label.package)}
             </label>
             <div class="neos-controls">
                 {props.content}
@@ -52,7 +50,7 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
                     <Neos.Fusion:Loop items={errors} itemName="error" >
                         <li>
                             <span class="neos-help-block">
-                                {I18n.translate(error.code, error, [], props.errorTranslation.source, props.errorTranslation.package)}
+                                {I18n.translate(error.code, error, [], props.translation.error.source, props.translation.error.package)}
                             </span>
                         </li>
                     </Neos.Fusion:Loop>
@@ -66,7 +64,7 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     #
     prototype(Neos.Fusion.Form:FieldComponent) {
         // if no specific name is given the field from the container is reused
-        field = ${this.name ? null : field}
+        @context.field = ${this.name ? Form.createField(form, this.name, this.multiple) : field}
         // if specific id is given the name from the field is rendered as id
         id = ${field.name}
     }

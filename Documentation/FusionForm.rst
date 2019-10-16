@@ -200,4 +200,13 @@ Example::
 Neos.Fusion.Form:Neos.BackendModule.FieldContainer
 --------------------------------------------------
 
-For use in Backend Modules a special component is created that renders
+For use in Backend Modules a special component is created that renders a label and validation results
+for the defined field. The actual input element is passed as afx-content. The module will also override the `field` of
+inner `Neos.Fusion.Form:FieldContainers`_ if they do not have a local `name`.
+
+:name: (string) The fieldname. Use square bracket syntax for nested properties.
+:multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
+
+:label: (string) The label for the field, is translated using `translation.label.package` and `translation.label.source`
+:translation: (array, default {label: {package: 'Neos.Neos', source: 'Modules'}, error: {package: 'Neos.Flow', source: 'ValidationErrors'}}) the translation sources for rendering the labels and errors
+:content: (string) afx content
