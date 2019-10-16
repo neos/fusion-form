@@ -3,7 +3,7 @@ prototype(Neos.Fusion.Form:FieldComponent)  < prototype(Neos.Fusion:Component) {
     #
     # populate field context to be available during prop evaluation
     #
-    @context.field = ${this.field ? this.field : Form.createField(form, this.name, this.multiple)}
+    @context.field = ${Form.createField(form, this.name, this.multiple)}
 
     @propTypes {
         field = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\Field')}
@@ -19,7 +19,6 @@ prototype(Neos.Fusion.Form:FieldComponent)  < prototype(Neos.Fusion:Component) {
     #
     # values that are used to populate the field context
     #
-    field = null
     name = null
     multiple = false
 
