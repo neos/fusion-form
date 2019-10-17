@@ -38,7 +38,7 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
                     <Neos.Fusion:Loop items={errors} itemName="error" >
                         <li>
                             <span class="neos-help-block">
-                                {I18n.translate(error.code, error, [], props.translation.error.source, props.translation.error.package)}
+                                {I18n.translate(error.code, error, [field.value], props.translation.error.source, props.translation.error.package)}
                             </span>
                         </li>
                     </Neos.Fusion:Loop>
