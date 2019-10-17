@@ -71,6 +71,11 @@ To render controls that access the data bound to the form prototypes like
 are used. The relation is established by defining a `name` for the field 
 using square brackets for nesting as inputs do in html. 
 
+There are plenty of different fieldTypes already that can be found in the 
+[Neos.Neos.Form Fusion Documentation](Documentation/FusionForm.rst) but 
+it is also easily possible to create new input-types for project specific
+purposes.
+
 ```
 renderer = afx`
     <Neos.Fusion.Form:Form data.customer={customer}>
@@ -81,17 +86,17 @@ renderer = afx`
 `
 ```
 
-It is possible to create field components with label and error rendering 
-and translating. The prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
-is an example for that. That implements the markup for the Neos Backend.
-
-For the fields that are rendered that way a label is added and translated 
-with `Neos.Neos:Main` while all validation errors are translated using the
-source `Neos.Flow:ValidationErrors` as translation source. 
+It is possible to create field components with translated label and error 
+rendering. The prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
+is an example for which implements the required markup for Neos backend modules.
+Label are added and translated using the translations from `Neos.Neos:Main` 
+and validation errors are translated using the source `Neos.Flow:ValidationErrors` 
+as translation source. 
 
 ATTENTION: `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` should 
-not be used for frontend code and is not adjustable. 
-Instead please create custom versions that implement project specific markup. 
+not be used for frontend code and is not designed to be adjustable at all. 
+Instead use it as a blueprint to create custom versions that implement 
+your project specific markup. 
 
 ```
 renderer = afx`
