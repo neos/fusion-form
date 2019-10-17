@@ -6,18 +6,12 @@ Pure fusion form rendering with afx support!
 Development targets 
 -------------------
 
-The main target for the development of the fusion form package is to make 
-rendering of forms with data binding and error rendering possible in pure 
-fusion with afx. 
-
-The rendering of forms should be extensible by new control types and 
-the generated markup should reusable and allow full control via fusion.
-
-The hidden fields Neos.Flow needs to perform validation, security and 
-persistence magic have to be generated.
-
-Unneeded limitation of the previous fluid forms like binding to a single 
-object should be removed.
+- Form rendering in fusion with afx with data binding 
+- Extensibility and flexibility
+- Enable reusability of form fragments as fusion components 
+- Render hidden fields for Flow validation, security and persistence magic
+- Automatically prefix fieldNames for the current request.namespace 
+- Overcome limitations as binding of forms to a single object
 
 **Important Deviations from Fluid Form ViewHelpers**
 
@@ -26,16 +20,102 @@ stumble over. There are many more deviations but those are breaking
 concept changes you should be aware of.
 
 - Instead of binding a single `object` a `data` DataStructure is bound to the form.
-- The fields use `name` to establish the reference to data and validation instead of `property`.
+- The fields use `name` to establish the reference to data and validation instead of `property` that also has to include the object name.
 - Select options are defined as afx children and not `options`.
+
+Usage
+-----
+
+Forms usually are defined by using the `Neos.Fusion.Form:Form` prototype 
+in afx. The `actionUri` can be passed as a string but since it is 
+predefined as a `Neos.Fusion:UriBuilder` in most cases only the target 
+`actionUri.action` has to be defined and the current `package` and
+`controller` are assumed. By default the form `method` is `post` but 
+other methods can be used aswell. 
+ 
+```
+renderer = afx`
+    <Neos.Fusion.Form:Form actionUri.action="sendOrder">
+
+    </Neos.Fusion.Form:Form>
+`
+```
+
+Since forms are used to manipulate existing data those objects or data structures 
+are bound the form as `data`. The fusion forms allow to manipulate multiple 
+objects at once that are sent to the target controller as separate arguments. 
+
+```
+renderer = afx`
+    <Neos.Fusion.Form:Form data.customer={customer} data.shipmentAddress={shipmentAddress}>
+
+    </Neos.Fusion.Form:Form>
+`
+```
+
+The actual input elements, fieldsets and labels are defined as afx content
+for the form.
+
+```
+renderer = afx`
+    <Neos.Fusion.Form:Form>
+        <fieldset>
+            <legend>Example</legend>
+        </fieldset>
+    </Neos.Fusion.Form:Form>
+`
+```
+
+To render controls that access the data bound to the form prototypes like 
+`Neos.Fusion.Form:Input` that are derived from `Neos.Fusion.Form:FieldComponent`
+are used. The relation is established by defining a `name` for the field 
+using square brackets for nesting as inputs do in html. 
+
+There are plenty of different fieldTypes already that can be found in the 
+[Neos.Neos.Form Fusion Documentation](Documentation/FusionForm.rst) but 
+it is also easily possible to create new input-types for project specific
+purposes.
+
+```
+renderer = afx`
+    <Neos.Fusion.Form:Form data.customer={customer}>
+        <Neos.Fusion.Form:Input name="customer[firstName]" />
+        <Neos.Fusion.Form:Input name="customer[lastName]" />
+        <Neos.Fusion.Form:Button >Submit</Neos.Fusion.Form:Button>
+    </Neos.Fusion.Form:Form>
+`
+```
+
+It is possible to create field components with translated label and error 
+rendering. The prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
+is an example for which implements the required markup for Neos backend modules.
+Label are added and translated using the translations from `Neos.Neos:Main` 
+and validation errors are translated using the source `Neos.Flow:ValidationErrors` 
+as translation source. 
+
+ATTENTION: `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` should 
+not be used for frontend code and is not designed to be adjustable at all. 
+Instead use it as a blueprint to create custom versions that implement 
+your project specific markup. 
+
+```
+renderer = afx`
+    <Neos.Fusion.Form:Form data.customer={customer}>
+        <Neos.Fusion.Form:Neos.BackendModule.FieldContainer name="customer[firstName]">
+            <Neos.Fusion.Form:Input />
+        </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
+        <Neos.Fusion.Form:Button >Submit</Neos.Fusion.Form:Button>
+    </Neos.Fusion.Form:Form>
+`
+```
 
 Fusion prototypes
 -----------------
 
 The full fusion documentation can be found [here](Documentation/FusionForm.rst)
 
-Usage
------
+Examples
+--------
 
 **Frontend**
 
