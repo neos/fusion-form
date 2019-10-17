@@ -14,7 +14,7 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponen
             required={props.required}
             {...props.attributes}
         >
-            {field.value || props.content}
+            {Form.stringifyValue(field.value || props.content || props.value)}
         </textarea>
     `
 }
