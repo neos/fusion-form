@@ -30,7 +30,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
     name = null
     actionUri = Neos.Fusion:UriBuilder
     method = 'post'
-    enctype = 'multipart/form-data'
+    enctype = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
     attributes = Neos.Fusion:DataStructure
 
     #
@@ -57,7 +57,8 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
                 <Neos.Fusion:Join
-                    @if.isNoGetRequest={props.method != 'get'}
+                    @if.isNoGetRequest={String.toLowerCase(props.method) != 'get'}
+                    @if.isSessionPresent={Security.isAuthenticated()}
                 >
                     <input
                         @cache.mode="uncached"
