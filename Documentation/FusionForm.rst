@@ -13,6 +13,7 @@ instantiating the `field` context variable that is available to all the fusion t
 In addition the form component will also:
 - Render hidden `__referrer` fields for the current and parent request to allow Flow to send the request back in case of validation errors.
 - Render hidden `__trustedProperties` fields to enable the Flow property-mapping for the submitted values.
+- Render hidden `__csrfToken` for all forms that do niot use the method `post`.
 - Render hidden `__identity` fields for all fields that are bound to properties of persisted objects.
 - Render hidden `empty` fields for `checkbox` and `submit[multiple]` fields make sure unselected values are send to the controller.
 
@@ -35,7 +36,7 @@ The `form` context is instantiated before all props or content for the form are 
 available to all fields that are rendered inside to access validation errors and previously submitted values once
 a submit failed.
 
-The following properties are accessible via eel-expression in afx:
+The following properties are accessible via `form`:
 :form.request: (\Neos\Flow\Mvc\ActionRequest)
 :form.data: (array) The data structure the form is bound to.
 :form.fieldNamePrefix: (string) The fieldname prefix of the form.
@@ -70,17 +71,16 @@ Example::
 Neos.Fusion.Form:FieldComponent
 -------------------------------
 
-A field component is expected to render an input for a given fieldname. However since the actual
-markup for fields is extensible this prototype does not render actual markup. Instead it populates the
-`field` context variable and establishes the connection to the parent `form` for data-binding abd error
-rendering.
+The field component is a base prototype for creating input rendering prototypes for a given fieldname.
+The prototype populates the `field` context variable and establishes the connection to the parent `form` for
+data-binding and error rendering.
 
 
 :name: (string) The fieldname. Use square bracket syntax for nested properties.
 :multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
 :field: (Field, by default this is null), use this field definition when set.
 
-The following additional props are defined on the fieldComponent to be available in derived types.
+The following additional props are defined on the fieldComponent but are to be used by the derived types.
 
 :type: (string defaults to 'text') The type attribute for the input tag
 :id: (string) The type attribute for the input tag
@@ -93,8 +93,9 @@ The following additional props are defined on the fieldComponent to be available
 The `field` context:
 ````````````````````
 The `field` context is instantiated before the props of the fieldComponent are rendered and makes the following
-properties accessible via eel.
+properties accessible.
 
+The following properties can be accessed via `form`:
 :field.name: (string): The final name for the field with applied `namespacePrefix` from the `form`.
 :field.value: (string|array): The value the field currently has from the `form.data` or `from.submittedValues`.
 :field.multiple: (boolean): Return true when the field may contain multiple values.
@@ -112,6 +113,8 @@ Neos.Fusion.Form:Textfield
 --------------------------
 
 Extends `Neos.Fusion.Form:Input`_ and uses the default type `text`.
+
+:content: (string) the tag content is used as alternate way to specify the `value`
 
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos.Fusion.Form:FieldComponent`_.
 
@@ -176,6 +179,8 @@ Neos.Fusion.Form:Select
 Render a select tag. The options are expected as afx `content`. If the prototype `Neos.Fusion.Form:Select.Option`_
 is used for defining the options the selected state is applied automaticvally by comparing `field.value` with `option.value`.
 
+:content: (string) the select options are passed as content, they may be defined by using `Neos.Fusion.Form:Select.Option`_
+
 The props `name`, `multiple`, `type`, `id`, `class`, `required`, `value`, `attributes` and `form` are inherited from `Neos.Fusion.Form:FieldComponent`_.
 
 Neos.Fusion.Form:Select.Option
@@ -185,7 +190,7 @@ Render an option tag inside a `Neos.Fusion.Form:Select`_.
 
 :value: (mixed) The value the option represents.
 :selected: (mixed) The initial select state that us overridden by `field.value` if this is present.
-:content: (string) The content of the option tag that is displayes as label.
+:content: (string) The content of the option tag that is displayed as label.
 
 Example::
 
@@ -201,7 +206,7 @@ Neos.Fusion.Form:Neos.BackendModule.FieldContainer
 --------------------------------------------------
 
 For use in Backend Modules a special component is created that renders a label and validation results
-for the defined field. The actual input element is passed as afx-content. The module will also override the `field` of
+for the defined field. The actual input elements are passed as afx-content. The module will also override the `field` of
 inner `Neos.Fusion.Form:FieldContainers`_ if they do not have a local `name`.
 
 :name: (string) The fieldname. Use square bracket syntax for nested properties.
@@ -210,3 +215,22 @@ inner `Neos.Fusion.Form:FieldContainers`_ if they do not have a local `name`.
 :label: (string) The label for the field, is translated using `translation.label.package` and `translation.label.source`
 :translation: (array, default {label: {package: 'Neos.Neos', source: 'Modules'}, error: {package: 'Neos.Flow', source: 'ValidationErrors'}}) the translation sources for rendering the labels and errors
 :content: (string) afx content
+
+Example::
+
+    renderer = afx
+        <Neos.Fusion.`Form:Neos.BackendModule.FieldContainer name="user[firstName]" label="user.firstName">
+            <Neos.Fusion.Form:Input />
+        </Neos.Fusion.`Form:Neos.BackendModule.FieldContainer>
+    `
+
+
+In some cases multiple inputs are combined in a single FieldContainer::
+
+    renderer = afx
+        <Neos.Fusion.Form:Neos.BackendModule.FieldContainer name="user[roles]" label="user.role" multiple>
+            <label>Restricted Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:RestrictedEditor" /></label>
+            <label>Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:Editor" /></label>
+            <label>Administrator <Neos.Fusion.Form:Checkbox value="Neos.Neos:Administrator" /></label>
+        </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
+    `
