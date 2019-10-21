@@ -1,0 +1,12 @@
+prototype(Neos.Fusion.Form:FormComponent) {
+    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FormComponentImplementation'
+
+    #
+    # the values are used to populate the `form` context but are not available as `props
+    #
+    form {
+        request = ${request}
+        fieldnamePrefix = null
+        data = Neos.Fusion:DataStructure
+    }
+}

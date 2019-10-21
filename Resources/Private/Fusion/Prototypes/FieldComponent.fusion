@@ -1,31 +1,12 @@
-prototype(Neos.Fusion.Form:FieldComponent)  < prototype(Neos.Fusion:Component) {
+prototype(Neos.Fusion.Form:FieldComponent) {
+    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FieldComponentImplementation'
 
-    @context.field = ${this.field}
-
-    @propTypes {
-        field = ${PropTypes.instanceOf('Neos\Fusion\Form\Domain\Model\Field')}
-        name = ${PropTypes.string}
-        multiple = ${PropTypes.boolean}
-        id = ${PropTypes.string}
-        class = ${PropTypes.string}
-        required = ${PropTypes.boolean}
-        value = ${PropTypes.any}
-        attributes = ${PropTypes.any}
+    #
+    # the values are used to populate the `field` context but are not available as `props
+    #`
+    field {
+        form = ${form}
+        name = null
+        multiple = false
     }
-
-    #
-    # values that are used to populate the field context
-    #
-    name = null
-    multiple = false
-    field = ${Form.createField(form, this.name, this.multiple)}
-
-    #
-    # generic attributes that all fields item components should support
-    #
-    id = null
-    class = null
-    required = false
-    value = null
-    attributes = Neos.Fusion:DataStructure
 }

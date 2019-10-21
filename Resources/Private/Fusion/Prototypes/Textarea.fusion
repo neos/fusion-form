@@ -7,14 +7,10 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponen
 
     renderer = afx`
         <textarea
-            id={props.id}
-            class={props.class}
-            type="text"
             name={field.name}
-            required={props.required}
-            {...props.attributes}
+            {...Array.set(props, 'content' , null)}
         >
-            {Form.stringifyValue(field.value || props.content || props.value)}
+            {Form.stringifyValue(field.value || props.content)}
         </textarea>
     `
 }

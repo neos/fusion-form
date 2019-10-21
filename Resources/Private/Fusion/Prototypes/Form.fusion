@@ -1,37 +1,11 @@
-prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
-
-    @context.form = ${this.form}
-
-    @propTypes {
-        fieldnamePrefix = ${PropTypes.string}
-        data = ${PropTypes.any}
-        actionUri = ${PropTypes.string}
-        method = ${PropTypes.string}
-        enctype = ${PropTypes.string}
-        id = ${PropTypes.string}
-        class = ${PropTypes.string}
-        name = ${PropTypes.string}
-        attributes = ${PropTypes.any}
-        content = ${PropTypes.string}
-    }
-
-    #
-    # values that are used to populate the field context
-    #
-    fieldnamePrefix = null
-    data = Neos.Fusion:DataStructure
-    form = ${Form.createForm(request, this.fieldnamePrefix, this.data)}
+prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
 
     #
     # html attributes for the form
     #
-    id = null
-    class = null
-    name = null
-    actionUri = Neos.Fusion:UriBuilder
+    action = Neos.Fusion:UriBuilder
     method = 'post'
     enctype = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
-    attributes = Neos.Fusion:DataStructure
 
     #
     # form content
@@ -40,13 +14,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
 
     renderer = afx`
         <form
-            id={props.id}
-            class={props.class}
-            name={props.name}
-            action={props.actionUri}
-            method={props.method}
-            enctype={props.enctype}
-            {...props.attributes}
+            {...Array.set(props, 'content', null)}
         >
             <div style="display: none">
                 <Neos.Fusion:Loop

@@ -13,14 +13,13 @@ namespace Neos\Fusion\Form\Domain\Model;
  * source code.
  */
 
-use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Error\Messages\Result;
 use Neos\Flow\Mvc\ActionRequest;
 
 /**
  * Used to output an HTML <form> tag which is targeted at the specified action, in the current controller and package.
  */
-class Form implements ProtectedContextAwareInterface
+class Form
 {
     /**
      * @var ActionRequest
@@ -110,14 +109,5 @@ class Form implements ProtectedContextAwareInterface
             return $this->result->hasErrors();
         }
         return false;
-    }
-
-    /**
-     * @param string $methodName
-     * @return boolean
-     */
-    public function allowsCallOfMethod($methodName)
-    {
-        return true;
     }
 }

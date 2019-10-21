@@ -9,12 +9,9 @@ prototype(Neos.Fusion.Form:Button) < prototype(Neos.Fusion.Form:FieldComponent) 
 
     renderer = afx`
         <button
-            id={props.id}
-            class={props.class}
-            type={props.type}
             name={field.name}
-            value={field.value}
-            {...props.attributes}
+            value={Form.stringifyValue(field.value)}
+            {...Array.set(props, 'content', null)}
         >
             {props.content}
         </button>

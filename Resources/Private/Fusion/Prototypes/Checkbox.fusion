@@ -7,9 +7,6 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
 
     renderer = afx`
         <input
-            id={props.id}
-            class={props.class}
-            required={props.required}
             type="checkbox"
             name={field.name}
             value={Form.stringifyValue(props.value)}
@@ -18,7 +15,7 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
             checked.@process.multiValue.@if.has={field.value && field.multiple}
             checked.@process.singleValue={Form.stringifyValue(field.value) == Form.stringifyValue(props.value)}
             checked.@process.singleValue.@if.has={field.value && !field.multiple}
-            {...props.attributes}
+            {...props}
         />
     `
 
