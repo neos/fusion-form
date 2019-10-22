@@ -1,15 +1,10 @@
 prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:FieldComponent) {
-    @propTypes {
-        content = ${PropTypes.string}
-    }
-
-    content = null
 
     renderer = afx`
         <select
             name={field.name}
             multiple={field.multiple}
-            {...Array.set(props, 'content', null)}
+            {...props.attributes}
         >
             {props.content}
         </select>

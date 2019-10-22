@@ -1,15 +1,18 @@
 prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:FieldComponent) {
     @propTypes {
         type = ${PropTypes.string}
+        value = ${PropTypes.any}
     }
 
     type = 'text'
+    value = null
 
     renderer = afx`
         <input
+            type={props.type}
             name={field.name}
             value={Form.stringifyValue(field.value || props.value)}
-            {...props}
+            {...props.attributes}
         />
     `
 }

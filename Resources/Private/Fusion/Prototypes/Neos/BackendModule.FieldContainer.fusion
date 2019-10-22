@@ -55,7 +55,7 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     # the label for from the FieldContainer references them correctly
     #
     prototype(Neos.Fusion.Form:FieldComponent) {
-        id = ${field.name}
+        attributes.id = ${field.name}
     }
 }
 

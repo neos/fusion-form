@@ -1,17 +1,13 @@
 prototype(Neos.Fusion.Form:Button) < prototype(Neos.Fusion.Form:FieldComponent) {
-    @propTypes {
-        content = ${PropTypes.string}
-        type = ${PropTypes.string}
-    }
 
-    content = ''
     type = 'submit'
 
     renderer = afx`
         <button
+            type={props.type}
             name={field.name}
             value={Form.stringifyValue(field.value)}
-            {...Array.set(props, 'content', null)}
+            {...props.attributes}
         >
             {props.content}
         </button>

@@ -1,11 +1,18 @@
 prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
 
+    @propTypes {
+        attributes = ${PropTypes.dataStructure()}
+        content = ${PropTypes.string}
+    }
+
     #
     # html attributes for the form
     #
-    action = Neos.Fusion:UriBuilder
-    method = 'post'
-    enctype = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
+    attributes = Neos.Fusion:DataStructure {
+        action = Neos.Fusion:UriBuilder
+        method = 'post'
+        enctype = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
+    }
 
     #
     # form content
@@ -14,7 +21,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
 
     renderer = afx`
         <form
-            {...Array.set(props, 'content', null)}
+            {...props.attributes}
         >
             <div style="display: none">
                 <Neos.Fusion:Loop
@@ -25,7 +32,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
                 <Neos.Fusion:Join
-                    @if.isNoGetRequest={String.toLowerCase(props.method) != 'get'}
+                    @if.isNoGetRequest={String.toLowerCase(props.attributes.method) != 'get'}
                     @if.isSessionPresent={Security.isAuthenticated()}
                 >
                     <input

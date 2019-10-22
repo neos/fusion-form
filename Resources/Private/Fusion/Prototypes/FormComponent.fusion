@@ -1,6 +1,12 @@
 prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
+
     @ignoreProperties = ${['form']}
     @context.form = ${Form.createForm(request, this.form.fieldnamePrefix, this.form.data)}
+    @propTypes {
+        form = ${PropTypes.dataStructure({request: PropTypes.instanceof('\\Neos\\Flow\\Mvc\\ActionRequest') , fieldnamePrefix: PropTypes.string, data: PropTypes.any})}
+        attributes = ${PropTypes.dataStructure()}
+        content = ${PropTypes.string}
+    }
 
     #
     # the values are used to populate the `form` context but are not available as `props`
@@ -10,4 +16,14 @@ prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
         fieldnamePrefix = null
         data = Neos.Fusion:DataStructure
     }
+
+    #
+    # attributes to be used by the renderer of derived types
+    #
+    attributes = Neos.Fusion:DataStructure
+
+    #
+    # afx content to be used by the renderer of derived types
+    #
+    content = ''
 }
