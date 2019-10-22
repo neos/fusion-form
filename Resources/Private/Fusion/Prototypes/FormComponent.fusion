@@ -1,10 +1,11 @@
-prototype(Neos.Fusion.Form:FormComponent) {
-    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FormComponentImplementation'
+prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
+    @ignoreProperties = ${['form']}
+    @context.form = ${Form.createForm(request, this.form.fieldnamePrefix, this.form.data)}
 
     #
-    # the values are used to populate the `form` context but are not available as `props
+    # the values are used to populate the `form` context but are not available as `props`
     #
-    form {
+    form = Neos.Fusion:DataStructure {
         request = ${request}
         fieldnamePrefix = null
         data = Neos.Fusion:DataStructure

@@ -1,10 +1,12 @@
-prototype(Neos.Fusion.Form:FieldComponent) {
-    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FieldComponentImplementation'
+prototype(Neos.Fusion.Form:FieldComponent) < prototype(Neos.Fusion:Component) {
+    @ignoreProperties = ${['field']}
+    @context.field = ${(this.field.name || !field) ? Form.createField(form, this.field.name, this.field.multiple) : field}
 
     #
-    # the values are used to populate the `field` context but are not available as `props
-    #`
-    field {
+    # the values are used to populate the `field` context but are not available as `props` if no
+    # fieldname is given an existing `field` from outside is used
+    #
+    field = Neos.Fusion:DataStructure {
         form = ${form}
         name = null
         multiple = false
