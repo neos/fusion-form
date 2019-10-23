@@ -1,24 +1,39 @@
 prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
+
     @propTypes {
+        field = ${PropTypes.dataStructure()}
+        attributes = ${PropTypes.dataStructure()}
         content = ${PropTypes.string}
-        value = ${PropTypes.any}
-        selected = ${PropTypes.boolean}
     }
 
-    selected = false
-    value = null
-    content = null
+    #
+    # the values are used to calculate the `option` value and selected state
+    #
+    field = Neos.Fusion:DataStructure {
+        value = null
+    }
+
+    #
+    # attributes for the field to be used by the renderer of derived types
+    #
+    attributes = Neos.Fusion:DataStructure
+
+    #
+    # afx content to be used by the renderer of derived types
+    #
+    content = ''
 
     renderer = afx`
        <option
-           value={Form.stringifyValue(props.value)}
-           selected={props.selected}
-           selected.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.value)) > -1}
+           value={Form.stringifyValue(props.field.value)}
+           selected={false}
+           selected.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.field.value)) > -1}
            selected.@process.multiValue.@if.has={field.value && field.multiple}
-           selected.@process.singleValue={Form.stringifyValue(props.value) == Form.stringifyValue(field.value)}
+           selected.@process.singleValue={Form.stringifyValue(props.field.value) == Form.stringifyValue(field.value)}
            selected.@process.singleValue.@if.has={field.value && !field.multiple}
+           {...props.attributes}
        >
-           {props.content || props.value}
+           {props.content || props.field.value}
        </option>
     `
 }

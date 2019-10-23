@@ -146,9 +146,9 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
             <Neos.Fusion.Form:Input attributes.id="lastName" field.name="customer[lastName]" />
     
             <label>Shipment method</label>
-            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" value="ups" />UPS</label>
-            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" value="dhl" />DHL</label>
-            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" value="pickup" />Pickup</label>
+            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" field.value="ups" />UPS</label>
+            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" field.value="dhl" />DHL</label>
+            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" field.value="pickup" />Pickup</label>
     
             <label for="street">Street</label>
             <Neos.Fusion.Form:Input attributes.id="street" field.name="customer[street]" />
@@ -158,11 +158,11 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
     
             <label for="country" >Country</label>
             <Neos.Fusion.Form:Select attributes.id=country field.name="shipment[country]">
-                <Neos.Fusion.Form:Select.Option value="de" >Germany</Neos.Fusion.Form:Select.Option>
-                <Neos.Fusion.Form:Select.Option value="at" >Austria</Neos.Fusion.Form:Select.Option>
-                <Neos.Fusion.Form:Select.Option value="ch" > Switzerland </Neos.Fusion.Form:Select.Option>
-            </Neos.Fusion.Form:Select>    
-                
+                <Neos.Fusion.Form:Select.Option field.value="de" >Germany</Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option field.value="at" >Austria</Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option field.value="ch" > Switzerland </Neos.Fusion.Form:Select.Option>
+            </Neos.Fusion.Form:Select>
+            
             <Neos.Fusion.Form:Button>Submit Order</Neos.Fusion.Form:Button>
 
         </Neos.Fusion.Form:Form>
@@ -221,17 +221,17 @@ prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
             <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[roles]" label="user.role" field.multiple>
-                <label>Restricted Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:RestrictedEditor" /></label>
-                <label>Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:Editor" /></label>
-                <label>Administrator <Neos.Fusion.Form:Checkbox value="Neos.Neos:Administrator" /></label>
+                <label>Restricted Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" /></label>
+                <label>Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" /></label>
+                <label>Administrator <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" /></label>
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
             <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[language]" label="user.language" >
                 <Neos.Fusion.Form:Select>
-                    <Neos.Fusion.Form:Select.Option value="en" >Englisch</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option value="de" >Deutsch</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option value="ru" >Russian</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option value="kg" >Klingon</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option field.value="en" >Englisch</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option field.value="de" >Deutsch</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option field.value="ru" >Russian</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option field.value="kg" >Klingon</Neos.Fusion.Form:Select.Option>
                 </Neos.Fusion.Form:Select>
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
@@ -335,9 +335,9 @@ prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldCompone
             </Vendor.Site:Form.FieldContainer>
 
             <Vendor.Site:Form.FieldContainer field.name="user[roles]" field.multiple label="user.role" >
-                <label>Restricted Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:RestrictedEditor" /></label>
-                <label>Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:Editor" /></label>
-                <label>Administrator <Neos.Fusion.Form:Checkbox value="Neos.Neos:Administrator" /></label>
+                <label>Restricted Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" /></label>
+                <label>Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" /></label>
+                <label>Administrator <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" /></label>
             </Vendor.Site:Form.FieldContainer>
         </Neos.Fusion.Form:Form>
     `

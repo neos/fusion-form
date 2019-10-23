@@ -1,21 +1,14 @@
 prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponent) {
-    @propTypes {
-        value = ${PropTypes.any}
-        checked = ${PropTypes.boolean}
-    }
-
-    value = null
-    checked = false
 
     renderer = afx`
         <input
             type="checkbox"
             name={field.name}
-            value={Form.stringifyValue(props.value)}
-            checked={props.checked}
-            checked.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.value)) > -1}
+            value={Form.stringifyValue(props.field.value)}
+            checked={false}
+            checked.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.field.value)) > -1}
             checked.@process.multiValue.@if.has={field.value && field.multiple}
-            checked.@process.singleValue={Form.stringifyValue(field.value) == Form.stringifyValue(props.value)}
+            checked.@process.singleValue={Form.stringifyValue(field.value) == Form.stringifyValue(props.field.value)}
             checked.@process.singleValue.@if.has={field.value && !field.multiple}
             {...props.attributes}
         />

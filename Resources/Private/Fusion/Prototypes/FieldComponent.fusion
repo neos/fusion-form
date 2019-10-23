@@ -1,6 +1,5 @@
 prototype(Neos.Fusion.Form:FieldComponent) < prototype(Neos.Fusion:Component) {
 
-    @ignoreProperties = ${['field']}
     @context.field = ${(this.field.name || !field) ? Form.createField(form, this.field.name, this.field.multiple) : field}
     @propTypes {
         field = ${PropTypes.dataStructure({form: PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Form') , name: PropTypes.string, multiple: PropTypes.boolean})}
@@ -9,12 +8,12 @@ prototype(Neos.Fusion.Form:FieldComponent) < prototype(Neos.Fusion:Component) {
     }
 
     #
-    # the values are used to populate the `field` context but are not available as `props` if no
-    # fieldname is given an existing `field` from outside is used
+    # the values are used to populate the `field` context for magic and `props.field`
     #
     field = Neos.Fusion:DataStructure {
         form = ${form}
         name = null
+        value = null
         multiple = false
     }
 

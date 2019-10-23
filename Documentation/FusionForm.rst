@@ -46,6 +46,7 @@ data-binding and error rendering.
 :field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:FormComponent`_.
 :field.name: (string) The fieldname, use square bracket syntax for nested properties.
 :field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
+:field.value: (any, default = null) The target value of fields (for checkbox, radio and select.option)
 
 Attributes to be used by the renderer of derived types:
 
@@ -106,7 +107,7 @@ Example::
                 <Neos.Fusion.Form:Input />
             </Neos.Fusion.Form:FieldContainer>
 
-            <Neos.Fusion.Form:Submit value="submit" />
+            <Neos.Fusion.Form:Submit field.value="submit" />
         </Neos.Fusion.Form:Form>
     `
 
@@ -145,23 +146,15 @@ Neos.Fusion.Form:Checkbox
 
 Extend `Neos.Fusion.Form:FieldComponent`_ to render an input of type "checkbox".
 
-:checked: (boolean, default = false) Wether this box is checked by default.
-:value: (any, default = null) The target value of the checkbox
-
 Neos.Fusion.Form:Radio
 ----------------------
 
 Extend `Neos.Fusion.Form:FieldComponent`_ to render an input of type "radio".
 
-:checked: (boolean, default = false) Wether this box is checked by default.
-:value: (any, default = null) The target value of the radio box
-
 Neos.Fusion.Form:Textarea
 -------------------------
 
 Extend `Neos.Fusion.Form:FieldComponent`_ to render an textarea tag.
-
-:content: (content, default = '') The default content of the textarea.
 
 Neos.Fusion.Form:Select
 -----------------------
@@ -170,24 +163,22 @@ A `Neos.Fusion.Form:FieldComponent`_ that renders a select tag. The options are 
 If the prototype `Neos.Fusion.Form:Select.Option`_ is used for defining the options the selected state is
 applied automaticvally by comparing `field.value` with `option.value`.
 
-:content: (string, default '') the select options are passed as content, they may be defined by using `Neos.Fusion.Form:Select.Option`_
-
 Neos.Fusion.Form:Select.Option
 ------------------------------
 
 Render an option tag inside a `Neos.Fusion.Form:Select`_.
 
-:value: (mixed) The value the option represents.
-:selected: (mixed) The initial select state that us overridden by `field.value` if this is present.
+:field.value: (mixed) The value the option represents.
+:attributes: (string), all props are rendered as attributes to the option tag
 :content: (string) The content of the option tag that is displayed as label.
 
 Example::
 
     renderer = afx`
         <Neos.Fusion.Form:Select field.name="user[gender]">
-            <Neos.Fusion.Form:Select.Option value="male">Male</Neos.Fusion.Form:Select.Option>
-            <Neos.Fusion.Form:Select.Option value="female">Female</Neos.Fusion.Form:Select.Option>
-            <Neos.Fusion.Form:Select.Option value="diverse">Diverse</Neos.Fusion.Form:Select.Option>
+            <Neos.Fusion.Form:Select.Option field.value="male">Male</Neos.Fusion.Form:Select.Option>
+            <Neos.Fusion.Form:Select.Option field.value="female">Female</Neos.Fusion.Form:Select.Option>
+            <Neos.Fusion.Form:Select.Option field.value="diverse">Diverse</Neos.Fusion.Form:Select.Option>
         </Neos.Fusion.Form:Select>
     `
 
@@ -218,8 +209,8 @@ In some cases multiple inputs are combined in a single FieldContainer::
 
     renderer = afx
         <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[roles]" label="user.role" multiple>
-            <label>Restricted Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:RestrictedEditor" /></label>
-            <label>Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:Editor" /></label>
-            <label>Administrator <Neos.Fusion.Form:Checkbox value="Neos.Neos:Administrator" /></label>
+            <label>Restricted Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" /></label>
+            <label>Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" /></label>
+            <label>Administrator <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" /></label>
         </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
     `

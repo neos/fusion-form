@@ -1,6 +1,5 @@
 prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
 
-    @ignoreProperties = ${['form']}
     @context.form = ${Form.createForm(request, this.form.fieldnamePrefix, this.form.data)}
     @propTypes {
         form = ${PropTypes.dataStructure({request: PropTypes.instanceof('\\Neos\\Flow\\Mvc\\ActionRequest') , fieldnamePrefix: PropTypes.string, data: PropTypes.any})}
@@ -9,7 +8,7 @@ prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
     }
 
     #
-    # the values are used to populate the `form` context but are not available as `props`
+    # the values are used to populate the `form` context for magic and `props.field`
     #
     form = Neos.Fusion:DataStructure {
         request = ${request}
