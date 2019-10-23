@@ -10,9 +10,15 @@ Neos.Fusion.Form:FormComponent
 The Form component is a base prototype for rendering forms in afx. The prototype populates the
 `form` context variable that is available to all the fusion that is rendered as `content`.
 
-:form.request: (ActionRequest, defaults null) The data the form is bound to. Can contain objects, scalar and nested values.
+:form: (DataStructure) used to populate the `form` context but are not available as `props`
+:form.request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
+
+Attributes to be used by the renderer of derived types:
+
+:attributes: (DataStructure) form attributes, will override all automatically rendered ones
+:content: (string) form content, supported where needed
 
 The FormComponent does not define any rendering and extended props like `name` or `class`.
 It is up to derived prototypes like `Neos.Fusion.Form:Form`_ to implement the renderer.
@@ -36,9 +42,15 @@ The field component is a base prototype for creating input rendering prototypes 
 The prototype populates the `field` context variable and establishes the connection to the parent `form` for
 data-binding and error rendering.
 
+:form: (DataStructure) used to populate the `field` context but are not available as `props`
 :field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:FormComponent`_.
 :field.name: (string) The fieldname, use square bracket syntax for nested properties.
 :field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
+
+Attributes to be used by the renderer of derived types:
+
+:attributes: (DataStructure) input attributes, will override all automatically rendered ones
+:content: (string) field content, supported where needed
 
 The fieldComponent does not define any rendering and extended props like `placeholder` or `class`.
 It is up to derived prototypes like `Neos.Fusion.Form:Input`_ to implement the renderer.
@@ -66,21 +78,18 @@ In addition the form component will also:
 - Render hidden `__identity` fields for all fields that are bound to properties of persisted objects.
 - Render hidden `empty` fields for `checkbox` and `submit[multiple]` fields make sure unselected values are send to the controller.
 
+:form: (DataStructure) see `Neos.Fusion.Form:FormComponent`_
+:attributes: (string), all props are rendered as attributes to the form tag
 :content: (string, defaults to '') afx content with the form controls
-:action: (string, defaults to `Neos.Fusion:UriBuilder`)
-:method: (string, defaults to 'post')
-:enctype: (string, defaults to 'multipart/form-data')
-:__all__: (string), all props are rendered as attributes to the form tag
 
-Inherited from `Neos.Fusion.Form:FormComponent`_:
-:form.request: (ActionRequest, defaults null) The data the form is bound to. Can contain objects, scalar and nested values.
-:form.namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
-:form.data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
+:actionUri: (string, default Neos.Fusion:UriBuilder)
+:method: (string, default ='post')
+:enctype: (string, default ='multipart/form-data')
 
 Example::
 
     afx`
-        <Neos.Fusion.Form:Form form.data.customer={customer} form.data.deliveryAddress={deliveryAddress} action.action="submit">
+        <Neos.Fusion.Form:Form form.data.customer={customer} form.data.deliveryAddress={deliveryAddress} actionUri.action="submit">
             <Neos.Fusion.Form:FieldContainer field.name="user[firstName]" label="First Name">
                 <Neos.Fusion.Form:Input />
             </Neos.Fusion.Form:FieldContainer>
@@ -105,8 +114,6 @@ Neos.Fusion.Form:Input
 ----------------------
 
 The `Neos.Fusion.Form:Input`_ component extends the `Neos.Fusion.Form:FieldComponent`_ and renders an input-tag.
-
-:__all__: (string), all props are rendered as attributes to the input tag
 
 Neos.Fusion.Form:Textfield
 --------------------------
@@ -139,7 +146,7 @@ Neos.Fusion.Form:Checkbox
 Extend `Neos.Fusion.Form:FieldComponent`_ to render an input of type "checkbox".
 
 :checked: (boolean, default = false) Wether this box is checked by default.
-:__all__: (string), all props are rendered as attributes to the input tag
+:value: (any, default = null) The target value of the checkbox
 
 Neos.Fusion.Form:Radio
 ----------------------
@@ -147,7 +154,7 @@ Neos.Fusion.Form:Radio
 Extend `Neos.Fusion.Form:FieldComponent`_ to render an input of type "radio".
 
 :checked: (boolean, default = false) Wether this box is checked by default.
-:__all__: (string), all props are rendered as attributes to the input tag
+:value: (any, default = null) The target value of the radio box
 
 Neos.Fusion.Form:Textarea
 -------------------------
@@ -155,7 +162,6 @@ Neos.Fusion.Form:Textarea
 Extend `Neos.Fusion.Form:FieldComponent`_ to render an textarea tag.
 
 :content: (content, default = '') The default content of the textarea.
-:__all__: (string), all props are rendered as attributes to the input tag
 
 Neos.Fusion.Form:Select
 -----------------------
@@ -165,7 +171,6 @@ If the prototype `Neos.Fusion.Form:Select.Option`_ is used for defining the opti
 applied automaticvally by comparing `field.value` with `option.value`.
 
 :content: (string, default '') the select options are passed as content, they may be defined by using `Neos.Fusion.Form:Select.Option`_
-:__all__: (string), all props are rendered as attributes to the input tag
 
 Neos.Fusion.Form:Select.Option
 ------------------------------
@@ -198,6 +203,7 @@ inner `Neos.Fusion.Form:FieldContainers`_ if they do not have a local `name`.
 
 :label: (string) The label for the field, is translated using `translation.label.package` and `translation.label.source`
 :translation: (array, default {label: {package: 'Neos.Neos', source: 'Modules'}, error: {package: 'Neos.Flow', source: 'ValidationErrors'}}) the translation sources for rendering the labels and errors
+:attributes: (DataStructure) attributes for the container tag
 :content: (string) afx content
 
 Example::
@@ -208,11 +214,10 @@ Example::
         </Neos.Fusion.`Form:Neos.BackendModule.FieldContainer>
     `
 
-
 In some cases multiple inputs are combined in a single FieldContainer::
 
     renderer = afx
-        <Neos.Fusion.Form:Neos.BackendModule.FieldContainer name="user[roles]" label="user.role" multiple>
+        <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[roles]" label="user.role" multiple>
             <label>Restricted Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:RestrictedEditor" /></label>
             <label>Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:Editor" /></label>
             <label>Administrator <Neos.Fusion.Form:Checkbox value="Neos.Neos:Administrator" /></label>

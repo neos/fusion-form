@@ -6,12 +6,13 @@ Pure fusion form rendering with afx support!
 Development targets 
 -------------------
 
-- Form rendering in fusion with afx with data binding 
+- Form rendering in fusion with afx and data binding 
 - Extensibility and flexibility
 - Enable reusability of form fragments as fusion components 
-- Render hidden fields for Flow validation, security and persistence magic
+- Render hidden fields for validation, security and persistence magic
 - Automatically prefix fieldNames for the current request.namespace 
 - Overcome limitations as binding of forms to a single object
+- Make the form magic more understandable
 
 **Important Deviations from Fluid Form ViewHelpers**
 
@@ -20,22 +21,24 @@ stumble over. There are many more deviations but those are breaking
 concept changes you should be aware of.
 
 - Instead of binding a single `object` a `data` DataStructure is bound to the form.
-- The fields use `name` to establish the reference to data and validation instead of `property` that also has to include the object name.
-- Select options are defined as afx children and not `options`.
+- Form data-binding is defined via `form.data.object={object}` instead of `objectName` and `object`.
+- Field data-binding is defined vis `field.name="object[title]"` with the object name and square brackets for nesting.
+- Data binding with `property` path syntax is not supported.
+- Select options and groups are defined directly as afx `content` and not `options`.
 
 Usage
 -----
 
 Forms usually are defined by using the `Neos.Fusion.Form:Form` prototype 
-in afx. The `action` can be passed as a string but since it is 
-predefined as a `Neos.Fusion:UriBuilder` in most cases only the target 
-`action.action` has to be defined and the current `package` and
-`controller` are assumed. By default the form `method` is `post` but 
+in afx. The `actionUri` can be passed as a string but since it is 
+predefined as a `Neos.Fusion:UriBuilder` so in most cases only the target 
+`action.action` has to be defined. The current `package` and
+`controller` are assumed automatically. By default the form `method` is `post` but 
 other methods can be used aswell. 
  
 ```
 renderer = afx`
-    <Neos.Fusion.Form:Form action.action="sendOrder" action.controller="Order" >
+    <Neos.Fusion.Form:Form actionUri.action="sendOrder" actionUri.controller="Order" >
 
     </Neos.Fusion.Form:Form>
 `
@@ -58,18 +61,21 @@ for the form.
 
 ```
 renderer = afx`
-    <Neos.Fusion.Form:Form>
+    <Neos.Fusion.Form:Form form.data.customer={customer}>
         <fieldset>
-            <legend>Example</legend>
+            <legend for="example">Example</legend>
+            <input type="text" name="title" />
         </fieldset>
     </Neos.Fusion.Form:Form>
 `
 ```
 
-To render controls that access the data bound to the fusion prototypes like 
-`Neos.Fusion.Form:Input` that are derived from `Neos.Fusion.Form:FieldComponent`
-are used. The relation is established by defining a `field.name` for the field 
-using square brackets for nesting as inputs do in html. 
+While html inputs can be used the provide no magic like data-binding and 
+automatic namespaces. 
+
+To render controls that access the data bound to the form prototypes like 
+`Neos.Fusion.Form:Input` are used. Thoise are derived from `Neos.Fusion.Form:FieldComponent`
+which is responsible for establishing the relation between form and field. 
 
 There are plenty of different fieldTypes already that can be found in the 
 [Neos.Neos.Form Fusion Documentation](Documentation/FusionForm.rst) but 
@@ -134,10 +140,10 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
         <Neos.Fusion.Form:Form form.data.customer={props.customer} form.data.shipment={props.shipment} action.action={props.targetAction} >
 
             <label for="firstName" >First Name</label>	
-            <Neos.Fusion.Form:Input id="firstName" field.name="customer[lastName]" />
+            <Neos.Fusion.Form:Input attributes.id="firstName" field.name="customer[lastName]" />
     
             <label for="lastName">Last Name</label>
-            <Neos.Fusion.Form:Input id="lastName" field.name="customer[lastName]" />
+            <Neos.Fusion.Form:Input attributes.id="lastName" field.name="customer[lastName]" />
     
             <label>Shipment method</label>
             <label><Neos.Fusion.Form:Radio field.name="shipment[method]" value="ups" />UPS</label>
@@ -145,13 +151,13 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
             <label><Neos.Fusion.Form:Radio field.name="shipment[method]" value="pickup" />Pickup</label>
     
             <label for="street">Street</label>
-            <Neos.Fusion.Form:Input id="street" field.name="customer[street]" />
+            <Neos.Fusion.Form:Input attributes.id="street" field.name="customer[street]" />
             
             <label for="city">City</label>
-            <Neos.Fusion.Form:Input id="city" field.name="customer[city]" />
+            <Neos.Fusion.Form:Input attributes.id="city" field.name="customer[city]" />
     
             <label for="country" >Country</label>
-            <Neos.Fusion.Form:Select id=country field.name="shipment[country]">
+            <Neos.Fusion.Form:Select attributes.id=country field.name="shipment[country]">
                 <Neos.Fusion.Form:Select.Option value="de" >Germany</Neos.Fusion.Form:Select.Option>
                 <Neos.Fusion.Form:Select.Option value="at" >Austria</Neos.Fusion.Form:Select.Option>
                 <Neos.Fusion.Form:Select.Option value="ch" > Switzerland </Neos.Fusion.Form:Select.Option>
@@ -169,7 +175,7 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
 Forms for backend modules basically work the same as in the frontend 
 but the additional prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
 can be used to render fields with translated labels and error messages
-using the dafault markup of the neos backend.
+using the dafault markup of the Neos backend.
 
 HINT: To render a backend module with fusion you have to set the 
 `defaultViwObjectName` to the `Neos\Fusion\View\FusionView::class` in the
@@ -204,7 +210,7 @@ prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
     renderer = afx`
         <h2>{title}</h2>
 
-        <Neos.Fusion.Form:Form form.data.user={user} action.action={targetAction} >
+        <Neos.Fusion.Form:Form form.data.user={user} actionUri.action={targetAction} >
 
             <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[firstName]" label="user.firstName">
                 <Neos.Fusion.Form:Input />
@@ -248,7 +254,7 @@ and implement the renderer you need.
 For the rendering you have access to the `field` in the fusion context which 
 allows you to get the current `value`. You should use this value to 
 access bound data and values that were already submitted. The `field.value`
-hast to be stringified for the html rendering as the bound data may be of any
+has to be stringified for the html rendering as the bound data may be of any
 type. 
 
 HINT: It is recommended to render all given props other than `content` as attributes 
@@ -256,12 +262,10 @@ of the control tag. This allows to assign classes, ids or data-attributes easily
 
 ```
 prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponent) {
-    content = ''
-
     renderer = afx`
         <textarea
             name={field.name}
-            {...Array.set(props, 'content', null)}
+            {...props.attributes}
         >
             {Form.stringifyValue(field.value || props.content)}
         </textarea>
@@ -309,7 +313,7 @@ prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldCompone
     # the label for from the FieldContainer references them correctly 
     #
     prototype(Neos.Fusion.Form:FieldComponent) {
-        id = ${field.name}
+        attributes.id = ${field.name}
     }
 }
 ```

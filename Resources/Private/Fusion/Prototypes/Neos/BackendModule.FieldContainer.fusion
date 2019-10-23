@@ -12,6 +12,15 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     # label and afx content
     #
     label = null
+
+    #
+    # attributes for the container
+    #
+    attributes = Neos.Fusion:DataStructure
+
+    #
+    # container content
+    #
     content = null
 
     #
@@ -29,7 +38,7 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     }
 
     renderer = afx`
-        <div class={field.errors ? "neos-control-group neos-error" : "neos-control-group"}>
+        <div class={field.errors ? "neos-control-group neos-error" : "neos-control-group"} {...props.attributes} >
             <label class="neos-control-label" for={field.name} @if.has={props.label}>
                 {I18n.translate(props.label, props.label, [], props.translation.label.source, props.translation.label.package)}
             </label>
