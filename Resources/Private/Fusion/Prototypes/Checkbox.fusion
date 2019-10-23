@@ -1,17 +1,34 @@
 prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponent) {
 
-    renderer = afx`
-        <input
-            type="checkbox"
-            name={field.name}
-            value={Form.stringifyValue(props.field.value)}
-            checked={false}
-            checked.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.field.value)) > -1}
-            checked.@process.multiValue.@if.has={field.value && field.multiple}
-            checked.@process.singleValue={Form.stringifyValue(field.value) == Form.stringifyValue(props.field.value)}
-            checked.@process.singleValue.@if.has={field.value && !field.multiple}
-            {...props.attributes}
-        />
-    `
+    renderer = Neos.Fusion:Component {
+
+        #
+        # pass down props
+        #
+        field = ${props.field}
+        attributes = ${props.atttributes}
+        content = ${props.content}
+
+        #
+        # the `checked` state is calculated outside the renderer to allow` overriding via `attributes`
+        #
+        checked = null
+        checked.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.field.value)) > -1}
+        checked.@process.checkMultiValue.@if.hasValue = ${field.value}
+        checked.@process.checkMultiValue.@if.isMultiple = ${field.multiple}
+        checked.@process.checkSingleValue = ${Form.stringifyValue(field.value) == Form.stringifyValue(props.field.value)}
+        checked.@process.checkSingleValue.@if.hasValue = ${field.value}
+        checked.@process.checkSingleValue.@if.isSingle = ${!field.multiple}
+
+        renderer = afx`
+            <input
+                type="checkbox"
+                name={field.name}
+                value={Form.stringifyValue(props.field.value)}
+                checked={props.checked}
+                {...props.attributes}
+            />
+        `
+    }
 
 }

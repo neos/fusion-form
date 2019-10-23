@@ -23,17 +23,34 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
     #
     content = ''
 
-    renderer = afx`
-       <option
-           value={Form.stringifyValue(props.field.value)}
-           selected={false}
-           selected.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.field.value)) > -1}
-           selected.@process.multiValue.@if.has={field.value && field.multiple}
-           selected.@process.singleValue={Form.stringifyValue(props.field.value) == Form.stringifyValue(field.value)}
-           selected.@process.singleValue.@if.has={field.value && !field.multiple}
-           {...props.attributes}
-       >
-           {props.content || props.field.value}
-       </option>
-    `
+    renderer = Neos.Fusion:Component {
+
+        #
+        # pass down props
+        #
+        field = ${props.field}
+        attributes = ${props.atttributes}
+        content = ${props.content}
+
+        #
+        # the `selected` state is calculated outside the renderer to allow` overriding via `attributes`
+        #
+        selected = null
+        selected.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.field.value)) > -1}
+        selected.@process.checkMultiValue.@if.hasValue = ${field.value}
+        selected.@process.checkMultiValue.@if.isMultiple = ${field.multiple}
+        selected.@process.checkSingleValue = ${Form.stringifyValue(props.field.value) == Form.stringifyValue(field.value)}
+        selected.@process.checkSingleValue.@if.hasValue = ${field.value}
+        selected.@process.checkSingleValue.@if.isSingle = ${!field.multiple}
+
+        renderer = afx`
+           <option
+               value={Form.stringifyValue(props.field.value)}
+               selected={props.selected}
+               {...props.attributes}
+           >
+               {props.content || props.field.value}
+           </option>
+        `
+    }
 }
