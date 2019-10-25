@@ -5,10 +5,6 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
         content = ${PropTypes.string}
     }
 
-    actionUri = Neos.Fusion:UriBuilder
-    method = 'post'
-    enctype = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
-
     #
     # html attributes for the form
     #
@@ -21,9 +17,9 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
 
     renderer = afx`
         <form
-            action={props.actionUri}
-            method={props.method}
-            enctype={props.enctype}
+            action={props.form.target}
+            method={props.form.method}
+            enctype={props.form.encoding}
             {...props.attributes}
         >
             <div style="display: none">
@@ -35,7 +31,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
                 <Neos.Fusion:Join
-                    @if.isNoGetRequest={String.toLowerCase(props.method) != 'get'}
+                    @if.isNoGetRequest={String.toLowerCase(props.form.method) != 'get'}
                     @if.isSessionPresent={Security.isAuthenticated()}
                 >
                     <input

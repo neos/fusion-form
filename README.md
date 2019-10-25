@@ -30,15 +30,15 @@ Usage
 -----
 
 Forms usually are defined by using the `Neos.Fusion.Form:Form` prototype 
-in afx. The `actionUri` can be passed as a string but since it is 
+in afx. The `form.target` can be passed as a string but since it is 
 predefined as a `Neos.Fusion:UriBuilder` so in most cases only the target 
-`action.action` has to be defined. The current `package` and
-`controller` are assumed automatically. By default the form `method` is `post` but 
+`form.target.action` has to be defined. The current `package` and
+`controller` are assumed automatically. By default the `form.method` is `post` but 
 other methods can be used aswell. 
  
 ```
 renderer = afx`
-    <Neos.Fusion.Form:Form actionUri.action="sendOrder" actionUri.controller="Order" >
+    <Neos.Fusion.Form:Form form.target.action="sendOrder" form.target.controller="Order" >
 
     </Neos.Fusion.Form:Form>
 `
@@ -70,7 +70,7 @@ renderer = afx`
 `
 ```
 
-While html inputs can be used the provide no magic like data-binding and 
+While html inputs can be used they provide no magic like data-binding and 
 automatic namespaces. 
 
 To render controls that access the data bound to the form prototypes like 
@@ -210,7 +210,7 @@ prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
     renderer = afx`
         <h2>{title}</h2>
 
-        <Neos.Fusion.Form:Form form.data.user={user} actionUri.action={targetAction} >
+        <Neos.Fusion.Form:Form form.data.user={user} form.target.action={targetAction} >
 
             <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[firstName]" label="user.firstName">
                 <Neos.Fusion.Form:Input />

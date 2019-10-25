@@ -14,6 +14,9 @@ The Form component is a base prototype for rendering forms in afx. The prototype
 :form.request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
+:form.target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
+:form.method:  (string, default to `post`) The form method.
+:form.encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.
 
 Attributes to be used by the renderer of derived types:
 
@@ -75,7 +78,7 @@ responsible for rendering the actual form.
 In addition the form component will also:
 - Render hidden `__referrer` fields for the current and parent request to allow Flow to send the request back in case of validation errors.
 - Render hidden `__trustedProperties` fields to enable the Flow property-mapping for the submitted values.
-- Render hidden `__csrfToken` for all forms that do niot use the method `post`.
+- Render hidden `__csrfToken` for all forms that do not use the method `post`.
 - Render hidden `__identity` fields for all fields that are bound to properties of persisted objects.
 - Render hidden `empty` fields for `checkbox` and `submit[multiple]` fields make sure unselected values are send to the controller.
 
@@ -83,14 +86,10 @@ In addition the form component will also:
 :attributes: (string), all props are rendered as attributes to the form tag
 :content: (string, defaults to '') afx content with the form controls
 
-:actionUri: (string, default Neos.Fusion:UriBuilder)
-:method: (string, default ='post')
-:enctype: (string, default ='multipart/form-data')
-
 Example::
 
     afx`
-        <Neos.Fusion.Form:Form form.data.customer={customer} form.data.deliveryAddress={deliveryAddress} actionUri.action="submit">
+        <Neos.Fusion.Form:Form form.data.customer={customer} form.data.deliveryAddress={deliveryAddress} form.target.action="submit">
             <Neos.Fusion.Form:FieldContainer field.name="user[firstName]" label="First Name">
                 <Neos.Fusion.Form:Input />
             </Neos.Fusion.Form:FieldContainer>
