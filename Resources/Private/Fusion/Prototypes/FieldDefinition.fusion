@@ -1,0 +1,17 @@
+prototype(Neos.Fusion.Form:FieldDefinition) {
+    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FieldDefinition'
+
+    @propTypes {
+        form = ${PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Form')}
+        field = ${PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Field')}
+        name = ${PropTypes.string}
+        value = ${PropTypes.any}
+        multiple = ${PropTypes.boolean}
+    }
+
+    form = ${form}
+    field = ${field}
+    name = null
+    value = null
+    multiple = false
+}

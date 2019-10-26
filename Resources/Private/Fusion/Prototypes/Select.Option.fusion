@@ -1,7 +1,17 @@
 prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
 
+    #
+    # ensure the `option`-context is evaluated first so it is available for calculating other `props`
+    #
+    @context.option = ${this.option}
+
+    #
+    # `option` is excluded from `props`, for beeing in line with `form` and `field`
+    #
+    @ignoreProperties = ${['option']}
+
     @propTypes {
-        field = ${PropTypes.dataStructure()}
+        option = ${PropTypes.dataStructure({value: propTypes.any})}
         attributes = ${PropTypes.dataStructure()}
         content = ${PropTypes.string}
     }
@@ -9,7 +19,7 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
     #
     # the values are used to calculate the `option` value and selected state
     #
-    field = Neos.Fusion:DataStructure {
+    option = Neos.Fusion:DataStructure {
         value = null
     }
 
@@ -28,7 +38,6 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
         #
         # pass down props
         #
-        field = ${props.field}
         attributes = ${props.atttributes}
         content = ${props.content}
 
@@ -36,20 +45,20 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
         # the `selected` state is calculated outside the renderer to allow` overriding via `attributes`
         #
         selected = null
-        selected.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.field.value)) > -1}
+        selected.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(option.value)) > -1}
         selected.@process.checkMultiValue.@if.hasValue = ${field.value}
         selected.@process.checkMultiValue.@if.isMultiple = ${field.multiple}
-        selected.@process.checkSingleValue = ${Form.stringifyValue(props.field.value) == Form.stringifyValue(field.value)}
+        selected.@process.checkSingleValue = ${Form.stringifyValue(field.value) == Form.stringifyValue(option.value)}
         selected.@process.checkSingleValue.@if.hasValue = ${field.value}
         selected.@process.checkSingleValue.@if.isSingle = ${!field.multiple}
 
         renderer = afx`
            <option
-               value={Form.stringifyValue(props.field.value)}
+               value={Form.stringifyValue(option.value)}
                selected={props.selected}
                {...props.attributes}
            >
-               {props.content || props.field.value}
+               {props.content || option.value}
            </option>
         `
     }

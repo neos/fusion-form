@@ -12,7 +12,8 @@ Development targets
 - Render hidden fields for validation, security and persistence magic
 - Automatically prefix fieldNames for the current request.namespace 
 - Overcome limitations as binding of forms to a single object
-- Make the form magic more understandable
+- Clear separation of automation and magic for understandable results
+- Allow explicit overriding of all magic 
 
 **Important Deviations from Fluid Form ViewHelpers**
 
@@ -158,9 +159,9 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
     
             <label for="country" >Country</label>
             <Neos.Fusion.Form:Select attributes.id=country field.name="shipment[country]">
-                <Neos.Fusion.Form:Select.Option field.value="de" >Germany</Neos.Fusion.Form:Select.Option>
-                <Neos.Fusion.Form:Select.Option field.value="at" >Austria</Neos.Fusion.Form:Select.Option>
-                <Neos.Fusion.Form:Select.Option field.value="ch" > Switzerland </Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option option.value="de" >Germany</Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option option.value="at" >Austria</Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option option.value="ch" > Switzerland </Neos.Fusion.Form:Select.Option>
             </Neos.Fusion.Form:Select>
             
             <Neos.Fusion.Form:Button>Submit Order</Neos.Fusion.Form:Button>
@@ -228,10 +229,10 @@ prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
 
             <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[language]" label="user.language" >
                 <Neos.Fusion.Form:Select>
-                    <Neos.Fusion.Form:Select.Option field.value="en" >Englisch</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option field.value="de" >Deutsch</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option field.value="ru" >Russian</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option field.value="kg" >Klingon</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option option.value="en" >Englisch</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option option.value="de" >Deutsch</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option option.value="ru" >Russian</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option option.value="kg" >Klingon</Neos.Fusion.Form:Select.Option>
                 </Neos.Fusion.Form:Select>
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 

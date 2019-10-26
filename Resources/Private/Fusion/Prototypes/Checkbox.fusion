@@ -5,7 +5,6 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
         #
         # pass down props
         #
-        field = ${props.field}
         attributes = ${props.atttributes}
         content = ${props.content}
 
@@ -13,10 +12,10 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
         # the `checked` state is calculated outside the renderer to allow` overriding via `attributes`
         #
         checked = null
-        checked.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.field.value)) > -1}
+        checked.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(field.targetValue)) > -1}
         checked.@process.checkMultiValue.@if.hasValue = ${field.value}
         checked.@process.checkMultiValue.@if.isMultiple = ${field.multiple}
-        checked.@process.checkSingleValue = ${Form.stringifyValue(field.value) == Form.stringifyValue(props.field.value)}
+        checked.@process.checkSingleValue = ${Form.stringifyValue(field.value) == Form.stringifyValue(field.targetValue)}
         checked.@process.checkSingleValue.@if.hasValue = ${field.value}
         checked.@process.checkSingleValue.@if.isSingle = ${!field.multiple}
 
@@ -24,7 +23,7 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
             <input
                 type="checkbox"
                 name={field.name}
-                value={Form.stringifyValue(props.field.value)}
+                value={Form.stringifyValue(field.targetValue)}
                 checked={props.checked}
                 {...props.attributes}
             />

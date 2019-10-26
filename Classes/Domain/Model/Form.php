@@ -34,6 +34,21 @@ class Form
     /**
      * @var string
      */
+    protected $target;
+
+    /**
+     * @var string
+     */
+    protected $method;
+
+    /**
+     * @var string
+     */
+    protected $encoding;
+
+    /**
+     * @var string
+     */
     protected $fieldNamePrefix;
 
     /**
@@ -53,18 +68,24 @@ class Form
      * @param string|null $fieldNamePrefix
      * @param array|null $submittedValues
      * @param Result|null $results
+     * @param string|null $target
+     * @param string|null $method
+     * @param string|null $encoding
      */
-    public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null)
+    public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null, string $target = null, string $method = "get", string $encoding = null)
     {
         $this->request = $request;
         $this->data = $data;
         $this->fieldNamePrefix = $fieldNamePrefix;
         $this->submittedValues = $submittedValues;
         $this->result = $results;
+        $this->target = $target;
+        $this->method = $method;
+        $this->encoding = $encoding;
     }
 
     /**
-     * @return ActionRequest
+     * @return ActionRequest|null
      */
     public function getRequest(): ?ActionRequest
     {
@@ -80,7 +101,7 @@ class Form
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getFieldNamePrefix(): ?string
     {
@@ -88,7 +109,7 @@ class Form
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getSubmittedValues(): ?array
     {
@@ -101,6 +122,30 @@ class Form
     public function getResult(): ?Result
     {
         return $this->result;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTarget(): ?string
+    {
+        return $this->target;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEncoding(): ?string
+    {
+        return $this->encoding;
     }
 
     public function hasErrors(): bool

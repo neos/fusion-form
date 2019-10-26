@@ -17,9 +17,9 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
 
     renderer = afx`
         <form
-            action={props.form.target}
-            method={props.form.method}
-            enctype={props.form.encoding}
+            action={form.target}
+            method={form.method}
+            enctype={form.encoding}
             {...props.attributes}
         >
             <div style="display: none">
@@ -31,7 +31,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
                 <Neos.Fusion:Join
-                    @if.isNoGetRequest={String.toLowerCase(props.form.method) != 'get'}
+                    @if.isNoGetRequest={String.toLowerCase(form.method) != 'get'}
                     @if.isSessionPresent={Security.isAuthenticated()}
                 >
                     <input

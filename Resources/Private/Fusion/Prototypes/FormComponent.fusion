@@ -1,27 +1,26 @@
 prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
 
-    @context.form = ${Form.createForm(request, this.form.fieldnamePrefix, this.form.data)}
+    #
+    # ensure the form-context is evaluated first so it is available for calculating `props`
+    #
+    @context.form = ${this.form}
+
+    #
+    # `form` is excluded from `props`
+    #
+    @ignoreProperties = ${['form']}
 
     @propTypes {
-        form = ${PropTypes.dataStructure({request: PropTypes.instanceof('\\Neos\\Flow\\Mvc\\ActionRequest'), fieldnamePrefix: PropTypes.string, data: PropTypes.any, target: PropTypes.string, method: PropTypes.string, encoding: PropTypesstring})}
+        form = ${PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Form')}
         attributes = ${PropTypes.dataStructure()}
         content = ${PropTypes.string}
-        target = ${PropTypes.string}
-        method = ${PropTypes.string}
-        encoding = ${PropTypes.string}
     }
 
     #
-    # the values are used to populate the `form` context for magic and `props.field`
+    # the values are used to populate the `form` context for magic
+    # The
     #
-    form = Neos.Fusion:DataStructure {
-        request = ${request}
-        fieldnamePrefix = null
-        data = Neos.Fusion:DataStructure
-        target = Neos.Fusion:UriBuilder
-        method = 'post'
-        encoding = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
-    }
+    form = Neos.Fusion.Form:FormDefinition
 
     #
     # attributes to be used by the renderer of derived types

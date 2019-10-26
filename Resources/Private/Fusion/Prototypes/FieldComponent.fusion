@@ -1,21 +1,25 @@
 prototype(Neos.Fusion.Form:FieldComponent) < prototype(Neos.Fusion:Component) {
 
-    @context.field = ${(this.field.name || !field) ? Form.createField(form, this.field.name, this.field.multiple) : field}
+    #
+    # ensure the `field`-context is evaluated first so it is available for calculating other `props`
+    #
+    @context.field = ${this.field}
+
+    #
+    # `field` is excluded from `props`
+    #
+    @ignoreProperties = ${['field']}
+
     @propTypes {
-        field = ${PropTypes.dataStructure({form: PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Form') , name: PropTypes.string, multiple: PropTypes.boolean})}
+        field = ${PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Field')}
         attributes = ${PropTypes.dataStructure()}
         content = ${PropTypes.string}
     }
 
     #
-    # the values are used to populate the `field` context for magic and `props.field`
+    # the `field` context
     #
-    field = Neos.Fusion:DataStructure {
-        form = ${form}
-        name = null
-        value = null
-        multiple = false
-    }
+    field = Neos.Fusion.Form:FieldDefinition
 
     #
     # attributes for the field to be used by the renderer of derived types

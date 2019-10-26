@@ -24,12 +24,17 @@ class Field
     protected $name;
 
     /**
-     * @var string|null
+     * @var mixed
      */
     protected $value;
 
     /**
-     * @var boolean
+     * @var mixed
+     */
+    protected $targetValue;
+
+    /**
+     * @var oolean
      */
     protected $multiple;
 
@@ -42,14 +47,16 @@ class Field
      * Field constructor.
      *
      * @param string|null $name
-     * @param array|string|null $value
+     * @param mixed|null $value
+     * @param mixed|null $targetValue
      * @param bool $multiple
      * @param Result $result
      */
-    public function __construct(string $name = null, $value = null, $multiple = false, Result $result = null)
+    public function __construct(string $name = null, $value = null, $targetValue = null, $multiple = false, Result $result = null)
     {
         $this->name = $name;
         $this->value = $value;
+        $this->targetValue = $targetValue;
         $this->result = $result;
         $this->multiple = $multiple;
     }
@@ -63,11 +70,27 @@ class Field
     }
 
     /**
-     * @return string|array|null
+     * @return mixed
      */
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @param mixed $targetValue
+     */
+    public function setTargetValue($targetValue): void
+    {
+        $this->targetValue = $targetValue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTargetValue()
+    {
+        return $this->targetValue;
     }
 
     /**
