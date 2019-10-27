@@ -38,15 +38,15 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     }
 
     renderer = afx`
-        <div class={field.errors ? "neos-control-group neos-error" : "neos-control-group"} {...props.attributes} >
-            <label class="neos-control-label" for={field.name} @if.has={props.label}>
+        <div class={field.hasErrors() ? "neos-control-group neos-error" : "neos-control-group"} {...props.attributes} >
+            <label class="neos-control-label" for={field.getName()} @if.has={props.label}>
                 {I18n.translate(props.label, props.label, [], props.translation.label.source, props.translation.label.package)}
             </label>
             <div class="neos-controls">
                 {props.content}
             </div>
-            <ul @if.hasErrors={field.errors} class="errors">
-                <Neos.Fusion:Loop items={field.result.flattenedErrors} itemName="errors" >
+            <ul @if.hasErrors={field.hasErrors()} class="errors">
+                <Neos.Fusion:Loop items={field.getResult().flattenedErrors} itemName="errors" >
                     <Neos.Fusion:Loop items={errors} itemName="error" >
                         <li>
                             <span class="neos-help-block">
@@ -64,7 +64,7 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     # the label for from the FieldContainer references them correctly
     #
     prototype(Neos.Fusion.Form:FieldComponent) {
-        attributes.id = ${field.name}
+        attributes.id = ${field.getName()}
     }
 }
 

@@ -43,9 +43,7 @@ class FieldDefinition extends AbstractFusionObject
         // early return
         if (!$name) {
             if ($outerField && $outerField instanceof Field) {
-                $field = clone $outerField;
-                $field->setTargetValue($value);
-                return $field;
+                return $outerField->withTargetValue($value);
             }
             return new Field(null, null, null, $value);
         }

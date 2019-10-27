@@ -14,8 +14,9 @@ namespace Neos\Fusion\Form\Domain\Model;
  */
 
 use Neos\Error\Messages\Result;
+use Neos\Eel\ProtectedContextAwareInterface;
 
-class Field
+class Field implements ProtectedContextAwareInterface
 {
 
     /**
@@ -62,6 +63,17 @@ class Field
     }
 
     /**
+     * @param mixed|null $targetValue
+     * @return Field
+     */
+    public function withTargetValue($targetValue = null): Field
+    {
+        $new = clone $this;
+        $new->targetValue = $targetValue;
+        return $new;
+    }
+
+    /**
      * @return string|null
      */
     public function getName(): ?string
@@ -75,14 +87,6 @@ class Field
     public function getValue()
     {
         return $this->value;
-    }
-
-    /**
-     * @param mixed $targetValue
-     */
-    public function setTargetValue($targetValue): void
-    {
-        $this->targetValue = $targetValue;
     }
 
     /**
@@ -119,4 +123,10 @@ class Field
         }
         return false;
     }
+
+    public function allowsCallOfMethod($methodName): bool
+    {
+        return $methodName !== 'withValue';
+    }
+
 }

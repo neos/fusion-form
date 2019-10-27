@@ -2,8 +2,8 @@ prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:FieldComponent)
 
     renderer = afx`
         <select
-            name={field.name}
-            multiple={field.multiple}
+            name={field.getName()}
+            multiple={field.isMultiple()}
             {...props.attributes}
         >
             {props.content}

@@ -2,10 +2,10 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponen
 
     renderer = afx`
         <textarea
-            name={field.name}
+            name={field.getName()}
             {...props.attributes}
         >
-            {Form.stringifyValue(field.value || props.content)}
+            {Form.stringifyValue(field.getValue() || props.content)}
         </textarea>
     `
 }
