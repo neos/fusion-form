@@ -44,7 +44,7 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
         #
         # the `selected` state is calculated outside the renderer to allow` overriding via `attributes`
         #
-        selected = null
+        selected = false
         selected.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.getValue()), Form.stringifyValue(option.value)) > -1}
         selected.@process.checkMultiValue.@if.hasValue = ${field.getValue()}
         selected.@process.checkMultiValue.@if.isMultiple = ${field.isMultiple()}

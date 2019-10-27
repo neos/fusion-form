@@ -11,7 +11,7 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
         #
         # the `checked` state is calculated outside the renderer to allow` overriding via `attributes`
         #
-        checked = null
+        checked = false
         checked.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.getValue()), Form.stringifyValue(field.getTargetValue())) > -1}
         checked.@process.checkMultiValue.@if.hasValue = ${field.getValue()}
         checked.@process.checkMultiValue.@if.isMultiple = ${field.isMultiple()}

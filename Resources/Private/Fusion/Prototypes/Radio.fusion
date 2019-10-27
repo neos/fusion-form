@@ -11,7 +11,7 @@ prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:FieldComponent) 
         #
         # the `checked` state is calculated outside the renderer to allow` overriding via `attributes`
         #
-        checked = null
+        checked = false
         checked.@process.checkValue = ${Form.stringifyValue(field.getValue()) == Form.stringifyValue(field.getTargetValue())}
         checked.@process.checkValue.@if.hasValue = ${field.getValue()}
 
