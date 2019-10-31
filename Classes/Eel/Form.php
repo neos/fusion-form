@@ -191,7 +191,7 @@ class Form extends AbstractFormHelper
 
         if ($form) {
             $request = $form->getRequest();
-            $fieldNamePrefix = $form->getFieldNamePrefix();
+            $fieldNamePrefix = $form->getFieldNamePrefix() ?: '';
             $data = $form->getData();
         } else {
             $request = null;

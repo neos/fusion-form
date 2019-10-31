@@ -4,37 +4,38 @@ namespace Neos\Fusion\Form\Tests\Functional;
 use PHPUnit\Framework\TestCase;
 use Neos\Fusion\Form\Eel\Form;
 use Neos\Fusion\Form\Eel\Field;
-use Neos\Fusion\Form\Eel\FormHelper;
 
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
 use Neos\Flow\Mvc\ActionRequest;
 
-class FormHelperTest extends TestCase
+class FormTest extends TestCase
 {
-    /**
-     * @var FormHelper
-     */
-    protected $formHelper;
-
     protected $persistenceManager;
     protected $hashService;
     protected $mvcPropertyMappingConfigurationService;
 
     public function setUp(): void
     {
-        $formHelper = new FormHelper();
-
         $this->persistenceManager = $this->createMock(PersistenceManagerInterface::class);
         $this->hashService = $this->createMock(HashService::class);
         $this->mvcPropertyMappingConfigurationService = $this->createMock(MvcPropertyMappingConfigurationService::class);
+    }
 
-        $this->injectDependency($formHelper, 'persistenceManager', $this->persistenceManager);
-        $this->injectDependency($formHelper, 'hashService', $this->hashService);
-        $this->injectDependency($formHelper, 'mvcPropertyMappingConfigurationService', $this->mvcPropertyMappingConfigurationService);
+    /**
+     * @return Form
+     */
+    protected function createForm(): Form
+    {
+        $reflector = new \ReflectionClass(Form::class);
+        $form = $reflector->newInstanceArgs(func_get_args());
 
-        $this->formHelper = $formHelper;
+        $this->injectDependency($form, 'persistenceManager', $this->persistenceManager);
+        $this->injectDependency($form, 'hashService', $this->hashService);
+        $this->injectDependency($form, 'mvcPropertyMappingConfigurationService', $this->mvcPropertyMappingConfigurationService);
+
+        return $form;
     }
 
     /**
@@ -68,12 +69,13 @@ class FormHelperTest extends TestCase
      */
     public function calculateHiddenFieldsReturnsOnlyTrustedPropertiesTokenIfNoFormOrContentIsGiven()
     {
+        $form = $this->createForm();
         $this->mvcPropertyMappingConfigurationService->expects($this->once())
             ->method('generateTrustedPropertiesToken')
             ->with([])
             ->willReturn('bar');
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields(null, null);
+        $hiddenFields = $form->calculateHiddenFields(null);
 
         $expectation = ['__trustedProperties' => 'bar'];
         $this->assertEquals($expectation, $hiddenFields);
@@ -84,6 +86,8 @@ class FormHelperTest extends TestCase
      */
     public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsInContent()
     {
+        $form = $this->createForm();
+
         $content = <<<CONTENT
             <input name="foo" />
             <input name="bar[baz]" />
@@ -95,7 +99,7 @@ CONTENT;
             ->with(['foo', 'bar[baz]'])
             ->willReturn('--example--');
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);
+        $hiddenFields = $form->calculateHiddenFields($content);
 
         $this->assertEquals($hiddenFields['__trustedProperties'], '--example--');
     }
@@ -105,7 +109,7 @@ CONTENT;
      */
     public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsWithFieldnamePrefix()
     {
-        $form = new Form(null, null, 'prefix');
+        $form = $this->createForm(null, null, 'prefix');
 
         $content = <<<CONTENT
             <input name="prefix[foo]" />
@@ -119,7 +123,7 @@ CONTENT;
             ->with(['prefix[foo]', 'prefix[bar][baz]'], 'prefix')
             ->willReturn('--example--');
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+        $hiddenFields = $form->calculateHiddenFields($content);
 
         $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
     }
@@ -138,9 +142,9 @@ CONTENT;
         $request->method('getArguments')->willReturn([]);
         $request->method('getArgumentNamespace')->willReturn('');
 
-        $form = new Form($request);
+        $form = $this->createForm($request);
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
+        $hiddenFields = $form->calculateHiddenFields(null);
 
         $this->assertEquals('Vendor.Example', $hiddenFields['__referrer[@package]']);
         $this->assertEquals('Application', $hiddenFields['__referrer[@subpackage]']);
@@ -170,9 +174,9 @@ CONTENT;
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
 
-        $form = new Form($request);
+        $form = $this->createForm($request);
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
+        $hiddenFields = $form->calculateHiddenFields(null);
 
         $this->assertEquals('Vendor.Foo', $hiddenFields['__referrer[@package]']);
         $this->assertEquals('Application', $hiddenFields['__referrer[@subpackage]']);
@@ -226,8 +230,8 @@ CONTENT;
             )
             ->willReturn('--argumentsWithHmac--');
 
-        $form = new Form($request);
-        $hiddenFields = $this->formHelper->calculateHiddenFields($form, null);
+        $form = $this->createForm($request);
+        $hiddenFields = $form->calculateHiddenFields(null);
 
         $this->assertEquals('--argumentsWithHmac--', $hiddenFields['__referrer[arguments]']);
         $this->assertEquals('--argumentsWithHmac--', $hiddenFields['childNamespace[__referrer][arguments]']);
@@ -248,7 +252,8 @@ CONTENT;
             <input name="input[checkboxMultiple][]" type="checkbox" value="baz" />
 CONTENT;
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);
+        $form = $this->createForm();
+        $hiddenFields = $form->calculateHiddenFields($content);
 
         $this->assertEquals("", $hiddenFields['select[multiple]']);
         $this->assertEquals("", $hiddenFields['input[checkbox]']);
@@ -268,7 +273,8 @@ CONTENT;
             <input name="input[radio]" type="radio" value="baz" /> 
 CONTENT;
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields(null, $content);
+        $form = $this->createForm();
+        $hiddenFields = $form->calculateHiddenFields($content);
 
         $this->assertArrayNotHasKey('select[single]', $hiddenFields);
         $this->assertArrayNotHasKey('input[text]', $hiddenFields);
@@ -294,14 +300,14 @@ CONTENT;
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
-        $form = new Form(null, $data, '');
+        $form = $this->createForm(null, $data, '');
 
         $content = <<<CONTENT
             <input name="item1[text]" type="text" />
             <input name="item2[text]" type="text" />
 CONTENT;
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+        $hiddenFields = $form->calculateHiddenFields($content);
 
         $this->assertEquals("12345", $hiddenFields['item1[__identity]']);
         $this->assertEquals("56789", $hiddenFields['item2[__identity]']);
@@ -326,13 +332,13 @@ CONTENT;
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
-        $form = new Form(null, $data, '');
+        $form = $this->createForm(null, $data, '');
         $content = <<<CONTENT
             <input name="item1[text]" type="text" />
             <input name="item3[text]" type="text" />
 CONTENT;
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+        $hiddenFields = $form->calculateHiddenFields($content);
 
         $this->assertEquals("12345", $hiddenFields['item1[__identity]']);
         $this->assertArrayNotHasKey('item2[__identity]', $hiddenFields);
@@ -358,14 +364,14 @@ CONTENT;
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
-        $form = new Form(null, $data, '');
+        $form = $this->createForm(null, $data, '');
 
         $content = <<<CONTENT
             <input name="item1[text]" type="text" />
             <input name="item2[text]" type="text" />
 CONTENT;
 
-        $hiddenFields = $this->formHelper->calculateHiddenFields($form, $content);
+        $hiddenFields = $form->calculateHiddenFields($content);
 
         $this->assertArrayNotHasKey('item1[__identity]', $hiddenFields);
         $this->assertArrayNotHasKey('item2[__identity]', $hiddenFields);
