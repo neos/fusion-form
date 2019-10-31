@@ -24,7 +24,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
         >
             <div style="display: none">
                 <Neos.Fusion:Loop
-                    items={Form.calculateHiddenFields(form, props.content)}
+                    items={form.calculateHiddenFields(props.content)}
                     itemKey="fieldName"
                     itemName="fieldValue"
                 >

@@ -14,10 +14,15 @@ namespace Neos\Fusion\Form\Domain\Model;
  */
 
 use Neos\Error\Messages\Result;
-use Neos\Eel\ProtectedContextAwareInterface;
+use Neos\Utility\ObjectAccess;
 
-class Field implements ProtectedContextAwareInterface
+class Field extends AbstractFormHelper
 {
+
+    /**
+     * @var
+     */
+    protected $form;
 
     /**
      * @var string|null
@@ -27,7 +32,7 @@ class Field implements ProtectedContextAwareInterface
     /**
      * @var mixed
      */
-    protected $value;
+    protected $currentValue;
 
     /**
      * @var mixed
@@ -48,18 +53,20 @@ class Field implements ProtectedContextAwareInterface
      * Field constructor.
      *
      * @param string|null $name
-     * @param mixed|null $value
      * @param mixed|null $targetValue
      * @param bool $multiple
-     * @param Result $result
      */
-    public function __construct(string $name = null, $value = null, $targetValue = null, $multiple = false, Result $result = null)
+    public function __construct(Form $form = null, string $name = null, $targetValue = null, $multiple = false)
     {
+        $this->form = $form;
         $this->name = $name;
-        $this->value = $value;
         $this->targetValue = $targetValue;
-        $this->result = $result;
         $this->multiple = $multiple;
+
+        // determine current value and result
+        $path = $this->fieldNameToPath($this->name);
+        $this->currentValue = $this->findCurrentValueByPath($path);
+        $this->result = $this->findResultByPath($path);
     }
 
     /**
@@ -74,26 +81,86 @@ class Field implements ProtectedContextAwareInterface
     }
 
     /**
+     * @param string $path
+     * @return mixed|null
+     */
+    protected function findCurrentValueByPath(string $path)
+    {
+        // determine value, according to the following algorithm:
+        if ($this->form && $this->form->getResult() !== null && $this->form->getResult()->hasErrors()) {
+            // 1) if a validation error has occurred, pull the value from the submitted form values.
+            $fieldValue = ObjectAccess::getPropertyPath($this->form->getSubmittedValues(), $path);
+        } elseif ($path && $this->form && $this->form->getData()) {
+            // 2) else, if "property" is specified, take the value from the bound object.
+            $fieldValue = ObjectAccess::getPropertyPath($this->form->getData(), $path);
+        } else {
+            $fieldValue = null;
+        }
+        return $fieldValue;
+    }
+
+    /**
+     * @param $path
+     * @return Result|null
+     */
+    protected function findResultByPath($path): ?Result
+    {
+        // determine ValidationResult for the single property
+        $fieldResult = null;
+        if ($this->form && $this->form->getResult() && $this->form->getResult()->hasErrors()) {
+            $fieldResult = $this->form->getResult()->forProperty($path);
+        }
+        return $fieldResult;
+    }
+
+    /**
+     * Return the name of the field with applied prefix and [] for multiple fields
      * @return string|null
      */
     public function getName(): ?string
     {
-        return $this->name;
+        if ($this->name) {
+            if ($this->form && $this->form->getFieldNamePrefix()) {
+                return $this->prefixFieldName($this->name, $this->form->getFieldNamePrefix()) . ($this->multiple ? '[]' : '');
+            }
+            return $this->name . ($this->multiple ? '[]' : '');
+        }
+        return null;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getValue()
+    public function hasCurrentValue(): bool
     {
-        return $this->value;
+        return !is_null($this->currentValue);
     }
 
     /**
-     * @return mixed
+     * @param bool $stringify
+     * @return mixed|null
      */
-    public function getTargetValue()
+    public function getCurrentValue($stringify = false)
     {
+        if ($stringify) {
+            if ($this->multiple) {
+                return $this->stringifyArray($this->currentValue);
+            } else {
+                return $this->stringifyValue($this->currentValue);
+            }
+        }
+        return $this->currentValue;
+    }
+
+    /**
+     * @param bool $stringify
+     * @return mixed|null
+     */
+    public function getTargetValue($stringify = false)
+    {
+        if ($stringify) {
+            return $this->stringifyValue($this->targetValue);
+        }
         return $this->targetValue;
     }
 

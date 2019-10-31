@@ -13,20 +13,12 @@ namespace Neos\Fusion\Form\FusionObjects;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use Neos\Fusion\Form\Domain\Model\Form;
 use Neos\Error\Messages\Result;
-use Neos\Fusion\Form\Eel\FormHelper;
 
 class FormDefinition extends AbstractFusionObject
 {
-    /**
-     * @var FormHelper
-     * @Flow\Inject
-     */
-    protected $formHelper;
-
     /**
      * @return Form
      */

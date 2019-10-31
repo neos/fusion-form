@@ -16,35 +16,29 @@ namespace Neos\Fusion\Form\Domain\Model;
 use Neos\Error\Messages\Result;
 use Neos\Eel\ProtectedContextAwareInterface;
 
-class Option implements ProtectedContextAwareInterface
+class Option extends AbstractFormHelper
 {
 
     /**
      * @var mixed
      */
-    protected $value;
+    protected $targetValue;
 
     /**
      * Option constructor.
      *
-     * @param mixed|null $value
+     * @param mixed|null $targetValue
      */
-    public function __construct($value = null)
+    public function __construct($targetValue = null)
     {
-        $this->value = $value;
+        $this->targetValue = $targetValue;
     }
 
     /**
      * @return mixed
      */
-    public function getValue()
+    public function getTargetValue()
     {
-        return $this->value;
+        return $this->targetValue;
     }
-
-    public function allowsCallOfMethod($methodName): bool
-    {
-        return true;
-    }
-
 }

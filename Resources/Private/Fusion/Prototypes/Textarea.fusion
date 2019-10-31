@@ -5,7 +5,7 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponen
             name={field.getName()}
             {...props.attributes}
         >
-            {Form.stringifyValue(field.getValue() || props.content)}
+            {field.getCurrentValue(true) || props.content}
         </textarea>
     `
 }

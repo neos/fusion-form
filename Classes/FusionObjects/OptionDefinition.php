@@ -13,22 +13,11 @@ namespace Neos\Fusion\Form\FusionObjects;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\Form\Domain\Model\Option;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
-use Neos\Fusion\Form\Domain\Model\Form;
-use Neos\Fusion\Form\Domain\Model\Field;
-use Neos\Fusion\Form\Eel\FormHelper;
-use Neos\Error\Messages\Result;
-use Neos\Utility\ObjectAccess;
 
 class OptionDefinition extends AbstractFusionObject
 {
-    /**
-     * @var FormHelper
-     * @Flow\Inject
-     */
-    protected $formHelper;
 
     /**
      * @return Option
