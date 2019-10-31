@@ -1,0 +1,10 @@
+prototype(Neos.Fusion.Form:OptionDefinition) < prototype(Neos.Fusion:Component) {
+
+    @class = 'Neos\\Fusion\\Form\\FusionObjects\\OptionDefinition'
+
+    @propTypes {
+        value = ${PropTypes.any}
+    }
+
+    value = null
+}

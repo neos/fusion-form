@@ -19,9 +19,7 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
     #
     # the values are used to calculate the `option` value and selected state
     #
-    option = Neos.Fusion:DataStructure {
-        value = null
-    }
+    option = Neos.Fusion.Form:OptionDefinition
 
     #
     # attributes for the field to be used by the renderer of derived types
@@ -45,20 +43,20 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
         # the `selected` state is calculated outside the renderer to allow` overriding via `attributes`
         #
         selected = false
-        selected.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.getValue()), Form.stringifyValue(option.value)) > -1}
+        selected.@process.checkMultiValue = ${Array.indexOf(Form.stringifyArray(field.getValue()), Form.stringifyValue(option.getValue())) > -1}
         selected.@process.checkMultiValue.@if.hasValue = ${field.getValue()}
         selected.@process.checkMultiValue.@if.isMultiple = ${field.isMultiple()}
-        selected.@process.checkSingleValue = ${Form.stringifyValue(field.getValue()) == Form.stringifyValue(option.value)}
+        selected.@process.checkSingleValue = ${Form.stringifyValue(field.getValue()) == Form.stringifyValue(option.getValue())}
         selected.@process.checkSingleValue.@if.hasValue = ${field.getValue()}
         selected.@process.checkSingleValue.@if.isSingle = ${!field.isMultiple()}
 
         renderer = afx`
            <option
-               value={Form.stringifyValue(option.value)}
+               value={Form.stringifyValue(option.getValue())}
                selected={props.selected}
                {...props.attributes}
            >
-               {props.content || option.value}
+               {props.content || option.getValue()}
            </option>
         `
     }
