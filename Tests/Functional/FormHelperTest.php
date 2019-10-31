@@ -2,8 +2,8 @@
 namespace Neos\Fusion\Form\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
-use Neos\Fusion\Form\Domain\Model\Form;
-use Neos\Fusion\Form\Domain\Model\Field;
+use Neos\Fusion\Form\Eel\Form;
+use Neos\Fusion\Form\Eel\Field;
 use Neos\Fusion\Form\Eel\FormHelper;
 
 use Neos\Flow\Persistence\PersistenceManagerInterface;

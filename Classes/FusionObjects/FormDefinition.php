@@ -14,7 +14,7 @@ namespace Neos\Fusion\Form\FusionObjects;
  */
 
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
-use Neos\Fusion\Form\Domain\Model\Form;
+use Neos\Fusion\Form\Eel\Form;
 use Neos\Error\Messages\Result;
 
 class FormDefinition extends AbstractFusionObject
@@ -31,7 +31,7 @@ class FormDefinition extends AbstractFusionObject
         $method = $this->fusionValue('method');
         $encoding = $this->fusionValue('encoding');
 
-        return new Form (
+        return new Form(
             $request,
             $data,
             $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),

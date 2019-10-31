@@ -14,8 +14,8 @@ namespace Neos\Fusion\Form\FusionObjects;
  */
 
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
-use Neos\Fusion\Form\Domain\Model\Form;
-use Neos\Fusion\Form\Domain\Model\Field;
+use Neos\Fusion\Form\Eel\Form;
+use Neos\Fusion\Form\Eel\Field;
 use Neos\Error\Messages\Result;
 use Neos\Utility\ObjectAccess;
 
@@ -38,7 +38,7 @@ class FieldDefinition extends AbstractFusionObject
             return $outerField->withTargetValue($value);
         }
 
-        return new Field (
+        return new Field(
             $form,
             $name,
             $value,

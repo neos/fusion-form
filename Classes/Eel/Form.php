@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Neos\Fusion\Form\Domain\Model;
+namespace Neos\Fusion\Form\Eel;
 
 /*
  * This file is part of the Neos.Fusion.Form package.

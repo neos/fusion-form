@@ -13,7 +13,7 @@ namespace Neos\Fusion\Form\FusionObjects;
  * source code.
  */
 
-use Neos\Fusion\Form\Domain\Model\Option;
+use Neos\Fusion\Form\Eel\Option;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 
 class OptionDefinition extends AbstractFusionObject
@@ -25,6 +25,6 @@ class OptionDefinition extends AbstractFusionObject
     public function evaluate(): Option
     {
         $value = $this->fusionValue('value');
-        return new Option ($value);
+        return new Option($value);
     }
 }
