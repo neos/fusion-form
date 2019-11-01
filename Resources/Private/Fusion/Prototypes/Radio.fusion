@@ -5,7 +5,7 @@ prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:FieldComponent) 
         #
         # pass down props
         #
-        attributes = ${props.atttributes}
+        attributes = ${props.attributes}
         content = ${props.content}
 
         #

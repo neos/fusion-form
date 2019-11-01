@@ -36,7 +36,7 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
         #
         # pass down props
         #
-        attributes = ${props.atttributes}
+        attributes = ${props.attributes}
         content = ${props.content}
 
         #
