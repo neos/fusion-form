@@ -6,79 +6,79 @@ Fusion Form Eel Helper Reference
 This reference was automatically generated from code on 2019-11-01
 
 
-.. _`Fusion Form Eel Helper Reference: Neos\Fusion\Form\Eel\Field`:
+.. _`Fusion Form Eel Helper Reference: Field`:
 
-Neos\Fusion\Form\Eel\Field
---------------------------
+Field
+-----
 
 
 
-Implemented in: ``Neos\Fusion\Form\Eel\Field``
+Implemented in: ``Neos\Fusion\Form\Eel\FieldHelper``
 
-Neos\Fusion\Form\Eel\Field.getCurrentValue(stringify)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.getCurrentValue(stringify)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``stringify`` (bool, *optional*)
 
 **Return** (mixed|null)
 
-Neos\Fusion\Form\Eel\Field.getName()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.getName()
+^^^^^^^^^^^^^^^
 
 Return the name of the field with applied prefix and [] for multiple fields
 
 **Return** (string|null)
 
-Neos\Fusion\Form\Eel\Field.getResult()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.getResult()
+^^^^^^^^^^^^^^^^^
 
 **Return** (Result|null)
 
-Neos\Fusion\Form\Eel\Field.getTargetValue(stringify)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.getTargetValue(stringify)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``stringify`` (bool, *optional*)
 
 **Return** (mixed|null)
 
-Neos\Fusion\Form\Eel\Field.hasCurrentValue()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.hasCurrentValue()
+^^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (bool)
 
-Neos\Fusion\Form\Eel\Field.hasErrors()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.hasErrors()
+^^^^^^^^^^^^^^^^^
 
 **Return** (bool)
 
-Neos\Fusion\Form\Eel\Field.isMultiple()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.isMultiple()
+^^^^^^^^^^^^^^^^^^
 
 **Return** (bool)
 
-Neos\Fusion\Form\Eel\Field.withTargetValue(targetValue)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.withTargetValue(targetValue)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``targetValue`` (mixed|null, *optional*)
 
-**Return** (Field)
+**Return** (FieldHelper)
 
 
 
 
 
 
-.. _`Fusion Form Eel Helper Reference: Neos\Fusion\Form\Eel\Form`:
+.. _`Fusion Form Eel Helper Reference: Form`:
 
-Neos\Fusion\Form\Eel\Form
--------------------------
+Form
+----
 
 
 
-Implemented in: ``Neos\Fusion\Form\Eel\Form``
+Implemented in: ``Neos\Fusion\Form\Eel\FormHelper``
 
-Neos\Fusion\Form\Eel\Form.calculateHiddenFields(content)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.calculateHiddenFields(content)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Calculate the hidden fields for the given form content as key-value array
 
@@ -86,65 +86,65 @@ Calculate the hidden fields for the given form content as key-value array
 
 **Return** (array) hiddenFields as key value pairs
 
-Neos\Fusion\Form\Eel\Form.getData()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.getData()
+^^^^^^^^^^^^^^
 
 **Return** (mixed)
 
-Neos\Fusion\Form\Eel\Form.getEncoding()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.getEncoding()
+^^^^^^^^^^^^^^^^^^
 
 **Return** (string|null)
 
-Neos\Fusion\Form\Eel\Form.getFieldNamePrefix()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.getFieldNamePrefix()
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (string|null)
 
-Neos\Fusion\Form\Eel\Form.getMethod()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.getMethod()
+^^^^^^^^^^^^^^^^
 
 **Return** (string|null)
 
-Neos\Fusion\Form\Eel\Form.getRequest()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.getRequest()
+^^^^^^^^^^^^^^^^^
 
 **Return** (ActionRequest|null)
 
-Neos\Fusion\Form\Eel\Form.getResult()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.getResult()
+^^^^^^^^^^^^^^^^
 
 **Return** (Result)
 
-Neos\Fusion\Form\Eel\Form.getSubmittedValues()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.getSubmittedValues()
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (array|null)
 
-Neos\Fusion\Form\Eel\Form.getTarget()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.getTarget()
+^^^^^^^^^^^^^^^^
 
 **Return** (string|null)
 
-Neos\Fusion\Form\Eel\Form.hasErrors()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Form.hasErrors()
+^^^^^^^^^^^^^^^^
 
 
 
 
 
 
-.. _`Fusion Form Eel Helper Reference: Neos\Fusion\Form\Eel\Option`:
+.. _`Fusion Form Eel Helper Reference: Option`:
 
-Neos\Fusion\Form\Eel\Option
----------------------------
+Option
+------
 
 
 
-Implemented in: ``Neos\Fusion\Form\Eel\Option``
+Implemented in: ``Neos\Fusion\Form\Eel\OptionHelper``
 
-Neos\Fusion\Form\Eel\Option.getTargetValue()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option.getTargetValue()
+^^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (mixed)
 
