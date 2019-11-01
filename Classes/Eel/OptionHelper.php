@@ -16,7 +16,7 @@ namespace Neos\Fusion\Form\Eel;
 use Neos\Error\Messages\Result;
 use Neos\Eel\ProtectedContextAwareInterface;
 
-class Option extends AbstractFormHelper
+class OptionHelper extends AbstractFormHelper
 {
 
     /**

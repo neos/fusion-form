@@ -11,7 +11,7 @@ prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
     @ignoreProperties = ${['form']}
 
     @propTypes {
-        form = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Domain\\Model\\Form')}
+        form = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Domain\\Model\\FormHelper')}
         attributes = ${PropTypes.dataStructure({})}
         content = ${PropTypes.string}
     }

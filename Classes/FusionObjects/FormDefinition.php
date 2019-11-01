@@ -13,25 +13,74 @@ namespace Neos\Fusion\Form\FusionObjects;
  * source code.
  */
 
+use Neos\Flow\Mvc\ActionRequest;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
-use Neos\Fusion\Form\Eel\Form;
+use Neos\Fusion\Form\Eel\FormHelper;
 use Neos\Error\Messages\Result;
 
 class FormDefinition extends AbstractFusionObject
 {
-    /**
-     * @return Form
-     */
-    public function evaluate(): Form
-    {
-        $request = $this->fusionValue('request');
-        $data = $this->fusionValue('data');
-        $fieldNamePrefix = $this->fusionValue('fieldNamePrefix');
-        $target = $this->fusionValue('target');
-        $method = $this->fusionValue('method');
-        $encoding = $this->fusionValue('encoding');
 
-        return new Form(
+    /**
+     * @return ActionRequest|null
+     */
+    protected function getRequest(): ?ActionRequest
+    {
+        return $this->fusionValue('request');
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getData()
+    {
+        return $this->fusionValue('data');
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getFieldnamePrefix(): ?string
+    {
+        return $this->fusionValue('fieldNamePrefix');
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getTarget(): ?string
+    {
+        return $this->fusionValue('target');
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getMethod(): ?string
+    {
+        return $this->fusionValue('method');
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getEncoding(): ?string
+    {
+        return $this->fusionValue('encoding');
+    }
+    /**
+     * @return FormHelper
+     */
+    public function evaluate(): FormHelper
+    {
+        $request = $this->getRequest();
+        $data = $this->getData();
+        $fieldNamePrefix = $this->getFieldnamePrefix();
+        $target = $this->getTarget();
+        $method = $this->getMethod();
+        $encoding = $this->getEncoding();
+
+        return new FormHelper(
             $request,
             $data,
             $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),

@@ -13,10 +13,18 @@ namespace Neos\Fusion\Form\Eel;
  * source code.
  */
 
+use Neos\Flow\Annotations as Flow;
 use Neos\Eel\ProtectedContextAwareInterface;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 
 abstract class AbstractFormHelper implements ProtectedContextAwareInterface
 {
+
+    /**
+     * @var PersistenceManagerInterface
+     * @Flow\Inject
+     */
+    protected $persistenceManager;
 
     /**
      * Convert a value to a string representation for beeing rendered as an html form value
@@ -53,7 +61,6 @@ abstract class AbstractFormHelper implements ProtectedContextAwareInterface
             return null;
         }
     }
-
 
     /**
      * Prepend the given fieldNamePrefix to the fieldName the

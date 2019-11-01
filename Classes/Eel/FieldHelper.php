@@ -16,7 +16,7 @@ namespace Neos\Fusion\Form\Eel;
 use Neos\Error\Messages\Result;
 use Neos\Utility\ObjectAccess;
 
-class Field extends AbstractFormHelper
+class FieldHelper extends AbstractFormHelper
 {
 
     /**
@@ -56,7 +56,7 @@ class Field extends AbstractFormHelper
      * @param mixed|null $targetValue
      * @param bool $multiple
      */
-    public function __construct(Form $form = null, string $name = null, $targetValue = null, $multiple = false)
+    public function __construct(FormHelper $form = null, string $name = null, $targetValue = null, $multiple = false)
     {
         $this->form = $form;
         $this->name = $name;
@@ -71,9 +71,9 @@ class Field extends AbstractFormHelper
 
     /**
      * @param mixed|null $targetValue
-     * @return Field
+     * @return FieldHelper
      */
-    public function withTargetValue($targetValue = null): Field
+    public function withTargetValue($targetValue = null): FieldHelper
     {
         $new = clone $this;
         $new->targetValue = $targetValue;

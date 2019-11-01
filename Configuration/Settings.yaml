@@ -14,6 +14,6 @@ Neos:
         savePathAndFilename: '%FLOW_PATH_PACKAGES%Application/Neos.Fusion.Form/Documentation/EelHelpersReference.rst'
         affectedClasses:
           interface: Neos\Eel\ProtectedContextAwareInterface
-          classNamePattern: '/^Neos\\Fusion\\Form\\Eel\\.*$/i'
+          classNamePattern: '/^Neos\\Fusion\\Form\\Eel\\.*Helper$/i'
         parser:
           implementationClassName: Neos\DocTools\Domain\Service\EelHelperClassParser

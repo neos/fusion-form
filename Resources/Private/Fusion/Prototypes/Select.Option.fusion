@@ -11,7 +11,7 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
     @ignoreProperties = ${['option']}
 
     @propTypes {
-        option = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Eel\\Option')}
+        option = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Eel\\OptionHelper')}
         attributes = ${PropTypes.dataStructure({})}
         content = ${PropTypes.string}
     }

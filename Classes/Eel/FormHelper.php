@@ -16,24 +16,17 @@ namespace Neos\Fusion\Form\Eel;
 use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Result;
 use Neos\Flow\Mvc\ActionRequest;
-use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Utility\ObjectAccess;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
 
-class Form extends AbstractFormHelper
+class FormHelper extends AbstractFormHelper
 {
     /**
      * @Flow\Inject
      * @var MvcPropertyMappingConfigurationService
      */
     protected $mvcPropertyMappingConfigurationService;
-
-    /**
-     * @var PersistenceManagerInterface
-     * @Flow\Inject
-     */
-    protected $persistenceManager;
 
     /**
      * @Flow\Inject

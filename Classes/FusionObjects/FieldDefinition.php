@@ -14,8 +14,8 @@ namespace Neos\Fusion\Form\FusionObjects;
  */
 
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
-use Neos\Fusion\Form\Eel\Form;
-use Neos\Fusion\Form\Eel\Field;
+use Neos\Fusion\Form\Eel\FormHelper;
+use Neos\Fusion\Form\Eel\FieldHelper;
 use Neos\Error\Messages\Result;
 use Neos\Utility\ObjectAccess;
 
@@ -23,22 +23,62 @@ class FieldDefinition extends AbstractFusionObject
 {
 
     /**
-     * @return Field
+     * @return FormHelper|null
      */
-    public function evaluate(): Field
+    protected function getForm(): ?FormHelper
     {
-        $outerField= $this->fusionValue('field');
-        $form = $this->fusionValue('form');
-        $name = $this->fusionValue('name');
-        $value = $this->fusionValue('value');
-        $multiple = $this->fusionValue('multiple');
+        return $this->fusionValue('form');
+    }
 
-        // reuse outerfield if no name is given
-        if (!$name && $outerField && $outerField instanceof Field) {
-            return $outerField->withTargetValue($value);
+    /**
+     * @return FieldHelper|null
+     */
+    protected function getField(): ?FieldHelper
+    {
+        return $this->fusionValue('field');
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getName(): ?string
+    {
+        return $this->fusionValue('name');
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getValue()
+    {
+        return $this->fusionValue('value');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function getMultiple(): bool
+    {
+        return (bool)$this->fusionValue('multiple');
+    }
+
+    /**
+     * @return FieldHelper
+     */
+    public function evaluate(): FieldHelper
+    {
+        $form = $this->getForm();
+        $field = $this->getField();
+        $name = $this->getName();
+        $value = $this->getValue();
+        $multiple = $this->getMultiple();
+
+        // reuse outer field if no name is given
+        if (!$name && $field) {
+            return $field->withTargetValue($value);
         }
 
-        return new Field(
+        return new FieldHelper(
             $form,
             $name,
             $value,
