@@ -3,7 +3,7 @@ prototype(Neos.Fusion.Form:FormDefinition) < prototype(Neos.Fusion:Component) {
     @class = 'Neos\\Fusion\\Form\\FusionObjects\\FormDefinition'
 
     @propTypes {
-        request = ${PropTypes.instanceof('\\Neos\\Flow\\Mvc\\ActionRequest')}
+        request = ${PropTypes.instanceOf('\\Neos\\Flow\\Mvc\\ActionRequest')}
         fieldnamePrefix = ${PropTypes.string}
         data = ${PropTypes.any}
         target = ${PropTypes.string}

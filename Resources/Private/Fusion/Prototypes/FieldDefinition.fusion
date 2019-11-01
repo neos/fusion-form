@@ -2,8 +2,8 @@ prototype(Neos.Fusion.Form:FieldDefinition) {
     @class = 'Neos\\Fusion\\Form\\FusionObjects\\FieldDefinition'
 
     @propTypes {
-        form = ${PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Form')}
-        field = ${PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Field')}
+        form = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Eel\\Form')}
+        field = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Eel\\Field')}
         name = ${PropTypes.string}
         value = ${PropTypes.any}
         multiple = ${PropTypes.boolean}

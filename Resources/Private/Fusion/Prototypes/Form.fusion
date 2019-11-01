@@ -1,7 +1,7 @@
 prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
 
     @propTypes {
-        attributes = ${PropTypes.dataStructure()}
+        attributes = ${PropTypes.dataStructure({})}
         content = ${PropTypes.string}
     }
 

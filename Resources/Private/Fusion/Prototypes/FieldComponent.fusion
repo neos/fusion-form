@@ -11,8 +11,8 @@ prototype(Neos.Fusion.Form:FieldComponent) < prototype(Neos.Fusion:Component) {
     @ignoreProperties = ${['field']}
 
     @propTypes {
-        field = ${PropTypes.instanceof('\\Neos\\Fusion\\Form\\Domain\\Model\\Field')}
-        attributes = ${PropTypes.dataStructure()}
+        field = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Eel\\Field')}
+        attributes = ${PropTypes.dataStructure({})}
         content = ${PropTypes.string}
     }
 
