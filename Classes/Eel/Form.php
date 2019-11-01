@@ -182,7 +182,7 @@ class Form extends AbstractFormHelper
      * Calculate the hidden fields for the given form content as key-value array
      *
      * @param string $content form html body
-     * @param array hiddenFields as key value pairs
+     * @return array hiddenFields as key value pairs
      */
     public function calculateHiddenFields(string $content = null): array
     {

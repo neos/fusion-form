@@ -79,7 +79,7 @@ To render controls that access the data bound to the form prototypes like
 which is responsible for establishing the relation between form and field. 
 
 There are plenty of different fieldTypes already that can be found in the 
-[Neos.Neos.Form Fusion Documentation](Documentation/FusionForm.rst) but 
+[Neos.Neos.Form Fusion Documentation](Documentation/FusionReference.rst) but 
 it is also easily possible to create new input-types for project specific
 purposes.
 
@@ -119,7 +119,7 @@ renderer = afx`
 Fusion prototypes
 -----------------
 
-The full fusion documentation can be found [here](Documentation/FusionForm.rst)
+The full fusion documentation can be found [here](Documentation/FusionReference.rst)
 
 Examples
 --------

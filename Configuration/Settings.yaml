@@ -3,3 +3,17 @@ Neos:
     fusion:
       autoInclude:
         Neos.Fusion.Form: true
+  DocTools:
+    collections:
+      FusionForm:
+        references:
+          - 'FusionForm:EelHelpers'
+    references:
+      'FusionForm:EelHelpers':
+        title: 'Fusion Form Eel Helper Reference'
+        savePathAndFilename: '%FLOW_PATH_PACKAGES%Application/Neos.Fusion.Form/Documentation/EelHelpersReference.rst'
+        affectedClasses:
+          interface: Neos\Eel\ProtectedContextAwareInterface
+          classNamePattern: '/^Neos\\Fusion\\Form\\Eel\\.*$/i'
+        parser:
+          implementationClassName: Neos\DocTools\Domain\Service\EelHelperClassParser
