@@ -143,10 +143,12 @@ class Field extends AbstractFormHelper
     public function getCurrentValue($stringify = false)
     {
         if ($stringify) {
-            if ($this->multiple) {
+            if ($this->multiple && is_iterable($this->currentValue)) {
                 return $this->stringifyArray($this->currentValue);
-            } else {
+            } elseif (!$this->multiple) {
                 return $this->stringifyValue($this->currentValue);
+            } else {
+                return "";
             }
         }
         return $this->currentValue;

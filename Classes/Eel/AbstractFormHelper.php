@@ -38,18 +38,17 @@ abstract class AbstractFormHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of values to an array of string representation for beeing rendered as an html form value
      *
-     * @param array $value
+     * @param iterable $value
      * @return array|null
      */
-    protected function stringifyArray(array $value = null): array
+    protected function stringifyArray(iterable $value = null): array
     {
-        if (is_array($value)) {
-            return array_map(
-                function ($value) {
-                    return $this->stringifyValue($value);
-                },
-                $value
-            );
+        if (is_iterable($value)) {
+            $result = [];
+            foreach($value as $key => $item) {
+                $result[$key] = $this->stringifyValue($item);
+            }
+            return $result;
         } else {
             return null;
         }
