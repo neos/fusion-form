@@ -45,7 +45,7 @@ abstract class AbstractFormHelper implements ProtectedContextAwareInterface
     {
         if (is_iterable($value)) {
             $result = [];
-            foreach($value as $key => $item) {
+            foreach ($value as $key => $item) {
                 $result[$key] = $this->stringifyValue($item);
             }
             return $result;
