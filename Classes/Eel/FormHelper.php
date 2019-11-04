@@ -74,7 +74,7 @@ class FormHelper implements ProtectedContextAwareInterface
     public function createField(Form $form = null, string $name = null, bool $multiple = false): Field
     {
         if (!$name) {
-            return new Field(null, null, null);
+            return new Field(null, null, false);
         }
 
         // render fieldName
