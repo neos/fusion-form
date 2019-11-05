@@ -35,10 +35,14 @@ class OptionHelper extends AbstractFormHelper
     }
 
     /**
+     * @param bool $stringify
      * @return mixed
      */
-    public function getTargetValue()
+    public function getTargetValue($stringifgy = false)
     {
+        if ($stringifgy) {
+            return $this->stringifyValue($this->targetValue);
+        }
         return $this->targetValue;
     }
 }

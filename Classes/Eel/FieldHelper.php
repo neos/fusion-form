@@ -143,12 +143,14 @@ class FieldHelper extends AbstractFormHelper
     public function getCurrentValue($stringify = false)
     {
         if ($stringify) {
-            if ($this->multiple && is_iterable($this->currentValue)) {
-                return $this->stringifyArray($this->currentValue);
-            } elseif (!$this->multiple) {
-                return $this->stringifyValue($this->currentValue);
+            if ($this->multiple) {
+                if (is_iterable($this->currentValue)) {
+                    return $this->stringifyArray($this->currentValue);
+                } else {
+                    return [];
+                }
             } else {
-                return "";
+                return $this->stringifyValue($this->currentValue);
             }
         }
         return $this->currentValue;
