@@ -203,7 +203,7 @@ Form.Test.FusionController.index = Form.Test:Backend.UserForm
 Form.Test.FusionController.updateUser = Form.Test:Backend.UserForm
 
 #
-# The rendering of the form is centralizes in a single prototype 
+# The rendering of the form is centralized in a single prototype 
 # that expects the values `title`, `user` and `targetAction` in the context
 #
 prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
@@ -222,9 +222,9 @@ prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
             <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[roles]" label="user.role" field.multiple>
-                <label>Restricted Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" /></label>
-                <label>Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" /></label>
-                <label>Administrator <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" /></label>
+                <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" />
+                <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" />
+                <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" />
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
             <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[language]" label="user.language" >
