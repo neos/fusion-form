@@ -49,7 +49,7 @@ abstract class AbstractFormHelper implements ProtectedContextAwareInterface
      * @param iterable $value
      * @return array|null
      */
-    protected function stringifyArray(iterable $value = null): array
+    protected function stringifyMultivalue(iterable $value = null): array
     {
         if (is_iterable($value)) {
             $result = [];

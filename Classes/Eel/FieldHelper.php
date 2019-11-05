@@ -145,7 +145,7 @@ class FieldHelper extends AbstractFormHelper
         if ($stringify) {
             if ($this->multiple) {
                 if (is_iterable($this->currentValue)) {
-                    return $this->stringifyArray($this->currentValue);
+                    return $this->stringifyMultivalue($this->currentValue);
                 } else {
                     return [];
                 }
