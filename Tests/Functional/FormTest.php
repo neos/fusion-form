@@ -131,6 +131,88 @@ CONTENT;
     /**
      * @test
      */
+    public function calculateHiddenFieldsCreatesTrustedPropertiesForMultiSelects()
+    {
+        $form = $this->createForm(null, null, 'prefix');
+
+        $content = <<<CONTENT
+            <select name="prefix[foo][]" multiple>
+                <optgroup label="foo">
+                    <option>foo</option>
+                    <option>bar</option>                
+                </optgroup>
+                <option>baz</option>                
+                <option>bam</option>                
+            </select>
+CONTENT;
+
+        $this->mvcPropertyMappingConfigurationService
+            ->expects($this->once())
+            ->method('generateTrustedPropertiesToken')
+            ->with(['prefix[foo][]', 'prefix[foo][]', 'prefix[foo][]', 'prefix[foo][]'], 'prefix')
+            ->willReturn('--example--');
+
+        $hiddenFields = $form->calculateHiddenFields($content);
+
+        $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsCreatesTrustedPropertiesForSingleSelects()
+    {
+        $form = $this->createForm(null, null, 'prefix');
+
+        $content = <<<CONTENT
+            <select name="prefix[foo]">
+                <optgroup label="foo">
+                    <option>foo</option>
+                    <option>bar</option>                
+                </optgroup>
+                <option>baz</option>                
+                <option>bam</option>                
+            </select>
+CONTENT;
+
+        $this->mvcPropertyMappingConfigurationService
+            ->expects($this->once())
+            ->method('generateTrustedPropertiesToken')
+            ->with(['prefix[foo]'], 'prefix')
+            ->willReturn('--example--');
+
+        $hiddenFields = $form->calculateHiddenFields($content);
+
+        $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsCreatesTrustedPropertiesForMultipleCheckboxes()
+    {
+        $form = $this->createForm(null, null, 'prefix');
+
+        $content = <<<CONTENT
+            <input type="checkbox" name="prefix[foo][]" />
+            <input type="checkbox" name="prefix[foo][]" />
+            <input type="checkbox" name="prefix[foo][]" />
+CONTENT;
+
+        $this->mvcPropertyMappingConfigurationService
+            ->expects($this->once())
+            ->method('generateTrustedPropertiesToken')
+            ->with(['prefix[foo][]','prefix[foo][]','prefix[foo][]'], 'prefix')
+            ->willReturn('--example--');
+
+        $hiddenFields = $form->calculateHiddenFields($content);
+
+        $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
+    }
+
+    /**
+     * @test
+     */
     public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithActionRequestIsGiven()
     {
         $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();

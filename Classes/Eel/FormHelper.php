@@ -263,7 +263,15 @@ class FormHelper extends AbstractFormHelper
             foreach ($elements as $element) {
                 $name = (string)$element->getAttribute('name');
                 if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
-                    $formFieldNames[] = $name;
+                    // multiselects have to add the fieldname for every option
+                    if ($element->nodeName === 'select' && (bool)$element->getAttribute('multiple')) {
+                        $optionCount = $xpath->query(".//option", $element)->count();
+                        for ($i = 0; $i < $optionCount; $i++) {
+                            $formFieldNames[] = $name;
+                        }
+                    } else {
+                        $formFieldNames[] = $name;
+                    }
                 }
             }
         }
@@ -300,7 +308,7 @@ class FormHelper extends AbstractFormHelper
         // A signed array of all properties the property mapper is allowed to convert from string to the target type
         // so no property mapping configuration is needed on the target controller
         //
-        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($formFieldNames), $fieldNamePrefix);
+        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
 
         return $hiddenFields;
     }
