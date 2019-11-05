@@ -265,7 +265,7 @@ class FormHelper extends AbstractFormHelper
                 if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
                     // multiselects have to add the fieldname for every option
                     if ($element->nodeName === 'select' && (bool)$element->getAttribute('multiple')) {
-                        $optionCount = $xpath->query(".//option", $element)->count();
+                        $optionCount = $xpath->query(".//option", $element)->length;
                         for ($i = 0; $i < $optionCount; $i++) {
                             $formFieldNames[] = $name;
                         }
