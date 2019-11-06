@@ -1,4 +1,7 @@
-prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.Fusion.Form:FieldComponent) {
+/**
+ *
+ */
+prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.Fusion.Form:Component.Field) {
 
     @propTypes {
         label = ${PropTypes.string}
@@ -9,6 +12,15 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     # label and afx content
     #
     label = null
+
+    #
+    # attributes for the container
+    #
+    attributes = Neos.Fusion:DataStructure
+
+    #
+    # container content
+    #
     content = null
 
     #
@@ -26,15 +38,15 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     }
 
     renderer = afx`
-        <div class={field.errors ? "neos-control-group neos-error" : "neos-control-group"}>
-            <label class="neos-control-label" for={field.name} @if.has={props.label}>
+        <div class={field.hasErrors() ? "neos-control-group neos-error" : "neos-control-group"} {...props.attributes} >
+            <label class="neos-control-label" for={field.getName()} @if.has={props.label}>
                 {I18n.translate(props.label, props.label, [], props.translation.label.source, props.translation.label.package)}
             </label>
             <div class="neos-controls">
                 {props.content}
             </div>
-            <ul @if.hasErrors={field.errors} class="errors">
-                <Neos.Fusion:Loop items={field.result.flattenedErrors} itemName="errors" >
+            <ul @if.hasErrors={field.hasErrors()} class="errors">
+                <Neos.Fusion:Loop items={field.getResult().flattenedErrors} itemName="errors" >
                     <Neos.Fusion:Loop items={errors} itemName="error" >
                         <li>
                             <span class="neos-help-block">
@@ -48,13 +60,47 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     `
 
     #
-    # FieldComponent that are rendered inside field container are adjusted
-    # if no specific name is given the field from the container is reused
-    # if nop specific id is given the name from the comntainer is used
+    # all FieldComponents will render the field.name as id so
+    # the label for from the FieldContainer references them correctly
     #
-    prototype(Neos.Fusion.Form:FieldComponent) {
-        field = ${this.name ? Form.createField(form, this.name, this.multiple) : field}
-        id = ${field.name}
+    prototype(Neos.Fusion.Form:Component.Field) {
+        attributes.id = ${field.getName()}
+    }
+
+    #
+    # use default bootstrap markup for checkboxes
+    #
+    prototype(Neos.Fusion.Form:Checkbox) {
+        attributes.id = ${field.getName() + '-' + field.getTargetValueStringified()}
+        renderer.@process.wrapInLabel {
+            expression = afx`
+                <label
+                    class="neos-checkbox"
+                    for={field.getName() + '-' + field.getTargetValueStringified()}
+                >
+                    {value}<span></span>
+                    {props.content || field.getTargetValueStringified()}
+                </label>
+            `
+        }
+    }
+
+    #
+    # use default bootstrap markup for radio buttons
+    #
+    prototype(Neos.Fusion.Form:Radio) {
+        attributes.id = ${field.getName() + '-' + field.getTargetValueStringified()}
+        renderer.@process.wrapInLabel {
+            expression = afx`
+                <label
+                    class="neos-radio"
+                    for={field.getName() + '-' + field.getTargetValueStringified()}
+                >
+                {value}<span></span>
+                {props.content || field.getTargetValueStringified()}
+                </label>
+            `
+        }
     }
 }
 

@@ -1,36 +1,13 @@
-prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
-
-    @context.form = ${this.form}
+prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:Component.Form) {
 
     @propTypes {
-        fieldnamePrefix = ${PropTypes.string}
-        data = ${PropTypes.any}
-        actionUri = ${PropTypes.string}
-        method = ${PropTypes.string}
-        enctype = ${PropTypes.string}
-        id = ${PropTypes.string}
-        class = ${PropTypes.string}
-        name = ${PropTypes.string}
-        attributes = ${PropTypes.any}
+        attributes = ${PropTypes.dataStructure({})}
         content = ${PropTypes.string}
     }
 
     #
-    # values that are used to populate the field context
-    #
-    fieldnamePrefix = null
-    data = Neos.Fusion:DataStructure
-    form = ${Form.createForm(request, this.fieldnamePrefix, this.data)}
-
-    #
     # html attributes for the form
     #
-    id = null
-    class = null
-    name = null
-    actionUri = Neos.Fusion:UriBuilder
-    method = 'post'
-    enctype = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
     attributes = Neos.Fusion:DataStructure
 
     #
@@ -40,24 +17,21 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion:Component) {
 
     renderer = afx`
         <form
-            id={props.id}
-            class={props.class}
-            name={props.name}
-            action={props.actionUri}
-            method={props.method}
-            enctype={props.enctype}
+            action={form.getTarget()}
+            method={form.getMethod()}
+            enctype={form.getEncoding}
             {...props.attributes}
         >
             <div style="display: none">
                 <Neos.Fusion:Loop
-                    items={Form.calculateHiddenFields(form, props.content)}
+                    items={form.calculateHiddenFields(props.content)}
                     itemKey="fieldName"
                     itemName="fieldValue"
                 >
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
                 <Neos.Fusion:Join
-                    @if.isNoGetRequest={String.toLowerCase(props.method) != 'get'}
+                    @if.isNoGetRequest={String.toLowerCase(form.getMethod()) != 'get'}
                     @if.isSessionPresent={Security.isAuthenticated()}
                 >
                     <input

@@ -1,24 +1,32 @@
-prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
-    @propTypes {
-        content = ${PropTypes.string}
-        value = ${PropTypes.any}
-        selected = ${PropTypes.boolean}
+prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion.Form:Component.Option) {
+
+    renderer = Neos.Fusion:Component {
+
+        #
+        # pass down props
+        #
+        attributes = ${props.attributes}
+        content = ${props.content}
+
+        #
+        # the `selected` state is calculated outside the renderer to allow` overriding via `attributes`
+        #
+        selected = false
+        selected.@process.checkMultiValue = ${Array.indexOf(field.getCurrentMultivalueStringified(), option.getTargetValueStringified()) > -1}
+        selected.@process.checkMultiValue.@if.hasValue = ${field.hasCurrentValue()}
+        selected.@process.checkMultiValue.@if.isMultiple = ${field.isMultiple()}
+        selected.@process.checkSingleValue = ${field.getCurrentValueStringified() == option.getTargetValueStringified()}
+        selected.@process.checkSingleValue.@if.hasValue = ${field.hasCurrentValue()}
+        selected.@process.checkSingleValue.@if.isSingle = ${!field.isMultiple()}
+
+        renderer = afx`
+           <option
+               value={option.getTargetValueStringified()}
+               selected={props.selected}
+               {...props.attributes}
+           >
+               {props.content || option.getTargetValue()}
+           </option>
+        `
     }
-
-    selected = false
-    value = null
-    content = null
-
-    renderer = afx`
-       <option
-           value={Form.stringifyValue(props.value)}
-           selected={props.selected}
-           selected.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.value)) > -1}
-           selected.@process.multiValue.@if.has={field.value && field.multiple}
-           selected.@process.singleValue={Form.stringifyValue(props.value) == Form.stringifyValue(field.value)}
-           selected.@process.singleValue.@if.has={field.value && !field.multiple}
-       >
-           {props.content || props.value}
-       </option>
-    `
 }

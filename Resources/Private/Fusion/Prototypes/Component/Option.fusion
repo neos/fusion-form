@@ -1,0 +1,34 @@
+prototype(Neos.Fusion.Form:Component.Option)  < prototype(Neos.Fusion:Component) {
+
+    #
+    # ensure the `option`-context is evaluated first so it is available for calculating other `props`
+    #
+    @context.option = ${this.option}
+
+    #
+    # `option` is excluded from `props`, for beeing in line with `form` and `field`
+    #
+    @ignoreProperties = ${['option']}
+
+    @propTypes {
+        option = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Domain\\Option')}
+        attributes = ${PropTypes.dataStructure({})}
+        content = ${PropTypes.string}
+    }
+
+    #
+    # used to populate the `option` context to provide access to the strigified value
+    #
+    option = Neos.Fusion.Form:Definition.Option
+
+    #
+    # attributes for the field to be used by the renderer of derived types
+    #
+    attributes = Neos.Fusion:DataStructure
+
+    #
+    # afx content to be used by the renderer of derived types
+    #
+    content = ''
+
+}

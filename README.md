@@ -6,12 +6,14 @@ Pure fusion form rendering with afx support!
 Development targets 
 -------------------
 
-- Form rendering in fusion with afx with data binding 
+- Form rendering in fusion with afx and data binding 
 - Extensibility and flexibility
 - Enable reusability of form fragments as fusion components 
-- Render hidden fields for Flow validation, security and persistence magic
+- Render hidden fields for validation, security and persistence magic
 - Automatically prefix fieldNames for the current request.namespace 
 - Overcome limitations as binding of forms to a single object
+- Clear separation of automation and magic for understandable results
+- Allow explicit overriding of all magic 
 
 **Important Deviations from Fluid Form ViewHelpers**
 
@@ -20,34 +22,36 @@ stumble over. There are many more deviations but those are breaking
 concept changes you should be aware of.
 
 - Instead of binding a single `object` a `data` DataStructure is bound to the form.
-- The fields use `name` to establish the reference to data and validation instead of `property` that also has to include the object name.
-- Select options are defined as afx children and not `options`.
+- Form data-binding is defined via `form.data.object={object}` instead of `objectName` and `object`.
+- Field data-binding is defined vis `field.name="object[title]"` with the object name and square brackets for nesting.
+- Data binding with `property` path syntax is not supported.
+- Select options and groups are defined directly as afx `content` and not `options`.
 
 Usage
 -----
 
 Forms usually are defined by using the `Neos.Fusion.Form:Form` prototype 
-in afx. The `actionUri` can be passed as a string but since it is 
-predefined as a `Neos.Fusion:UriBuilder` in most cases only the target 
-`actionUri.action` has to be defined and the current `package` and
-`controller` are assumed. By default the form `method` is `post` but 
+in afx. The `form.target` can be passed as a string but since it is 
+predefined as a `Neos.Fusion:UriBuilder` so in most cases only the target 
+`form.target.action` has to be defined. The current `package` and
+`controller` are assumed automatically. By default the `form.method` is `post` but 
 other methods can be used aswell. 
  
 ```
 renderer = afx`
-    <Neos.Fusion.Form:Form actionUri.action="sendOrder">
+    <Neos.Fusion.Form:Form form.target.action="sendOrder" form.target.controller="Order" >
 
     </Neos.Fusion.Form:Form>
 `
 ```
 
 Since forms are used to manipulate existing data those objects or data structures 
-are bound the form as `data`. The fusion forms allow to manipulate multiple 
+are bound the form as `form.data`. The fusion forms allow to manipulate multiple 
 objects at once that are sent to the target controller as separate arguments. 
 
 ```
 renderer = afx`
-    <Neos.Fusion.Form:Form data.customer={customer} data.shipmentAddress={shipmentAddress}>
+    <Neos.Fusion.Form:Form form.data.customer={customer} form.data.shipmentAddress={shipmentAddress}>
 
     </Neos.Fusion.Form:Form>
 `
@@ -58,29 +62,33 @@ for the form.
 
 ```
 renderer = afx`
-    <Neos.Fusion.Form:Form>
+    <Neos.Fusion.Form:Form form.data.customer={customer}>
         <fieldset>
-            <legend>Example</legend>
+            <legend for="example">Example</legend>
+            <input type="text" name="title" />
         </fieldset>
     </Neos.Fusion.Form:Form>
 `
 ```
 
+While html inputs can be used they provide no magic like data-binding and 
+automatic namespaces. 
+
 To render controls that access the data bound to the form prototypes like 
-`Neos.Fusion.Form:Input` that are derived from `Neos.Fusion.Form:FieldComponent`
-are used. The relation is established by defining a `name` for the field 
-using square brackets for nesting as inputs do in html. 
+`Neos.Fusion.Form:Input` are used. Those prototyoes are derived from 
+`Neos.Fusion.Form:Component.Field` which is responsible for establishing 
+the relation between form and field. 
 
 There are plenty of different fieldTypes already that can be found in the 
-[Neos.Neos.Form Fusion Documentation](Documentation/FusionForm.rst) but 
+[Neos.Neos.Form Fusion Documentation](Documentation/FusionReference.rst) but 
 it is also easily possible to create new input-types for project specific
 purposes.
 
 ```
 renderer = afx`
-    <Neos.Fusion.Form:Form data.customer={customer}>
-        <Neos.Fusion.Form:Input name="customer[firstName]" />
-        <Neos.Fusion.Form:Input name="customer[lastName]" />
+    <Neos.Fusion.Form:Form form.data.customer={customer}>
+        <Neos.Fusion.Form:Input field.name="customer[firstName]" />
+        <Neos.Fusion.Form:Input field.name="customer[lastName]" />
         <Neos.Fusion.Form:Button >Submit</Neos.Fusion.Form:Button>
     </Neos.Fusion.Form:Form>
 `
@@ -88,7 +96,7 @@ renderer = afx`
 
 It is possible to create field components with translated label and error 
 rendering. The prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
-is an example for which implements the required markup for Neos backend modules.
+is an example for that which implements the required markup for Neos backend modules.
 Label are added and translated using the translations from `Neos.Neos:Main` 
 and validation errors are translated using the source `Neos.Flow:ValidationErrors` 
 as translation source. 
@@ -100,8 +108,8 @@ your project specific markup.
 
 ```
 renderer = afx`
-    <Neos.Fusion.Form:Form data.customer={customer}>
-        <Neos.Fusion.Form:Neos.BackendModule.FieldContainer name="customer[firstName]">
+    <Neos.Fusion.Form:Form form.data.customer={customer}>
+        <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="customer[firstName]">
             <Neos.Fusion.Form:Input />
         </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
         <Neos.Fusion.Form:Button >Submit</Neos.Fusion.Form:Button>
@@ -112,7 +120,7 @@ renderer = afx`
 Fusion prototypes
 -----------------
 
-The full fusion documentation can be found [here](Documentation/FusionForm.rst)
+The full fusion documentation can be found [here](Documentation/FusionReference.rst)
 
 Examples
 --------
@@ -131,32 +139,32 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
     targetAction = null
     
     renderer = afx`
-        <Neos.Fusion.Form:Form data.customer={props.customer} data.shipment={props.shipment} actionUri.action={props.targetAction} >
+        <Neos.Fusion.Form:Form form.data.customer={props.customer} form.data.shipment={props.shipment} form.target.action={props.targetAction} >
 
             <label for="firstName" >First Name</label>	
-            <Neos.Fusion.Form:Input id="firstName" name="customer[lastName]" />
+            <Neos.Fusion.Form:Input attributes.id="firstName" field.name="customer[lastName]" />
     
             <label for="lastName">Last Name</label>
-            <Neos.Fusion.Form:Input id="lastName" name="customer[lastName]" />
+            <Neos.Fusion.Form:Input attributes.id="lastName" field.name="customer[lastName]" />
     
             <label>Shipment method</label>
-            <label><Neos.Fusion.Form:Radio name="shipment[method]" value="ups" />UPS</label>
-            <label><Neos.Fusion.Form:Radio name="shipment[method]" value="dhl" />DHL</label>
-            <label><Neos.Fusion.Form:Radio name="shipment[method]" value="pickup" />Pickup</label>
+            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" field.value="ups" />UPS</label>
+            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" field.value="dhl" />DHL</label>
+            <label><Neos.Fusion.Form:Radio field.name="shipment[method]" field.value="pickup" />Pickup</label>
     
             <label for="street">Street</label>
-            <Neos.Fusion.Form:Input id="street" name="customer[street]" />
+            <Neos.Fusion.Form:Input attributes.id="street" field.name="customer[street]" />
             
             <label for="city">City</label>
-            <Neos.Fusion.Form:Input id="city" name="customer[city]" />
+            <Neos.Fusion.Form:Input attributes.id="city" field.name="customer[city]" />
     
             <label for="country" >Country</label>
-            <Neos.Fusion.Form:Select id=country name="shipment[country]">
-                <Neos.Fusion.Form:Select.Option value="de" >Germany</Neos.Fusion.Form:Select.Option>
-                <Neos.Fusion.Form:Select.Option value="at" >Austria</Neos.Fusion.Form:Select.Option>
-                <Neos.Fusion.Form:Select.Option value="ch" > Switzerland </Neos.Fusion.Form:Select.Option>
-            </Neos.Fusion.Form:Select>    
-                
+            <Neos.Fusion.Form:Select attributes.id=country field.name="shipment[country]">
+                <Neos.Fusion.Form:Select.Option option.value="de" >Germany</Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option option.value="at" >Austria</Neos.Fusion.Form:Select.Option>
+                <Neos.Fusion.Form:Select.Option option.value="ch" > Switzerland </Neos.Fusion.Form:Select.Option>
+            </Neos.Fusion.Form:Select>
+            
             <Neos.Fusion.Form:Button>Submit Order</Neos.Fusion.Form:Button>
 
         </Neos.Fusion.Form:Form>
@@ -167,17 +175,14 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
 **Backend Module**
 
 Forms for backend modules basically work the same as in the frontend 
-but the additional prototyoe `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
+but the additional prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
 can be used to render fields with translated labels and error messages
-using the dafault markup of the neos backend.
+using the default markup of the Neos backend.
 
 HINT: To render a backend module with fusion you have to set the 
 `defaultViwObjectName` to the `Neos\Fusion\View\FusionView::class` in the
 controller class and be aware that you have to include all required fusion
 explicitly.
-
-ATTENTION: This prototype is not meant to be used in the frontend. Create 
-project specific field containers instead.
 
 ```
 #
@@ -196,7 +201,7 @@ Form.Test.FusionController.index = Form.Test:Backend.UserForm
 Form.Test.FusionController.updateUser = Form.Test:Backend.UserForm
 
 #
-# The rendering of the form is centralizes in a single prototype 
+# The rendering of the form is centralized in a single prototype 
 # that expects the values `title`, `user` and `targetAction` in the context
 #
 prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
@@ -204,28 +209,28 @@ prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
     renderer = afx`
         <h2>{title}</h2>
 
-        <Neos.Fusion.Form:Form data.user={user} actionUri.action={targetAction} >
+        <Neos.Fusion.Form:Form form.data.user={user} form.target.action={targetAction} >
 
-            <Neos.Fusion.Form:Neos.BackendModule.FieldContainer name="user[firstName]" label="user.firstName">
+            <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[firstName]" label="user.firstName">
                 <Neos.Fusion.Form:Input />
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
-            <Neos.Fusion.Form:Neos.BackendModule.FieldContainer name="user[firstName]" label="user.lastName">
+            <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[firstName]" label="user.lastName">
                 <Neos.Fusion.Form:Input />
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
-            <Neos.Fusion.Form:Neos.BackendModule.FieldContainer name="user[roles]" label="user.role" multiple>
-                <label>Restricted Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:RestrictedEditor" /></label>
-                <label>Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:Editor" /></label>
-                <label>Administrator <Neos.Fusion.Form:Checkbox value="Neos.Neos:Administrator" /></label>
+            <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[roles]" label="user.role" field.multiple>
+                <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" />
+                <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" />
+                <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" />
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
-            <Neos.Fusion.Form:Neos.BackendModule.FieldContainer name="user[language]" label="user.language" >
+            <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[language]" label="user.language" >
                 <Neos.Fusion.Form:Select>
-                    <Neos.Fusion.Form:Select.Option value="en" >Englisch</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option value="de" >Deutsch</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option value="ru" >Russian</Neos.Fusion.Form:Select.Option>
-                    <Neos.Fusion.Form:Select.Option value="kg" >Klingon</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option option.value="en" >Englisch</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option option.value="de" >Deutsch</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option option.value="ru" >Russian</Neos.Fusion.Form:Select.Option>
+                    <Neos.Fusion.Form:Select.Option option.value="kg" >Klingon</Neos.Fusion.Form:Select.Option>
                 </Neos.Fusion.Form:Select>
             </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
 
@@ -242,29 +247,24 @@ Extending Neos.Fusion-Form:
 **Custom Form Fields**
 
 The most obvious extension point is the definition of custom fieldtypes.
-To do so you have to extend the `Neos.Fusion.Form:FieldContainer` prototype
+To do so you have to extend the `Neos.Fusion.Form:Component.Field` prototype
 and implement the renderer you need. 
 
-For the rendering you have access to the `field` in the fusion context which 
-allows you to get the current `value`. You should use this value to 
-access bound data and values that were already submitted. The `field.value`
-hast to be stringified for the html rendering as the bound data may be of any
-type. 
+For the rendering you have access to the `field` in the fusion context gives
+you access to the current value from data binding and the target value.
+
+HINT: By default all field components support setting `attributes` which
+are expected to override all autmatically assigned attributes and whenever 
+it makes sense also `content` which is usually defined via afx.  
 
 ```
-prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponent) {
-    content = ''
-
+prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Component.Field) {
     renderer = afx`
         <textarea
-            id={props.id}
-            class={props.class}
-            type="text"
             name={field.name}
-            required={props.required}
             {...props.attributes}
         >
-            {Form.stringifyValue(field.value || props.content)}
+            {field.getCurrentValueStringified() || props.content)}
         </textarea>
     `
 }
@@ -306,39 +306,11 @@ prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldCompone
     `
 
     #
-    # FieldComponent that are rendered inside field container are adjusted
-    # if no specific name is given the field from the container is reused
-    # if nop specific id is given the name from the comntainer is used
+    # all FieldComponents will render the field.name as id so
+    # the label for from the FieldContainer references them correctly 
     #
-    prototype(Neos.Fusion.Form:FieldComponent) {
-        field = ${this.name ? Form.createField(form, this.name, this.multiple) : field}
-        id = ${field.name}
+    prototype(Neos.Fusion.Form:Component.Field) {
+        attributes.id = ${field.name}
     }
 }
-```
-
-Using such components is done similar to the `Neos.Fusion.Form:Neos.BackendModule.FieldContainer`
-
-```
-prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldComponent) {
-    renderer = afx`
-
-        <Neos.Fusion.Form:Form>
-     
-            <Vendor.Site:Form.FieldContainer name="user[firstName]" label="user.firstName">
-                <Neos.Fusion.Form:Input />
-            </Vendor.Site:Form.FieldContainer>
-
-            <Vendor.Site:Form.FieldContainer name="user[firstName]" label="user.lastName">
-                <Neos.Fusion.Form:Input />
-            </Vendor.Site:Form.FieldContainer>
-
-            <Vendor.Site:Form.FieldContainer name="user[roles]" label="user.role" multiple>
-                <label>Restricted Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:RestrictedEditor" /></label>
-                <label>Editor <Neos.Fusion.Form:Checkbox value="Neos.Neos:Editor" /></label>
-                <label>Administrator <Neos.Fusion.Form:Checkbox value="Neos.Neos:Administrator" /></label>
-            </Vendor.Site:Form.FieldContainer>
-        </Neos.Fusion.Form:Form>
-    `
-}                       
 ```

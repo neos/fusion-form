@@ -1,25 +1,32 @@
-prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponent) {
-    @propTypes {
-        checked = ${PropTypes.boolean}
+prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:Component.Field) {
+
+    renderer = Neos.Fusion:Component {
+
+        #
+        # pass down props
+        #
+        attributes = ${props.attributes}
+
+        #
+        # the `checked` state is calculated outside the renderer to allow` overriding via `attributes`
+        #
+        checked = false
+        checked.@process.checkMultiValue = ${Array.indexOf(field.getCurrentMultivalueStringified(), field.getTargetValueStringified()) > -1}
+        checked.@process.checkMultiValue.@if.hasValue = ${field.hasCurrentValue()}
+        checked.@process.checkMultiValue.@if.isMultiple = ${field.isMultiple()}
+        checked.@process.checkSingleValue = ${field.getCurrentValueStringified() == field.getTargetValueStringified()}
+        checked.@process.checkSingleValue.@if.hasValue = ${field.hasCurrentValue()}
+        checked.@process.checkSingleValue.@if.isSingle = ${!field.isMultiple()}
+
+        renderer = afx`
+            <input
+                type="checkbox"
+                name={field.getName()}
+                value={field.getTargetValueStringified()}
+                checked={props.checked}
+                {...props.attributes}
+            />
+        `
     }
-
-    checked = false
-
-    renderer = afx`
-        <input
-            id={props.id}
-            class={props.class}
-            required={props.required}
-            type="checkbox"
-            name={field.name}
-            value={Form.stringifyValue(props.value)}
-            checked={props.checked}
-            checked.@process.multiValue={Array.indexOf(Form.stringifyArray(field.value), Form.stringifyValue(props.value)) > -1}
-            checked.@process.multiValue.@if.has={field.value && field.multiple}
-            checked.@process.singleValue={Form.stringifyValue(field.value) == Form.stringifyValue(props.value)}
-            checked.@process.singleValue.@if.has={field.value && !field.multiple}
-            {...props.attributes}
-        />
-    `
 
 }

@@ -1,0 +1,35 @@
+prototype(Neos.Fusion.Form:Component.Field) < prototype(Neos.Fusion:Component) {
+
+    #
+    # ensure the `field`-context is evaluated first so it is available for calculating other `props`
+    #
+    @context.field = ${this.field}
+
+    #
+    # `field` is excluded from `props`
+    #
+    @ignoreProperties = ${['field']}
+
+    @propTypes {
+        field = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Domain\\Field')}
+        attributes = ${PropTypes.dataStructure({})}
+        content = ${PropTypes.string}
+    }
+
+    #
+    # used to populate the `field` context and among others things
+    # allow accessing the data bound to the form, submitted values
+    # and results
+    #
+    field = Neos.Fusion.Form:Definition.Field
+
+    #
+    # attributes for the field to be used by the renderer of derived types
+    #
+    attributes = Neos.Fusion:DataStructure
+
+    #
+    # afx content to be used by the renderer of derived types
+    #
+    content = ''
+}

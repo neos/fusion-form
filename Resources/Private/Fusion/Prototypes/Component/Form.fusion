@@ -1,0 +1,35 @@
+prototype(Neos.Fusion.Form:Component.Form) < prototype(Neos.Fusion:Component)  {
+
+    #
+    # ensure the form-context is evaluated first so it is available for calculating `props`
+    #
+    @context.form = ${this.form}
+
+    #
+    # `form` is excluded from `props`
+    #
+    @ignoreProperties = ${['form']}
+
+    @propTypes {
+        form = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Domain\\Form')}
+        attributes = ${PropTypes.dataStructure({})}
+        content = ${PropTypes.string}
+    }
+
+    #
+    # used to populate the `form` context for providing features
+    # like data-binding, accessing to validation results and
+    # previously submitted values
+    #
+    form = Neos.Fusion.Form:Definition.Form
+
+    #
+    # attributes to be used by the renderer of derived types
+    #
+    attributes = Neos.Fusion:DataStructure
+
+    #
+    # afx content to be used by the renderer of derived types
+    #
+    content = ''
+}

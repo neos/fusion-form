@@ -1,17 +1,9 @@
-prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:FieldComponent) {
-    @propTypes {
-        content = ${PropTypes.string}
-    }
-
-    content = null
+prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:Component.Field) {
 
     renderer = afx`
         <select
-            id={props.id}
-            class={props.class}
-            name={field.name}
-            required={props.required}
-            multiple={field.multiple}
+            name={field.getName()}
+            multiple={field.isMultiple()}
             {...props.attributes}
         >
             {props.content}

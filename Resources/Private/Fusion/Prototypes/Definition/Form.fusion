@@ -1,0 +1,20 @@
+prototype(Neos.Fusion.Form:Definition.Form) {
+
+    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FormDefinitionImplementation'
+
+    @propTypes {
+        request = ${PropTypes.instanceOf('\\Neos\\Flow\\Mvc\\ActionRequest')}
+        fieldnamePrefix = ${PropTypes.string}
+        data = ${PropTypes.any}
+        target = ${PropTypes.string}
+        method = ${PropTypes.string}
+        encoding = ${PropTypes.string}
+    }
+
+    request = ${request}
+    fieldnamePrefix = null
+    data = Neos.Fusion:DataStructure
+    target = Neos.Fusion:UriBuilder
+    method = 'post'
+    encoding = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
+}

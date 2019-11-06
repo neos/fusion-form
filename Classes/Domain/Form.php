@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Neos\Fusion\Form\Eel;
+namespace Neos\Fusion\Form\Domain;
 
 /*
  * This file is part of the Neos.Fusion.Form package.
@@ -14,17 +14,20 @@ namespace Neos\Fusion\Form\Eel;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Error\Messages\Result;
-use Neos\Flow\Persistence\PersistenceManagerInterface;
-use Neos\Utility\ObjectAccess;
 use Neos\Flow\Mvc\ActionRequest;
+use Neos\Utility\ObjectAccess;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
-use Neos\Fusion\Form\Domain\Model\Field;
-use Neos\Fusion\Form\Domain\Model\Form;
 
-class FormHelper implements ProtectedContextAwareInterface
+/**
+ * This object describes a the main properties of a form. Usually this is
+ * instantiated by the fusion prototype `Neos.Fusion.Form:Definition.Form`
+ * and can be accessed as `form` in the fusion context.
+ *
+ * @package Neos\Fusion\Form\Domain
+ */
+class Form extends AbstractFormObject
 {
     /**
      * @Flow\Inject
@@ -33,102 +36,173 @@ class FormHelper implements ProtectedContextAwareInterface
     protected $mvcPropertyMappingConfigurationService;
 
     /**
-     * @var PersistenceManagerInterface
-     * @Flow\Inject
-     */
-    protected $persistenceManager;
-
-    /**
      * @Flow\Inject
      * @var HashService
      */
     protected $hashService;
 
     /**
-     * Create a form definition object
-     *
+     * @var ActionRequest
+     */
+    protected $request;
+
+    /**
+     * @var mixed
+     */
+    protected $data;
+
+    /**
+     * @var string
+     */
+    protected $target;
+
+    /**
+     * @var string
+     */
+    protected $method;
+
+    /**
+     * @var string
+     */
+    protected $encoding;
+
+    /**
+     * @var string
+     */
+    protected $fieldNamePrefix;
+
+    /**
+     * @var array
+     */
+    protected $submittedValues;
+
+    /**
+     * @var Result
+     */
+    protected $result;
+
+    /**
+     * Form constructor.
      * @param ActionRequest|null $request
+     * @param null $data
      * @param string|null $fieldNamePrefix
-     * @param mixed|null $data
-     * @return Form
+     * @param string|null $target
+     * @param string $method
+     * @param string|null $encoding
      */
-    public function createForm(ActionRequest $request = null, string $fieldNamePrefix = null, $data = null): Form
+    public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, string $target = null, string $method = "get", string $encoding = null)
     {
-        return new Form(
-            $request,
-            $data,
-            $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),
-            $request ? $request->getInternalArgument('__submittedArguments') : [],
-            $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : new Result()
-        );
+        $this->request = $request;
+        $this->data = $data;
+        $this->fieldNamePrefix = $fieldNamePrefix;
+        $this->target = $target;
+        $this->method = $method;
+        $this->encoding = $encoding;
+
+        // determine submitted values and result from request
+        $this->submittedValues = $request ? $request->getInternalArgument('__submittedArguments') : null;
+        $this->result = $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : null;
+
+        // determine fieldNamePrefix if none was given from request
+        if (is_null($this->fieldNamePrefix) && $request) {
+            $this->fieldNamePrefix = $request->getArgumentNamespace();
+        }
     }
 
     /**
-     * Create a field definition object
-     *
-     * @param Form|null $form
-     * @param string $name
-     * @param bool $multiple
-     * @return Field
+     * @return ActionRequest|null The ActionRequest the form is rendered with
      */
-    public function createField(Form $form = null, string $name = null, bool $multiple = false): Field
+    public function getRequest(): ?ActionRequest
     {
-        if (!$name) {
-            return new Field(null, null, false);
-        }
-
-        // render fieldName
-        if ($form && $form->getFieldNamePrefix()) {
-            $fieldName = $this->prefixFieldName($name, $form->getFieldNamePrefix());
-        } else {
-            $fieldName = $name;
-        }
-        if ($multiple) {
-            $fieldName .= '[]';
-        }
-
-        // create property path from fieldname
-        $path = $this->fieldNameToPath($name);
-
-        // determine value, according to the following algorithm:
-        if ($form && $form->getResult() !== null && $form->getResult()->hasErrors()) {
-            // 1) if a validation error has occurred, pull the value from the submitted form values.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getSubmittedValues(), $path);
-        } elseif ($path && $form && $form->getData()) {
-            // 2) else, if "property" is specified, take the value from the bound object.
-            $fieldValue = ObjectAccess::getPropertyPath($form->getData(), $path);
-        } else {
-            $fieldValue = null;
-        }
-
-        // determine ValidationResult for the single property
-        $fieldResult = null;
-        if ($form && $form->getResult() && $form->getResult()->hasErrors()) {
-            $fieldResult = $form->getResult()->forProperty($path);
-        }
-
-        return new Field(
-            $fieldName,
-            $fieldValue,
-            $multiple,
-            $fieldResult
-        );
+        return $this->request;
     }
 
     /**
-     * Calculate the hidden fields for the given form content as key-value array
-     *
-     * @param ActionRequest $request
-     * @param string $content form html body
-     * @param array hiddenFields as key value pairs
+     * @return mixed The data that was bound to the form, usually a DataStructure
      */
-    public function calculateHiddenFields(Form $form = null, string $content = null): array
+    public function getData()
     {
+        return $this->data;
+    }
+
+    /**
+     * @return string|null The fieldname prefix that was assigned or determined from the request
+     */
+    public function getFieldNamePrefix(): ?string
+    {
+        return $this->fieldNamePrefix;
+    }
+
+    /**
+     * @return array|null The previously submitted values when validation errors prevented processing the data
+     */
+    public function getSubmittedValues(): ?array
+    {
+        return $this->submittedValues;
+    }
+
+    /**
+     * @return Result The result for the whole form, can be used to render validation messahes in a central place
+     */
+    public function getResult(): ?Result
+    {
+        return $this->result;
+    }
+
+    /**
+     * @return string|null The target uri for the form, usually defined as Neos.Fusion:UriBuilder
+     */
+    public function getTarget(): ?string
+    {
+        return $this->target;
+    }
+
+    /**
+     * @return string|null The http method for submitting the form
+     */
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return string|null The encoding for the form
+     */
+    public function getEncoding(): ?string
+    {
+        return $this->encoding;
+    }
+
+    /**
+     * @return bool Return whether the form had validation errors in a previous submit
+     */
+    public function hasErrors(): bool
+    {
+        if ($this->result) {
+            return $this->result->hasErrors();
+        }
+        return false;
+    }
+
+    /**
+     * Calculate the hidden fields for the given form content as key-value array.
+     *
+     * This works by parsing the given `content` and detecting all html fields.
+     * This allow to support fields that are rendered withoput using the Neos.Fusion.Form
+     * prototypes and to calculate hidden identify and trusted properties for those
+     * fields aswell.
+     *
+     * @param string $content The form html body, usually renderd via afx
+     * @return array hiddenFields as key value pairs
+     */
+    public function calculateHiddenFields(string $content = null): array
+    {
+        $form = $this;
         $hiddenFields = [];
 
         if ($form) {
             $request = $form->getRequest();
-            $fieldNamePrefix = $form->getFieldNamePrefix();
+            $fieldNamePrefix = $form->getFieldNamePrefix() ?: '';
             $data = $form->getData();
         } else {
             $request = null;
@@ -207,7 +281,15 @@ class FormHelper implements ProtectedContextAwareInterface
             foreach ($elements as $element) {
                 $name = (string)$element->getAttribute('name');
                 if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
-                    $formFieldNames[] = $name;
+                    // multiselects have to add the fieldname for every option
+                    if ($element->nodeName === 'select' && (bool)$element->getAttribute('multiple')) {
+                        $optionCount = $xpath->query(".//option", $element)->length;
+                        for ($i = 0; $i < $optionCount; $i++) {
+                            $formFieldNames[] = $name;
+                        }
+                    } else {
+                        $formFieldNames[] = $name;
+                    }
                 }
             }
         }
@@ -244,103 +326,8 @@ class FormHelper implements ProtectedContextAwareInterface
         // A signed array of all properties the property mapper is allowed to convert from string to the target type
         // so no property mapping configuration is needed on the target controller
         //
-        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken(array_unique($formFieldNames), $fieldNamePrefix);
+        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
 
         return $hiddenFields;
-    }
-
-    /**
-     * Convert a value to a string representation for beeing rendered as an html form value
-     *
-     * @param mixed $value
-     * @return string|null
-     */
-    public function stringifyValue($value): string
-    {
-        if (is_object($value)) {
-            $identifier = $this->persistenceManager->getIdentifierByObject($value);
-            if ($identifier !== null) {
-                return $identifier;
-            }
-        }
-        return (string)$value;
-    }
-
-    /**
-    * Convert an array of values to an array of string representation for beeing rendered as an html form value
-    *
-    * @param array $value
-    * @return array|null
-    */
-    public function stringifyArray(array $value = null): array
-    {
-        if (is_array($value)) {
-            return array_map(
-                function ($value) {
-                    return $this->stringifyValue($value);
-                },
-                $value
-            );
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Prepend the gigen fieldNamePrefix to the fieldName the
-     *
-     * @param string $name
-     * @param string|null $prefix
-     * @return string
-     */
-    protected function prefixFieldName(string $fieldName, string $fieldNamePrefix = null): string
-    {
-        if (!$fieldNamePrefix) {
-            return $fieldName;
-        } else {
-            $fieldNameSegments = explode('[', $fieldName, 2);
-            $fieldName = $fieldNamePrefix . '[' . $fieldNameSegments[0] . ']';
-            if (count($fieldNameSegments) > 1) {
-                $fieldName .= '[' . $fieldNameSegments[1];
-            }
-            return $fieldName;
-        }
-    }
-
-    /**
-     * Convert the given html fieldName to a dot seperated path
-     *
-     * @param $name
-     * @return string
-     */
-    protected function fieldNameToPath($name): string
-    {
-        $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
-        return trim($path, '.');
-    }
-
-    /**
-     * Convert the given dot seperated $path to an html fieldName
-     *
-     * @param $name
-     * @return string
-     */
-    protected function pathToFieldName($path): string
-    {
-        $pathSegments = explode('.', $path);
-        $fieldName = array_shift($pathSegments);
-        foreach ($pathSegments as $pathSegment) {
-            $fieldName .= '[' . $pathSegment . ']';
-        }
-        return $fieldName;
-    }
-
-    /**
-     * @param string $methodName
-     * @return bool
-     */
-    public function allowsCallOfMethod($methodName): bool
-    {
-        return true;
     }
 }
