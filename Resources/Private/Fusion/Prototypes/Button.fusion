@@ -5,7 +5,7 @@ prototype(Neos.Fusion.Form:Button) < prototype(Neos.Fusion.Form:FieldComponent) 
     renderer = afx`
         <button
             name={field.getName()}
-            value={field.getTargetValue(true)}
+            value={field.getTargetValueStringified()}
             {...props.attributes}
         >
             {props.content}

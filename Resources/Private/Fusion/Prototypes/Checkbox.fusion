@@ -12,10 +12,10 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
         # the `checked` state is calculated outside the renderer to allow` overriding via `attributes`
         #
         checked = false
-        checked.@process.checkMultiValue = ${Array.indexOf(field.getCurrentValue(true), field.getTargetValue(true)) > -1}
+        checked.@process.checkMultiValue = ${Array.indexOf(field.getCurrentMultivalueStringified(), field.getTargetValueStringified()) > -1}
         checked.@process.checkMultiValue.@if.hasValue = ${field.hasCurrentValue()}
         checked.@process.checkMultiValue.@if.isMultiple = ${field.isMultiple()}
-        checked.@process.checkSingleValue = ${field.getCurrentValue(true) == field.getTargetValue(true)}
+        checked.@process.checkSingleValue = ${field.getCurrentValueStringified() == field.getTargetValueStringified()}
         checked.@process.checkSingleValue.@if.hasValue = ${field.hasCurrentValue()}
         checked.@process.checkSingleValue.@if.isSingle = ${!field.isMultiple()}
 
@@ -23,7 +23,7 @@ prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:FieldComponen
             <input
                 type="checkbox"
                 name={field.getName()}
-                value={field.getTargetValue(true)}
+                value={field.getTargetValueStringified()}
                 checked={props.checked}
                 {...props.attributes}
             />

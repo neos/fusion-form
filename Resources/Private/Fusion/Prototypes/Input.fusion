@@ -9,7 +9,7 @@ prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:FieldComponent) 
     renderer = afx`
         <input
             name={field.getName()}
-            value={field.getCurrentValue(true) || field.getTargetValue(true)}
+            value={field.getCurrentValueStringified() || field.getTargetValueStringified()}
             {...props.attributes}
         />
     `

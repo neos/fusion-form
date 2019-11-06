@@ -3,7 +3,7 @@
 Fusion Form Eel Helper Reference
 ================================
 
-This reference was automatically generated from code on 2019-11-01
+This reference was automatically generated from code on 2019-11-06
 
 
 .. _`Fusion Form Eel Helper Reference: Field`:
@@ -15,12 +15,20 @@ Field
 
 Implemented in: ``Neos\Fusion\Form\Eel\FieldHelper``
 
-Field.getCurrentValue(stringify)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Field.getCurrentMultivalueStringified()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* ``stringify`` (bool, *optional*)
+**Return** (array)
+
+Field.getCurrentValue()
+^^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (mixed|null)
+
+Field.getCurrentValueStringified()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Return** (string)
 
 Field.getName()
 ^^^^^^^^^^^^^^^
@@ -34,12 +42,15 @@ Field.getResult()
 
 **Return** (Result|null)
 
-Field.getTargetValue(stringify)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* ``stringify`` (bool, *optional*)
+Field.getTargetValue()
+^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (mixed|null)
+
+Field.getTargetValueStringified()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Return** (string)
 
 Field.hasCurrentValue()
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -147,6 +158,11 @@ Option.getTargetValue()
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (mixed)
+
+Option.getTargetValueStringified()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Return** (string)
 
 
 

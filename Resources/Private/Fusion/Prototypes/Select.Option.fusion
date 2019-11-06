@@ -43,16 +43,16 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
         # the `selected` state is calculated outside the renderer to allow` overriding via `attributes`
         #
         selected = false
-        selected.@process.checkMultiValue = ${Array.indexOf(field.getCurrentValue(true), option.getTargetvalue(true)) > -1}
+        selected.@process.checkMultiValue = ${Array.indexOf(field.getCurrentMultivalueStringified(), option.getTargetValueStringified()) > -1}
         selected.@process.checkMultiValue.@if.hasValue = ${field.hasCurrentValue()}
         selected.@process.checkMultiValue.@if.isMultiple = ${field.isMultiple()}
-        selected.@process.checkSingleValue = ${field.getCurrentValue(true) == option.getTargetvalue(true)}
+        selected.@process.checkSingleValue = ${field.getCurrentValueStringified() == option.getTargetValueStringified()}
         selected.@process.checkSingleValue.@if.hasValue = ${field.hasCurrentValue()}
         selected.@process.checkSingleValue.@if.isSingle = ${!field.isMultiple()}
 
         renderer = afx`
            <option
-               value={option.getTargetValue(true)}
+               value={option.getTargetValueStringified()}
                selected={props.selected}
                {...props.attributes}
            >

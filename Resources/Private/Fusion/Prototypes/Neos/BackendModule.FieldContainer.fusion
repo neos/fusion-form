@@ -71,15 +71,15 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     # use default bootstrap markup for checkboxes
     #
     prototype(Neos.Fusion.Form:Checkbox) {
-        attributes.id = ${field.getName() + '-' + field.getTargetValue(true)}
+        attributes.id = ${field.getName() + '-' + field.getTargetValueStringified()}
         renderer.@process.wrapInLabel {
             expression = afx`
                 <label
                     class="neos-checkbox"
-                    for={field.getName() + '-' + field.getTargetValue(true)}
+                    for={field.getName() + '-' + field.getTargetValueStringified()}
                 >
                     {value}<span></span>
-                    {props.content || field.getTargetValue(true)}
+                    {props.content || field.getTargetValueStringified()}
                 </label>
             `
         }
@@ -89,15 +89,15 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
     # use default bootstrap markup for radio buttons
     #
     prototype(Neos.Fusion.Form:Radio) {
-        attributes.id = ${field.getName() + '-' + field.getTargetValue(true)}
+        attributes.id = ${field.getName() + '-' + field.getTargetValueStringified()}
         renderer.@process.wrapInLabel {
             expression = afx`
                 <label
                     class="neos-radio"
-                    for={field.getName() + '-' + field.getTargetValue(true)}
+                    for={field.getName() + '-' + field.getTargetValueStringified()}
                 >
                 {value}<span></span>
-                {props.content || field.getTargetValue(true)}
+                {props.content || field.getTargetValueStringified()}
                 </label>
             `
         }

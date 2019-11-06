@@ -137,35 +137,47 @@ class FieldHelper extends AbstractFormHelper
     }
 
     /**
-     * @param bool $stringify
      * @return mixed|null
      */
-    public function getCurrentValue($stringify = false)
+    public function getCurrentValue()
     {
-        if ($stringify) {
-            if ($this->multiple) {
-                if (is_iterable($this->currentValue)) {
-                    return $this->stringifyMultivalue($this->currentValue);
-                } else {
-                    return [];
-                }
-            } else {
-                return $this->stringifyValue($this->currentValue);
-            }
-        }
         return $this->currentValue;
     }
 
     /**
-     * @param bool $stringify
+     * @return string
+     */
+    public function getCurrentValueStringified(): string
+    {
+        return $this->stringifyValue($this->currentValue);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCurrentMultivalueStringified(): array
+    {
+        if (is_iterable($this->currentValue)) {
+            return $this->stringifyMultivalue($this->currentValue);
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * @return mixed|null
      */
-    public function getTargetValue($stringify = false)
+    public function getTargetValue()
     {
-        if ($stringify) {
-            return $this->stringifyValue($this->targetValue);
-        }
         return $this->targetValue;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetValueStringified(): string
+    {
+        return $this->stringifyValue($this->targetValue);
     }
 
     /**
