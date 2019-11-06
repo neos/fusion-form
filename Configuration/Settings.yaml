@@ -11,7 +11,7 @@ Neos:
     references:
       'FusionForm:EelHelpers':
         title: 'Fusion Form Eel Helper Reference'
-        savePathAndFilename: '%FLOW_PATH_PACKAGES%Application/Neos.Fusion.Form/Documentation/EelHelpersReference.rst'
+        savePathAndFilename: '%FLOW_PATH_PACKAGES%Application/Neos.Fusion.Form/Documentation/HelpersReference.rst'
         affectedClasses:
           interface: Neos\Eel\ProtectedContextAwareInterface
           classNamePattern: '/^Neos\\Fusion\\Form\\Eel\\.*Helper$/i'

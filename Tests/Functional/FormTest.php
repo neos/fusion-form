@@ -2,8 +2,8 @@
 namespace Neos\Fusion\Form\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
-use Neos\Fusion\Form\Eel\FormHelper;
-use Neos\Fusion\Form\Eel\Field;
+use Neos\Fusion\Form\Domain\Form;
+use Neos\Fusion\Form\Domain\Field;
 
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Cryptography\HashService;
@@ -24,11 +24,11 @@ class FormTest extends TestCase
     }
 
     /**
-     * @return FormHelper
+     * @return Form
      */
-    protected function createForm(): FormHelper
+    protected function createForm(): Form
     {
-        $reflector = new \ReflectionClass(FormHelper::class);
+        $reflector = new \ReflectionClass(Form::class);
         $form = $reflector->newInstanceArgs(func_get_args());
 
         $this->injectDependency($form, 'persistenceManager', $this->persistenceManager);

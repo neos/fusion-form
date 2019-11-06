@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Neos\Fusion\Form\Eel;
+namespace Neos\Fusion\Form\Domain;
 
 /*
  * This file is part of the Neos.Fusion.Form package.
@@ -16,7 +16,7 @@ namespace Neos\Fusion\Form\Eel;
 use Neos\Error\Messages\Result;
 use Neos\Utility\ObjectAccess;
 
-class FieldHelper extends AbstractFormHelper
+class Field extends AbstractFormObject
 {
 
     /**
@@ -51,12 +51,12 @@ class FieldHelper extends AbstractFormHelper
 
     /**
      * Field constructor.
-     *
+     * @param Form|null $form
      * @param string|null $name
-     * @param mixed|null $targetValue
+     * @param null $targetValue
      * @param bool $multiple
      */
-    public function __construct(FormHelper $form = null, string $name = null, $targetValue = null, $multiple = false)
+    public function __construct(Form $form = null, string $name = null, $targetValue = null, $multiple = false)
     {
         $this->form = $form;
         $this->name = $name;
@@ -71,9 +71,9 @@ class FieldHelper extends AbstractFormHelper
 
     /**
      * @param mixed|null $targetValue
-     * @return FieldHelper
+     * @return Field
      */
-    public function withTargetValue($targetValue = null): FieldHelper
+    public function withTargetValue($targetValue = null): Field
     {
         $new = clone $this;
         $new->targetValue = $targetValue;

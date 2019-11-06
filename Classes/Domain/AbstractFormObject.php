@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Neos\Fusion\Form\Eel;
+namespace Neos\Fusion\Form\Domain;
 
 /*
  * This file is part of the Neos.Fusion.Form package.
@@ -17,7 +17,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 
-abstract class AbstractFormHelper implements ProtectedContextAwareInterface
+abstract class AbstractFormObject implements ProtectedContextAwareInterface
 {
 
     /**

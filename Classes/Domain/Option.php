@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Neos\Fusion\Form\Eel;
+namespace Neos\Fusion\Form\Domain;
 
 /*
  * This file is part of the Neos.Fusion.Form package.
@@ -13,10 +13,7 @@ namespace Neos\Fusion\Form\Eel;
  * source code.
  */
 
-use Neos\Error\Messages\Result;
-use Neos\Eel\ProtectedContextAwareInterface;
-
-class OptionHelper extends AbstractFormHelper
+class Option extends AbstractFormObject
 {
 
     /**

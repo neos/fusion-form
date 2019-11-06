@@ -14,26 +14,24 @@ namespace Neos\Fusion\Form\FusionObjects;
  */
 
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
-use Neos\Fusion\Form\Eel\FormHelper;
-use Neos\Fusion\Form\Eel\FieldHelper;
-use Neos\Error\Messages\Result;
-use Neos\Utility\ObjectAccess;
+use Neos\Fusion\Form\Domain\Form;
+use Neos\Fusion\Form\Domain\Field;
 
 class FieldDefinitionImplementation extends AbstractFusionObject
 {
 
     /**
-     * @return FormHelper|null
+     * @return Form|null
      */
-    protected function getForm(): ?FormHelper
+    protected function getForm(): ?Form
     {
         return $this->fusionValue('form');
     }
 
     /**
-     * @return FieldHelper|null
+     * @return Field|null
      */
-    protected function getField(): ?FieldHelper
+    protected function getField(): ?Field
     {
         return $this->fusionValue('field');
     }
@@ -63,9 +61,9 @@ class FieldDefinitionImplementation extends AbstractFusionObject
     }
 
     /**
-     * @return FieldHelper
+     * @return Field
      */
-    public function evaluate(): FieldHelper
+    public function evaluate(): Field
     {
         $form = $this->getForm();
         $field = $this->getField();
@@ -78,7 +76,7 @@ class FieldDefinitionImplementation extends AbstractFusionObject
             return $field->withTargetValue($value);
         }
 
-        return new FieldHelper(
+        return new Field(
             $form,
             $name,
             $value,

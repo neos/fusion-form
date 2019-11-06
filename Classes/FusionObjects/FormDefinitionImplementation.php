@@ -15,7 +15,7 @@ namespace Neos\Fusion\Form\FusionObjects;
 
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
-use Neos\Fusion\Form\Eel\FormHelper;
+use Neos\Fusion\Form\Domain\Form;
 use Neos\Error\Messages\Result;
 
 class FormDefinitionImplementation extends AbstractFusionObject
@@ -69,9 +69,9 @@ class FormDefinitionImplementation extends AbstractFusionObject
         return $this->fusionValue('encoding');
     }
     /**
-     * @return FormHelper
+     * @return Form
      */
-    public function evaluate(): FormHelper
+    public function evaluate(): Form
     {
         $request = $this->getRequest();
         $data = $this->getData();
@@ -80,7 +80,7 @@ class FormDefinitionImplementation extends AbstractFusionObject
         $method = $this->getMethod();
         $encoding = $this->getEncoding();
 
-        return new FormHelper(
+        return new Form(
             $request,
             $data,
             $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),

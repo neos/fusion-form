@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Neos\Fusion\Form\Eel;
+namespace Neos\Fusion\Form\Domain;
 
 /*
  * This file is part of the Neos.Fusion.Form package.
@@ -20,7 +20,7 @@ use Neos\Utility\ObjectAccess;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
 
-class FormHelper extends AbstractFormHelper
+class Form extends AbstractFormObject
 {
     /**
      * @Flow\Inject
@@ -76,13 +76,13 @@ class FormHelper extends AbstractFormHelper
 
     /**
      * Form constructor.
-     * @param ActionRequest $request
-     * @param mixed|null $data
+     * @param ActionRequest|null $request
+     * @param null $data
      * @param string|null $fieldNamePrefix
      * @param array|null $submittedValues
      * @param Result|null $results
      * @param string|null $target
-     * @param string|null $method
+     * @param string $method
      * @param string|null $encoding
      */
     public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null, string $target = null, string $method = "get", string $encoding = null)
