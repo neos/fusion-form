@@ -62,7 +62,7 @@ The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Option`_ ob
 option informations via methods exposed to eel. Usually the result will be put into the `option` context by
 the `Neos.Fusion.Form:Component.Option`_ prototype.
 
-:value: (any, default = null) The target value of options select.option
+:value: (any, default = null) The target value
 
 Neos.Fusion.Form:Component.Option
 ---------------------------------

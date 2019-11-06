@@ -6,7 +6,6 @@ prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Component.Field)
         # pass down props
         #
         attributes = ${props.attributes}
-        content = ${props.content}
 
         #
         # the `checked` state is calculated outside the renderer to allow` overriding via `attributes`

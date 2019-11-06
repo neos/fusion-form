@@ -17,8 +17,9 @@ prototype(Neos.Fusion.Form:Component.Form) < prototype(Neos.Fusion:Component)  {
     }
 
     #
-    # the values are used to populate the `form` context for magic
-    # The
+    # used to populate the `form` context for providing features
+    # like data-binding, accessing to validation results and
+    # previously submitted values
     #
     form = Neos.Fusion.Form:Definition.Form
 

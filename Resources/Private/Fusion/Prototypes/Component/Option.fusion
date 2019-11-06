@@ -17,7 +17,7 @@ prototype(Neos.Fusion.Form:Component.Option)  < prototype(Neos.Fusion:Component)
     }
 
     #
-    # the values are used to calculate the `option` value and selected state
+    # used to populate the `option` context to provide access to the strigified value
     #
     option = Neos.Fusion.Form:Definition.Option
 

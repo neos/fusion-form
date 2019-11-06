@@ -185,7 +185,12 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * Calculate the hidden fields for the given form content as key-value array
+     * Calculate the hidden fields for the given form content as key-value array.
+     *
+     * This works by parsing the given `content` and detecting all html fields.
+     * This allow to support fields that are rendered withoput using the Neos.Fusion.Form
+     * prototypes and to calculate hidden identify and trusted properties for those
+     * fields aswell.
      *
      * @param string $content The form html body, usually renderd via afx
      * @return array hiddenFields as key value pairs

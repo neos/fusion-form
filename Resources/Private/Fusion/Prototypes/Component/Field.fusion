@@ -17,7 +17,9 @@ prototype(Neos.Fusion.Form:Component.Field) < prototype(Neos.Fusion:Component) {
     }
 
     #
-    # the `field` context
+    # used to populate the `field` context and among others things
+    # allow accessing the data bound to the form, submitted values
+    # and results
     #
     field = Neos.Fusion.Form:Definition.Field
 
