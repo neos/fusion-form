@@ -20,6 +20,13 @@ use Neos\Utility\ObjectAccess;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
 
+/**
+ * This object describes a the main properties of a form. Usually this is
+ * instantiated by the fusion prototype `Neos.Fusion.Form:Definition.Form`
+ * and can be accessed as `form` in the fusion context.
+ *
+ * @package Neos\Fusion\Form\Domain
+ */
 class Form extends AbstractFormObject
 {
     /**
@@ -79,26 +86,31 @@ class Form extends AbstractFormObject
      * @param ActionRequest|null $request
      * @param null $data
      * @param string|null $fieldNamePrefix
-     * @param array|null $submittedValues
-     * @param Result|null $results
      * @param string|null $target
      * @param string $method
      * @param string|null $encoding
      */
-    public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, array $submittedValues = null, Result $results = null, string $target = null, string $method = "get", string $encoding = null)
+    public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, string $target = null, string $method = "get", string $encoding = null)
     {
         $this->request = $request;
         $this->data = $data;
         $this->fieldNamePrefix = $fieldNamePrefix;
-        $this->submittedValues = $submittedValues;
-        $this->result = $results;
         $this->target = $target;
         $this->method = $method;
         $this->encoding = $encoding;
+
+        // determine submitted values and result from request
+        $this->submittedValues = $request ? $request->getInternalArgument('__submittedArguments') : null;
+        $this->result = $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : null;
+
+        // determine fieldNamePrefix if none was given from request
+        if (is_null($this->fieldNamePrefix) && $request) {
+            $this->fieldNamePrefix = $request->getArgumentNamespace();
+        }
     }
 
     /**
-     * @return ActionRequest|null
+     * @return ActionRequest|null The ActionRequest the form is rendered with
      */
     public function getRequest(): ?ActionRequest
     {
@@ -106,7 +118,7 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return mixed
+     * @return mixed The data that was bound to the form, usually a DataStructure
      */
     public function getData()
     {
@@ -114,7 +126,7 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return string|null
+     * @return string|null The fieldname prefix that was assigned or determined from the request
      */
     public function getFieldNamePrefix(): ?string
     {
@@ -122,7 +134,7 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return array|null
+     * @return array|null The previously submitted values when validation errors prevented processing the data
      */
     public function getSubmittedValues(): ?array
     {
@@ -130,7 +142,7 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return Result
+     * @return Result The result for the whole form, can be used to render validation messahes in a central place
      */
     public function getResult(): ?Result
     {
@@ -138,7 +150,7 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return string|null
+     * @return string|null The target uri for the form, usually defined as Neos.Fusion:UriBuilder
      */
     public function getTarget(): ?string
     {
@@ -146,7 +158,7 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return string|null
+     * @return string|null The http method for submitting the form
      */
     public function getMethod(): ?string
     {
@@ -154,13 +166,16 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return string|null
+     * @return string|null The encoding for the form
      */
     public function getEncoding(): ?string
     {
         return $this->encoding;
     }
 
+    /**
+     * @return bool Return whether the form had validation errors in a previous submit
+     */
     public function hasErrors(): bool
     {
         if ($this->result) {
@@ -169,12 +184,10 @@ class Form extends AbstractFormObject
         return false;
     }
 
-
-
     /**
      * Calculate the hidden fields for the given form content as key-value array
      *
-     * @param string $content form html body
+     * @param string $content The form html body, usually renderd via afx
      * @return array hiddenFields as key value pairs
      */
     public function calculateHiddenFields(string $content = null): array

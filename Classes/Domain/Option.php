@@ -13,6 +13,13 @@ namespace Neos\Fusion\Form\Domain;
  * source code.
  */
 
+/**
+ * This object describes a single target value for a form field. Usually this is
+ * instantiated by the fusion prototype `Neos.Fusion.Form:Definition.Option`
+ * and can be accessed as `option` in the fusion context.
+ *
+ * @package Neos\Fusion\Form\Domain
+ */
 class Option extends AbstractFormObject
 {
 
@@ -32,7 +39,7 @@ class Option extends AbstractFormObject
     }
 
     /**
-     * @return mixed
+     * @return mixed The target value of the option
      */
     public function getTargetValue()
     {
@@ -40,7 +47,7 @@ class Option extends AbstractFormObject
     }
 
     /**
-     * @return string
+     * @return string The target value of the option converted to string for being used as html option value
      */
     public function getTargetValueStringified(): string
     {

@@ -83,9 +83,7 @@ class FormDefinitionImplementation extends AbstractFusionObject
         return new Form(
             $request,
             $data,
-            $fieldNamePrefix ?: ($request ? $request->getArgumentNamespace() : ''),
-            $request ? $request->getInternalArgument('__submittedArguments') : [],
-            $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : new Result(),
+            $fieldNamePrefix,
             $target,
             $method,
             $encoding

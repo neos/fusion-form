@@ -16,6 +16,13 @@ namespace Neos\Fusion\Form\Domain;
 use Neos\Error\Messages\Result;
 use Neos\Utility\ObjectAccess;
 
+/**
+ * This object describes a single editable value in a form. Usually this is
+ * instantiated by the fusion prototype `Neos.Fusion.Form:Definition.Field`
+ * and can be accessed as `field` in the fusion context.
+ *
+ * @package Neos\Fusion\Form\Domain
+ */
 class Field extends AbstractFormObject
 {
 
@@ -40,7 +47,7 @@ class Field extends AbstractFormObject
     protected $targetValue;
 
     /**
-     * @var oolean
+     * @var boolean
      */
     protected $multiple;
 
@@ -51,10 +58,10 @@ class Field extends AbstractFormObject
 
     /**
      * Field constructor.
-     * @param Form|null $form
-     * @param string|null $name
-     * @param null $targetValue
-     * @param bool $multiple
+     * @param Form|null $form The form the field is created for, is used to access bound or submitted data and results
+     * @param string|null $name The field name, nesting is defined by using square brackets
+     * @param mixed|null $targetValue The target value for the field, only used for check, radio and button
+     * @param bool $multiple Shall the field contain multiple or a single value, used for checkboxes and selects
      */
     public function __construct(Form $form = null, string $name = null, $targetValue = null, $multiple = false)
     {
@@ -70,6 +77,9 @@ class Field extends AbstractFormObject
     }
 
     /**
+     * Create and return a copy of this field with alternate value
+     * This is used to render multiple checkboxes or radio in a single field container
+     *
      * @param mixed|null $targetValue
      * @return Field
      */
@@ -81,6 +91,9 @@ class Field extends AbstractFormObject
     }
 
     /**
+     * Determine the current value of a field by using previously submitted values
+     * in case of validation errors or data bound to the form.
+     *
      * @param string $path
      * @return mixed|null
      */
@@ -100,6 +113,8 @@ class Field extends AbstractFormObject
     }
 
     /**
+     * Determine the current result of a field in case of validation errors
+     *
      * @param $path
      * @return Result|null
      */
@@ -113,9 +128,8 @@ class Field extends AbstractFormObject
         return $fieldResult;
     }
 
-    /**
-     * Return the name of the field with applied prefix and [] for multiple fields
-     * @return string|null
+    /***
+     * @return string|null The full html name attribute of the field with applied namespace prefixes
      */
     public function getName(): ?string
     {
@@ -129,7 +143,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return bool
+     * @return bool True if the current value of the field is not null
      */
     public function hasCurrentValue(): bool
     {
@@ -137,7 +151,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return mixed|null
+     * @return mixed|null The current value of the field
      */
     public function getCurrentValue()
     {
@@ -145,7 +159,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return string
+     * @return string The current value of the field converted to string for being used as html field value
      */
     public function getCurrentValueStringified(): string
     {
@@ -153,7 +167,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return array
+     * @return array The current value of the field converted to an array of strings. Only used in multifields.
      */
     public function getCurrentMultivalueStringified(): array
     {
@@ -165,7 +179,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return mixed|null
+     * @return mixed|null The target value that is assigned to the field
      */
     public function getTargetValue()
     {
@@ -173,7 +187,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return string
+     * @return string The target value of the field converted to string for being used as html field value
      */
     public function getTargetValueStringified(): string
     {
@@ -181,7 +195,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return bool
+     * @return bool True if the field is configured as multiple
      */
     public function isMultiple(): bool
     {
@@ -189,7 +203,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return Result|null
+     * @return Result|null The current result of the field if the field was already submitted
      */
     public function getResult(): ?Result
     {
@@ -197,7 +211,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return bool
+     * @return bool Return whether the field has validation errors
      */
     public function hasErrors(): bool
     {

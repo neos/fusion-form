@@ -7,6 +7,10 @@ Neos.Fusion.Form Reference
 Neos.Fusion.Form:Definition.Form
 --------------------------------
 
+The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Form`_ object which allows to access the
+form informations via methods exposed to eel. Usually the regturned object will be put into the `form` context
+by the `Neos.Fusion.Form:Component.Form`_ prototype.
+
 :request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
 :namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
 :data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
@@ -30,6 +34,10 @@ It is up to derived prototypes like `Neos.Fusion.Form:Form`_ to implement the re
 Neos.Fusion.Form:Definition.Field
 ---------------------------------
 
+The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Field`_ object which allows to access the
+field informations via methods exposed to eel. Usually the result will be put into the `field` context by
+the `Neos.Fusion.Form:Component.Field`_ prototype.
+
 :form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
 :field: (Field, defaults to null) An possible field that may have been predefined in a container. If no name is given the oputer field will be reused.
 :name: (string) The fieldname, use square bracket syntax for nested properties.
@@ -49,6 +57,10 @@ data-binding and error rendering.
 
 Neos.Fusion.Form:Definition.Option
 ----------------------------------
+
+The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Option`_ object which allows to access the
+option informations via methods exposed to eel. Usually the result will be put into the `option` context by
+the `Neos.Fusion.Form:Component.Option`_ prototype.
 
 :value: (any, default = null) The target value of options select.option
 
