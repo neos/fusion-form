@@ -1,6 +1,6 @@
 prototype(Neos.Fusion.Form:Definition.Form) {
 
-    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FormDefinition'
+    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FormDefinitionImplementation'
 
     @propTypes {
         request = ${PropTypes.instanceOf('\\Neos\\Flow\\Mvc\\ActionRequest')}

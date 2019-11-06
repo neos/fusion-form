@@ -16,7 +16,7 @@ namespace Neos\Fusion\Form\FusionObjects;
 use Neos\Fusion\Form\Eel\OptionHelper;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 
-class OptionDefinition extends AbstractFusionObject
+class OptionDefinitionImplementation extends AbstractFusionObject
 {
     /**
      * @return mixed

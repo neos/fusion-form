@@ -1,6 +1,6 @@
 prototype(Neos.Fusion.Form:Definition.Option) {
 
-    @class = 'Neos\\Fusion\\Form\\FusionObjects\\OptionDefinition'
+    @class = 'Neos\\Fusion\\Form\\FusionObjects\\OptionDefinitionImplementation'
 
     @propTypes {
         value = ${PropTypes.any}

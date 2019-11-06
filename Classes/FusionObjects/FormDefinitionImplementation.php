@@ -18,7 +18,7 @@ use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use Neos\Fusion\Form\Eel\FormHelper;
 use Neos\Error\Messages\Result;
 
-class FormDefinition extends AbstractFusionObject
+class FormDefinitionImplementation extends AbstractFusionObject
 {
 
     /**

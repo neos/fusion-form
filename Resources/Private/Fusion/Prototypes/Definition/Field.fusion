@@ -1,6 +1,6 @@
 prototype(Neos.Fusion.Form:Definition.Field) {
 
-    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FieldDefinition'
+    @class = 'Neos\\Fusion\\Form\\FusionObjects\\FieldDefinitionImplementation'
 
     @propTypes {
         form = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Eel\\FormHelper')}

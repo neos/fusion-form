@@ -19,7 +19,7 @@ use Neos\Fusion\Form\Eel\FieldHelper;
 use Neos\Error\Messages\Result;
 use Neos\Utility\ObjectAccess;
 
-class FieldDefinition extends AbstractFusionObject
+class FieldDefinitionImplementation extends AbstractFusionObject
 {
 
     /**
