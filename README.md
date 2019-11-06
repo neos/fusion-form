@@ -75,8 +75,9 @@ While html inputs can be used they provide no magic like data-binding and
 automatic namespaces. 
 
 To render controls that access the data bound to the form prototypes like 
-`Neos.Fusion.Form:Input` are used. Thoise are derived from `Neos.Fusion.Form:Component.Field`
-which is responsible for establishing the relation between form and field. 
+`Neos.Fusion.Form:Input` are used. Those prototyoes are derived from 
+`Neos.Fusion.Form:Component.Field` which is responsible for establishing 
+the relation between form and field. 
 
 There are plenty of different fieldTypes already that can be found in the 
 [Neos.Neos.Form Fusion Documentation](Documentation/FusionReference.rst) but 
@@ -95,7 +96,7 @@ renderer = afx`
 
 It is possible to create field components with translated label and error 
 rendering. The prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
-is an example for which implements the required markup for Neos backend modules.
+is an example for that which implements the required markup for Neos backend modules.
 Label are added and translated using the translations from `Neos.Neos:Main` 
 and validation errors are translated using the source `Neos.Flow:ValidationErrors` 
 as translation source. 
@@ -138,7 +139,7 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
     targetAction = null
     
     renderer = afx`
-        <Neos.Fusion.Form:Form form.data.customer={props.customer} form.data.shipment={props.shipment} action.action={props.targetAction} >
+        <Neos.Fusion.Form:Form form.data.customer={props.customer} form.data.shipment={props.shipment} form.target.action={props.targetAction} >
 
             <label for="firstName" >First Name</label>	
             <Neos.Fusion.Form:Input attributes.id="firstName" field.name="customer[lastName]" />
@@ -176,15 +177,12 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
 Forms for backend modules basically work the same as in the frontend 
 but the additional prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
 can be used to render fields with translated labels and error messages
-using the dafault markup of the Neos backend.
+using the default markup of the Neos backend.
 
 HINT: To render a backend module with fusion you have to set the 
 `defaultViwObjectName` to the `Neos\Fusion\View\FusionView::class` in the
 controller class and be aware that you have to include all required fusion
 explicitly.
-
-ATTENTION: This prototype is not meant to be used in the frontend. Create 
-project specific field containers instead.
 
 ```
 #
@@ -249,17 +247,15 @@ Extending Neos.Fusion-Form:
 **Custom Form Fields**
 
 The most obvious extension point is the definition of custom fieldtypes.
-To do so you have to extend the `Neos.Fusion.Form:FieldContainer` prototype
+To do so you have to extend the `Neos.Fusion.Form:Component.Field` prototype
 and implement the renderer you need. 
 
-For the rendering you have access to the `field` in the fusion context which 
-allows you to get the current `value`. You should use this value to 
-access bound data and values that were already submitted. The `field.value`
-has to be stringified for the html rendering as the bound data may be of any
-type. 
+For the rendering you have access to the `field` in the fusion context gives
+you access to the current value from data binding and the target value.
 
-HINT: It is recommended to render all given props other than `content` as attributes 
-of the control tag. This allows to assign classes, ids or data-attributes easily. 
+HINT: By default all field components support setting `attributes` which
+are expected to override all autmatically assigned attributes and whenever 
+it makes sense also `content` which is usually defined via afx.  
 
 ```
 prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Component.Field) {
@@ -268,7 +264,7 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Component.Fie
             name={field.name}
             {...props.attributes}
         >
-            {Form.stringifyValue(field.value || props.content)}
+            {field.getCurrentValueStringified() || props.content)}
         </textarea>
     `
 }
@@ -317,30 +313,4 @@ prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldCompone
         attributes.id = ${field.name}
     }
 }
-```
-
-Using such components is done similar to the `Neos.Fusion.Form:Neos.BackendModule.FieldContainer`
-
-```
-prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldComponent) {
-    renderer = afx`
-
-        <Neos.Fusion.Form:Form>
-     
-            <Vendor.Site:Form.FieldContainer field.name="user[firstName]" label="user.firstName">
-                <Neos.Fusion.Form:Input />
-            </Vendor.Site:Form.FieldContainer>
-
-            <Vendor.Site:Form.FieldContainer field.name="user[firstName]" label="user.lastName">
-                <Neos.Fusion.Form:Input />
-            </Vendor.Site:Form.FieldContainer>
-
-            <Vendor.Site:Form.FieldContainer field.name="user[roles]" field.multiple label="user.role" >
-                <label>Restricted Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" /></label>
-                <label>Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" /></label>
-                <label>Administrator <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" /></label>
-            </Vendor.Site:Form.FieldContainer>
-        </Neos.Fusion.Form:Form>
-    `
-}                       
 ```
