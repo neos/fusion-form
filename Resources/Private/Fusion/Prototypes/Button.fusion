@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:Button) < prototype(Neos.Fusion.Form:FieldComponent) {
+prototype(Neos.Fusion.Form:Button) < prototype(Neos.Fusion.Form:Component.Field) {
 
     attributes.type = 'submit'
 

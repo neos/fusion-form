@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:FieldComponent) {
+prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:Component.Field) {
     @propTypes {
         type = ${PropTypes.string}
         value = ${PropTypes.any}

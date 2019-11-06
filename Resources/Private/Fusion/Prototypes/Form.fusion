@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:FormComponent) {
+prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:Component.Form) {
 
     @propTypes {
         attributes = ${PropTypes.dataStructure({})}

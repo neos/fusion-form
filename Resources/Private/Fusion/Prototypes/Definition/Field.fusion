@@ -1,4 +1,5 @@
-prototype(Neos.Fusion.Form:FieldDefinition) {
+prototype(Neos.Fusion.Form:Definition.Field) {
+
     @class = 'Neos\\Fusion\\Form\\FusionObjects\\FieldDefinition'
 
     @propTypes {

@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
+prototype(Neos.Fusion.Form:Component.Form) < prototype(Neos.Fusion:Component)  {
 
     #
     # ensure the form-context is evaluated first so it is available for calculating `props`
@@ -20,7 +20,7 @@ prototype(Neos.Fusion.Form:FormComponent) < prototype(Neos.Fusion:Component)  {
     # the values are used to populate the `form` context for magic
     # The
     #
-    form = Neos.Fusion.Form:FormDefinition
+    form = Neos.Fusion.Form:Definition.Form
 
     #
     # attributes to be used by the renderer of derived types

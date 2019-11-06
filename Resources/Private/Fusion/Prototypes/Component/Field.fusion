@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:FieldComponent) < prototype(Neos.Fusion:Component) {
+prototype(Neos.Fusion.Form:Component.Field) < prototype(Neos.Fusion:Component) {
 
     #
     # ensure the `field`-context is evaluated first so it is available for calculating other `props`
@@ -19,7 +19,7 @@ prototype(Neos.Fusion.Form:FieldComponent) < prototype(Neos.Fusion:Component) {
     #
     # the `field` context
     #
-    field = Neos.Fusion.Form:FieldDefinition
+    field = Neos.Fusion.Form:Definition.Field
 
     #
     # attributes for the field to be used by the renderer of derived types

@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:FormDefinition) < prototype(Neos.Fusion:Component) {
+prototype(Neos.Fusion.Form:Definition.Form) {
 
     @class = 'Neos\\Fusion\\Form\\FusionObjects\\FormDefinition'
 

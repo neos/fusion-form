@@ -75,7 +75,7 @@ While html inputs can be used they provide no magic like data-binding and
 automatic namespaces. 
 
 To render controls that access the data bound to the form prototypes like 
-`Neos.Fusion.Form:Input` are used. Thoise are derived from `Neos.Fusion.Form:FieldComponent`
+`Neos.Fusion.Form:Input` are used. Thoise are derived from `Neos.Fusion.Form:Component.Field`
 which is responsible for establishing the relation between form and field. 
 
 There are plenty of different fieldTypes already that can be found in the 
@@ -262,7 +262,7 @@ HINT: It is recommended to render all given props other than `content` as attrib
 of the control tag. This allows to assign classes, ids or data-attributes easily. 
 
 ```
-prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:FieldComponent) {
+prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Component.Field) {
     renderer = afx`
         <textarea
             name={field.name}
@@ -313,7 +313,7 @@ prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldCompone
     # all FieldComponents will render the field.name as id so
     # the label for from the FieldContainer references them correctly 
     #
-    prototype(Neos.Fusion.Form:FieldComponent) {
+    prototype(Neos.Fusion.Form:Component.Field) {
         attributes.id = ${field.name}
     }
 }

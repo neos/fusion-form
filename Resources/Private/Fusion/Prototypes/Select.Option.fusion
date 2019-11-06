@@ -1,35 +1,4 @@
-prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion:Component) {
-
-    #
-    # ensure the `option`-context is evaluated first so it is available for calculating other `props`
-    #
-    @context.option = ${this.option}
-
-    #
-    # `option` is excluded from `props`, for beeing in line with `form` and `field`
-    #
-    @ignoreProperties = ${['option']}
-
-    @propTypes {
-        option = ${PropTypes.instanceOf('\\Neos\\Fusion\\Form\\Eel\\OptionHelper')}
-        attributes = ${PropTypes.dataStructure({})}
-        content = ${PropTypes.string}
-    }
-
-    #
-    # the values are used to calculate the `option` value and selected state
-    #
-    option = Neos.Fusion.Form:OptionDefinition
-
-    #
-    # attributes for the field to be used by the renderer of derived types
-    #
-    attributes = Neos.Fusion:DataStructure
-
-    #
-    # afx content to be used by the renderer of derived types
-    #
-    content = ''
+prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion.Form:Component.Option) {
 
     renderer = Neos.Fusion:Component {
 
