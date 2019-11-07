@@ -7,14 +7,22 @@ Development targets
 -------------------
 
 - Form rendering in fusion with afx and data binding 
-- Extensibility and flexibility
-- Enable reusability of form fragments as fusion components 
-- Render hidden fields for validation, security and persistence magic
-- Automatically prefix fieldNames for the current request.namespace 
-- Overcome limitations as binding of forms to a single object
 - Clear separation of automation and magic for understandable results
-- Allow explicit overriding of all magic 
-
+- Flexibility:
+  - Make no assumption about the required markup like classNames
+  - Allow to override all automatically assigned attributes
+  - Enable form fragments as fusion components 
+  - Allow to bind multiple objects to a single form
+  - Enable to create custom controls with  
+  - Respect form elements that are defined as plain html when rendering __trustedProperties
+- Convenience:
+  - Render hidden fields for validation, security and persistence magic
+  - Provide validation-errors and restore previously submitted values
+  - Prefix fieldnames with the current request namespace if needed 
+- Make writing of fusion backend modules easy:  
+  - Create a backend field container with translated labels and error messages 
+  - Adjust field markup inside the field container for the neos-backend
+  
 **Important Deviations from Fluid Form ViewHelpers**
 
 The following deviations are probably the ones fluid developers will 

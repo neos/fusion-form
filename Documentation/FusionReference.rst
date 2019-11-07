@@ -4,77 +4,6 @@
 Neos.Fusion.Form Reference
 ==========================
 
-Neos.Fusion.Form:Definition.Form
---------------------------------
-
-The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Form`_ object which allows to access the
-form informations via methods exposed to eel. Usually the regturned object will be put into the `form` context
-by the `Neos.Fusion.Form:Component.Form`_ prototype.
-
-:request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
-:namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
-:data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
-:target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
-:method:  (string, default to `post`) The form method.
-:encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.
-
-Neos.Fusion.Form:Component.Form
--------------------------------
-
-The Form component is a base prototype for rendering forms in afx. The prototype populates the
-`form` context variable that is available to all the fusion that is rendered as `content`.
-
-:form: (`Neos.Fusion.Form:Definition.Form`_) used to populate the `form` context but is not available via `props`
-:attributes: (`Neos.Fusion:DataStructure`_) form attributes, will override all automatically rendered ones
-:content: (string) form content, supported where needed
-
-The FormComponent does not define any rendering and extended props like `name` or `class`.
-It is up to derived prototypes like `Neos.Fusion.Form:Form`_ to implement the renderer.
-
-Neos.Fusion.Form:Definition.Field
----------------------------------
-
-The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Field`_ object which allows to access the
-field informations via methods exposed to eel. Usually the result will be put into the `field` context by
-the `Neos.Fusion.Form:Component.Field`_ prototype.
-
-:form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
-:field: (Field, defaults to null) An possible field that may have been predefined in a container. If no name is given the oputer field will be reused.
-:name: (string) The fieldname, use square bracket syntax for nested properties.
-:multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
-:value: (any, default = null) The target value of fields (for checkbox, radio and button)
-
-Neos.Fusion.Form:Component.Field
---------------------------------
-
-The field component is a base prototype for creating input rendering prototypes for a given fieldname.
-The prototype populates the `field` context variable and establishes the connection to the parent `form` for
-data-binding and error rendering.
-
-:field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
-:attributes: (`Neos.Fusion:DataStructure`_) input attributes, will override all automatically rendered ones
-:content: (string) field content, supported where needed
-
-Neos.Fusion.Form:Definition.Option
-----------------------------------
-
-The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Option`_ object which allows to access the
-option informations via methods exposed to eel. Usually the result will be put into the `option` context by
-the `Neos.Fusion.Form:Component.Option`_ prototype.
-
-:value: (any, default = null) The target value
-
-Neos.Fusion.Form:Component.Option
----------------------------------
-
-The field component is a base prototype for creating input rendering prototypes for a given fieldname.
-The prototype populates the `field` context variable and establishes the connection to the parent `form` for
-data-binding and error rendering.
-
-:option: (`Neos.Fusion.Form:Definition.Option`_) used to populate the `field` context
-:attributes: (`Neos.Fusion:DataStructure`_) input attributes, will override all automatically rendered ones
-:content: (string) field content, supported where needed
-
 Neos.Fusion.Form:Form
 ---------------------
 
@@ -88,8 +17,14 @@ In addition the form component will also:
 - Render hidden `__identity` fields for all fields that are bound to properties of persisted objects.
 - Render hidden `empty` fields for `checkbox` and `submit[multiple]` fields make sure unselected values are send to the controller.
 
-:form: (DataStructure) see `Neos.Fusion.Form:Component.Form`_
-:attributes: (string), all props are rendered as attributes to the form tag
+:form: (`Neos.Fusion.Form:Definition.Form`_) used to populate the `form` context but is not available via `props`
+:form.request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
+:form.namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
+:form.data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
+:form.target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
+:form.method:  (string, default to `post`) The form method.
+:form.encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.:attributes: (string), all props are rendered as attributes to the form tag
+:attributes: (`Neos.Fusion:DataStructure`_) form attributes, will override all automatically rendered ones
 :content: (string, defaults to '') afx content with the form controls
 
 Example::
@@ -115,6 +50,20 @@ Example::
             <Neos.Fusion.Form:Submit field.value="submit" />
         </Neos.Fusion.Form:Form>
     `
+
+Neos.Fusion.Form:Fields
+=======================
+
+All fields are derived from the abstract prototype `Neos.Fusion.Form:Component.Field`_ which defines the following fusion api:
+
+:field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
+:field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
+:field.field: (Field, defaults to null) An possible field that may have been predefined in a container. If no name is given the oputer field will be reused.
+:field.name: (string) The fieldname, use square bracket syntax for nested properties.
+:field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
+:field.value: (any, default = null) The target value of fields (for checkbox, radio and button)
+:attributes: (`Neos.Fusion:DataStructure`_) input attributes, will override all automatically rendered ones
+:content: (string) field content, supported where needed
 
 Neos.Fusion.Form:Input
 ----------------------
@@ -173,7 +122,8 @@ Neos.Fusion.Form:Select.Option
 
 Render an option tag inside a `Neos.Fusion.Form:Select`_.
 
-:field.value: (mixed) The value the option represents.
+:option: (`Neos.Fusion.Form:Definition.Option`_) used to populate the `field` context
+:option.value: (any, default = null) The target value
 :attributes: (string), all props are rendered as attributes to the option tag
 :content: (string) The content of the option tag that is displayed as label.
 
@@ -219,3 +169,94 @@ In some cases multiple inputs are combined in a single FieldContainer::
             <label>Administrator <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" /></label>
         </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
     `
+
+Neos.Fusion.Form:Component
+==========================
+
+The abstract prototypes in Neos.Fusion.Form:Component instantiate the respective domain object and populate the `form`, `field`
+or `option` context. The `renderer` is not defined this is done by derived prototypes in the `Neos.Fusion.Form` or custom namspaces.
+
+Neos.Fusion.Form:Component.Form
+-------------------------------
+
+The Form component is a base prototype for rendering forms in afx. The prototype populates the
+`form` context variable that is available to all the fusion that is rendered as `content`.
+
+:form: (`Neos.Fusion.Form:Definition.Form`_) used to populate the `form` context but is not available via `props`
+:form.request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
+:form.namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
+:form.data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
+:form.target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
+:form.method:  (string, default to `post`) The form method.
+:form.encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.
+:attributes: (`Neos.Fusion:DataStructure`_) form attributes, will override all automatically rendered ones
+:content: (string) form content, supported where needed
+
+The FormComponent does not define any rendering and extended props like `name` or `class`.
+It is up to derived prototypes like `Neos.Fusion.Form:Form`_ to implement the renderer.
+
+Neos.Fusion.Form:Component.Field
+--------------------------------
+
+The field component is a base prototype for creating input rendering prototypes for a given fieldname.
+The prototype populates the `field` context variable and establishes the connection to the parent `form` for
+data-binding and error rendering.
+
+:field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
+:field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
+:field.field: (Field, defaults to null) An possible field that may have been predefined in a container. If no name is given the oputer field will be reused.
+:field.name: (string) The fieldname, use square bracket syntax for nested properties.
+:field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
+:field.value: (any, default = null) The target value of fields (for checkbox, radio and button)
+:attributes: (`Neos.Fusion:DataStructure`_) input attributes, will override all automatically rendered ones
+:content: (string) field content, supported where needed
+
+Neos.Fusion.Form:Component.Option
+---------------------------------
+
+The field component is a base prototype for creating input rendering prototypes for a given fieldname.
+The prototype populates the `field` context variable and establishes the connection to the parent `form` for
+data-binding and error rendering.
+
+:option: (`Neos.Fusion.Form:Definition.Option`_) used to populate the `field` context
+:attributes: (`Neos.Fusion:DataStructure`_) input attributes, will override all automatically rendered ones
+:content: (string) field content, supported where needed
+
+Neos.Fusion.Form:Definition
+===========================
+
+Neos.Fusion.Form:Definition.Form
+--------------------------------
+
+The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Form`_ object which allows to access the
+form informations via methods exposed to eel. Usually the regturned object will be put into the `form` context
+by the `Neos.Fusion.Form:Component.Form`_ prototype.
+
+:request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
+:namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
+:data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
+:target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
+:method:  (string, default to `post`) The form method.
+:encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.
+
+Neos.Fusion.Form:Definition.Field
+---------------------------------
+
+The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Field`_ object which allows to access the
+field informations via methods exposed to eel. Usually the result will be put into the `field` context by
+the `Neos.Fusion.Form:Component.Field`_ prototype.
+
+:form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
+:field: (Field, defaults to null) An possible field that may have been predefined in a container. If no name is given the oputer field will be reused.
+:name: (string) The fieldname, use square bracket syntax for nested properties.
+:multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
+:value: (any, default = null) The target value of fields (for checkbox, radio and button)
+
+Neos.Fusion.Form:Definition.Option
+----------------------------------
+
+The prototype will instantiate and return a `Neos\Fusion\Form\Domain\Option`_ object which allows to access the
+option informations via methods exposed to eel. Usually the result will be put into the `option` context by
+the `Neos.Fusion.Form:Component.Option`_ prototype.
+
+:value: (any, default = null) The target value
