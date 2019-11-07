@@ -58,7 +58,7 @@ All fields are derived from the abstract prototype `Neos.Fusion.Form:Component.F
 
 :field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
 :field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
-:field.field: (Field, defaults to null) An possible field that may have been predefined in a container. If no name is given the oputer field will be reused.
+:field.field: (Field, defaults to `field`) An possible field that may have been predefined in a container. If no name is given the outer field will be reused.
 :field.name: (string) The fieldname, use square bracket syntax for nested properties.
 :field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
 :field.value: (any, default = null) The target value of fields (for checkbox, radio and button)
@@ -141,12 +141,16 @@ Neos.Fusion.Form:Neos.BackendModule.FieldContainer
 --------------------------------------------------
 
 For use in Backend Modules a special component is created that renders a label and validation results
-for the defined field. The actual input elements are passed as afx-content. The module will also override the `field` of
-inner `Neos.Fusion.Form:FieldContainers`_ if they do not have a local `name`.
+for the defined field. The actual input elements are passed as afx-content. The container extends
+`Neos.Fusion.Form:Compnent.Field` which allows to define a `field` that will be used in controls inside as long as
+no other `field.name` is defined on the inner controls.
 
-:field.name: (string) The fieldname. Use square bracket syntax for nested properties.
+:field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
+:field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
+:field.field: (Field, defaults to `field`) An possible field that may have been predefined in a container. If no name is given the outer field will be reused.
+:field.name: (string) The fieldname, use square bracket syntax for nested properties.
 :field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
-
+:field.value: (any, default = null) The target value of fields (for checkbox, radio and button)
 :label: (string) The label for the field, is translated using `translation.label.package` and `translation.label.source`
 :translation: (array, default {label: {package: 'Neos.Neos', source: 'Modules'}, error: {package: 'Neos.Flow', source: 'ValidationErrors'}}) the translation sources for rendering the labels and errors
 :attributes: (DataStructure) attributes for the container tag
@@ -204,7 +208,7 @@ data-binding and error rendering.
 
 :field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
 :field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
-:field.field: (Field, defaults to null) An possible field that may have been predefined in a container. If no name is given the oputer field will be reused.
+:field.field: (Field, defaults to `field`) An possible field that may have been predefined in a container. If no name is given the outer field will be reused.
 :field.name: (string) The fieldname, use square bracket syntax for nested properties.
 :field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
 :field.value: (any, default = null) The target value of fields (for checkbox, radio and button)
