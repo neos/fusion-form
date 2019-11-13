@@ -19,6 +19,7 @@ use Neos\Flow\Mvc\ActionRequest;
 use Neos\Utility\ObjectAccess;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 
 /**
  * This object describes a the main properties of a form. Usually this is
@@ -34,6 +35,12 @@ class Form extends AbstractFormObject
      * @var MvcPropertyMappingConfigurationService
      */
     protected $mvcPropertyMappingConfigurationService;
+
+    /**
+     * @var PersistenceManagerInterface
+     * @Flow\Inject
+     */
+    protected $persistenceManager;
 
     /**
      * @Flow\Inject

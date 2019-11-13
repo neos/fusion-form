@@ -15,16 +15,15 @@ namespace Neos\Fusion\Form\Domain;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Eel\ProtectedContextAwareInterface;
-use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\Property\PropertyMapper;
 
 abstract class AbstractFormObject implements ProtectedContextAwareInterface
 {
-
     /**
-     * @var PersistenceManagerInterface
      * @Flow\Inject
+     * @var PropertyMapper
      */
-    protected $persistenceManager;
+    protected $propertyMapper;
 
     /**
      * Convert a value to a string representation for beeing rendered as an html form value
@@ -34,13 +33,11 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
      */
     protected function stringifyValue($value): string
     {
-        if (is_object($value)) {
-            $identifier = $this->persistenceManager->getIdentifierByObject($value);
-            if ($identifier !== null) {
-                return $identifier;
-            }
+        try {
+            return $this->propertyMapper->convert($value, 'string');
+        } catch (\Exception $e) {
+            return (string)$value;
         }
-        return (string)$value;
     }
 
     /**
