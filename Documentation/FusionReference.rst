@@ -31,21 +31,21 @@ Example::
 
     afx`
         <Neos.Fusion.Form:Form form.data.customer={customer} form.data.deliveryAddress={deliveryAddress} form.target.action="submit">
-            <Neos.Fusion.Form:FieldContainer field.name="user[firstName]" label="First Name">
+            <Neos.Fusion.Form:Component.Field field.name="user[firstName]" label="First Name">
                 <Neos.Fusion.Form:Input />
-            </Neos.Fusion.Form:FieldContainer>
+            </Neos.Fusion.Form:Component.Field>
 
-            <Neos.Fusion.Form:FieldContainer field.name="user[lastName]" label="Last Name">
+            <Neos.Fusion.Form:Component.Field field.name="user[lastName]" label="Last Name">
                 <Neos.Fusion.Form:Input />
-            </Neos.Fusion.Form:FieldContainer>
+            </Neos.Fusion.Form:Component.Field>
 
-            <Neos.Fusion.Form:FieldContainer field.name="deliveryAddress[street]" label="Street">
+            <Neos.Fusion.Form:Component.Field field.name="deliveryAddress[street]" label="Street">
                 <Neos.Fusion.Form:Input />
-            </Neos.Fusion.Form:FieldContainer>
+            </Neos.Fusion.Form:Component.Field>
 
-            <Neos.Fusion.Form:FieldContainer field.name="deliveryAddress[zip]" label="Zip">
+            <Neos.Fusion.Form:Component.Field field.name="deliveryAddress[zip]" label="Zip">
                 <Neos.Fusion.Form:Input />
-            </Neos.Fusion.Form:FieldContainer>
+            </Neos.Fusion.Form:Component.Field>
 
             <Neos.Fusion.Form:Submit field.value="submit" />
         </Neos.Fusion.Form:Form>

@@ -286,7 +286,7 @@ to centralize error and label rendering while the field-controls are still
 decided for each field separately.
 
 ```
-prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion:FieldComponent) {
+prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion.Form:Component.Field) {
 
     name = null
     multiple = false
