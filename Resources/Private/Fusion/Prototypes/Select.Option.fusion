@@ -25,7 +25,7 @@ prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion.Form:Componen
                selected={props.selected}
                {...props.attributes}
            >
-               {props.content || option.getTargetValue()}
+               {props.content || option.getTargetValueStringified()}
            </option>
         `
     }
