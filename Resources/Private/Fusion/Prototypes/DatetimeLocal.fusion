@@ -1,0 +1,37 @@
+prototype(Neos.Fusion.Form:DatetimeLocal) < prototype(Neos.Fusion.Form:Component.Field) {
+    @propTypes {
+        type = ${PropTypes.string}
+        value = ${PropTypes.any}
+    }
+
+    attributes.type = 'datetime-local'
+
+    renderer = Neos.Fusion:Component {
+
+        attributes = ${props.attributes}
+
+        value = ${field.getCurrentValue() || field.getTargetValue()}
+        value.@process.formatDatime = Neos.Fusion:Case {
+            isDateTime {
+                condition = ${(Type.getType(value) == 'object') && Type.instance(value , '\DateTime') }
+                renderer = ${Date.format(value, 'Y-m-d\TH:i')}
+            }
+            isInteger {
+                condition = ${(Type.getType(value) == 'integer')}
+                renderer = ${Date.format(Date.create('@' + value), 'Y-m-d\TH:i')}
+            }
+            default {
+                condition = true
+                renderer = ${field.getCurrentValueStringified() || field.getTargetValueStringified()}
+            }
+        }
+
+        renderer = afx`
+            <input
+                    name={field.getName()}
+                    value={props.value}
+                    {...props.attributes}
+            />
+        `
+    }
+}
