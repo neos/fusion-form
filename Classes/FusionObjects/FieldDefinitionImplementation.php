@@ -72,8 +72,12 @@ class FieldDefinitionImplementation extends AbstractFusionObject
         $multiple = $this->getMultiple();
 
         // reuse outer field if no name is given
-        if (!$name && $field) {
-            return $field->withTargetValue($value);
+        if ($field && !$name) {
+            if (is_null($value)) {
+                return $field;
+            } else {
+                return $field->withTargetValue($value);
+            }
         }
 
         return new Field(
