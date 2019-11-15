@@ -1,10 +1,8 @@
-Fusion Form
-===========
+# Fusion Form
 
 Pure fusion form rendering with afx support!
 
-Development targets 
--------------------
+## Development targets 
 
 - Form rendering in fusion with afx and data binding 
 - Clear separation of automation and magic for understandable results
@@ -23,7 +21,7 @@ Development targets
   - Create a backend field container with translated labels and error messages 
   - Adjust field markup inside the field container for the neos-backend
   
-**Important Deviations from Fluid Form ViewHelpers**
+### Important Deviations from Fluid Form ViewHelpers
 
 The following deviations are probably the ones fluid developers will 
 stumble over. There are many more deviations but those are breaking 
@@ -35,8 +33,7 @@ concept changes you should be aware of.
 - Data binding with `property` path syntax is not supported.
 - Select options and groups are defined directly as afx `content` and not `options`.
 
-Usage
------
+## Usage
 
 Forms usually are defined by using the `Neos.Fusion.Form:Form` prototype 
 in afx. The `form.target` can be passed as a string but since it is 
@@ -125,15 +122,14 @@ renderer = afx`
 `
 ```
 
-Fusion prototypes
------------------
+## Fusion prototypes and Helpers
 
-The full fusion documentation can be found [here](Documentation/FusionReference.rst)
+- The fusion documentation can be found [here](Documentation/FusionReference.rst)
+- The helper documentation can be found [here](Documentation/HelperReference.rst)
 
-Examples
---------
+## Examples
 
-**Frontend**
+### Using fusion forms in the frontend
 
 This example defines a ShipmentForm component that accepts the props `customer`,
 `shipment` and `targetAction`. The form content is defined as afx. The form data is defined 
@@ -180,7 +176,7 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
 }
 ```
 
-**Backend Module**
+### Using fusion forms in a backend module
 
 Forms for backend modules basically work the same as in the frontend 
 but the additional prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
@@ -249,10 +245,9 @@ prototype(Form.Test:Backend.UserForm) < prototype(Neos.Fusion:Component) {
 }
 ```
 
-Extending Neos.Fusion-Form:
----------------------------
+## Extending Neos.Fusion-Form:
 
-**Custom Form Fields**
+### Implementing custom Form Fields
 
 The most obvious extension point is the definition of custom fieldtypes.
 To do so you have to extend the `Neos.Fusion.Form:Component.Field` prototype
@@ -278,7 +273,7 @@ prototypeVendor.Site:Form.Textarea)  < prototype(Neos.Fusion.Form:Component.Fiel
 }
 ```
 
-**A Custom DatetimeLocal field**
+### Implementing a custom DatetimeLocal field
 
 Sometimes custom fieldtypes are needed or to implement a different value conversion
 to the html form than the default field offer.
@@ -354,7 +349,7 @@ prototype(Vendor.Site:Form.DatetimeLocal) < prototype(Neos.Fusion.Form:Component
 } 
 ```
 
-**Custom Container with translated labels and errors**
+### Custom Container with translated labels and errors
 
 A custom field container is a component that renders label and errors for
 a field but expects the field itself as afx content. This pattern allows
