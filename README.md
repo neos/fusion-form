@@ -266,7 +266,7 @@ are expected to override all autmatically assigned attributes and whenever
 it makes sense also `content` which is usually defined via afx.  
 
 ```
-prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Component.Field) {
+prototypeVendor.Site:Form.Textarea)  < prototype(Neos.Fusion.Form:Component.Field) {
     renderer = afx`
         <textarea
             name={field.name}
@@ -276,6 +276,82 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Component.Fie
         </textarea>
     `
 }
+```
+
+**A Custom DatetimeLocal field**
+
+Sometimes custom fieldtypes are needed or to implement a different value conversion
+to the html form than the default field offer.
+
+This example shows a datetime-local field that implements a custom stringification 
+for DateTime and integer values.  
+
+```
+prototype(Vendor.Site:Form.DatetimeLocal) < prototype(Neos.Fusion.Form:Component.Field) {
+
+    # 
+    # Since we want calculate the value via fusion but want to avoid 
+    # making value an api a wrapper component is used  
+    #
+    renderer = Neos.Fusion:Component {
+
+        # the `field` provides the name
+        name={field.getName()}
+        
+        #
+        # the value is fetched from the `field` with fallback to target value
+        #
+        value = ${field.getCurrentValue() || field.getTargetValue()}
+        
+        #
+        # the value might be an object so we have to process it to a string for html
+        #
+        value.@process.formatDatime = Neos.Fusion:Case {
+        
+            #
+            # convert DateTime objects to string
+            # 
+            isDateTime {
+                condition = ${(Type.getType(value) == 'object') && Type.instance(value , '\DateTime') }
+                renderer = ${Date.format(value, 'Y-m-d\TH:i')}
+            }
+            
+            #
+            # convert integer to string by interpreting as timestamp
+            #
+            isInteger {
+                condition = ${(Type.getType(value) == 'integer')}
+                renderer = ${Date.format(Date.create('@' + value), 'Y-m-d\TH:i')}
+            }
+            
+            #
+            # fallback to the *Stringified methods of the ``field` for other types
+            #            
+            default {
+                condition = true
+                renderer = ${field.getCurrentValueStringified() || field.getTargetValueStringified()}
+            }
+        }
+        
+        #
+        # attributes are passed down 
+        #
+        attributes = ${props.attributes}
+
+
+        #
+        # the actual markup
+        #
+        renderer = afx`
+            <input
+                    type="datetime-local"
+                    name={props.name}
+                    value={props.value}
+                    {...props.attributes}
+            />
+        `
+    }
+} 
 ```
 
 **Custom Container with translated labels and errors**
