@@ -302,26 +302,14 @@ prototype(Vendor.Site:Form.DatetimeLocal) < prototype(Neos.Fusion.Form:Component
         # the value might be an object so we have to process it to a string for html
         #
         value.@process.formatDatime = Neos.Fusion:Case {
-        
-            #
-            # convert DateTime objects to string
-            # 
             isDateTime {
                 condition = ${(Type.getType(value) == 'object') && Type.instance(value , '\DateTime') }
                 renderer = ${Date.format(value, 'Y-m-d\TH:i')}
             }
-            
-            #
-            # convert integer to string by interpreting as timestamp
-            #
             isInteger {
                 condition = ${(Type.getType(value) == 'integer')}
                 renderer = ${Date.format(Date.create('@' + value), 'Y-m-d\TH:i')}
             }
-            
-            #
-            # fallback to the *Stringified methods of the ``field` for other types
-            #            
             default {
                 condition = true
                 renderer = ${field.getCurrentValueStringified() || field.getTargetValueStringified()}
