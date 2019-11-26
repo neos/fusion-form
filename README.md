@@ -33,6 +33,20 @@ concept changes you should be aware of.
 - Data binding with `property` path syntax is not supported.
 - Select options and groups are defined directly as afx `content` and not `options`.
 
+## Stability of version 1.0.0
+
+With the release of version 1.0.0 the fusion api of the prototypes directly in the 
+`Neos.Fusion.Form:*` namespace are now considered stable. We currently do not expect 
+much changes here in the future other than bugfixes.  
+
+The namespaces `Neos.Fusion.Form:Component.*`, `Neos.Fusion.Form:Definition.*` 
+and `Neos.Fusion.Form:Neos.*` and the underlying php classes are still considered 
+beta and define the internal apis for the top level prototypes. Those apis may change 
+even in a feature release.
+
+With the exception of the internal apis semantic-versioning will be used
+so every breaking change will increase the major-version number.
+
 ## Usage
 
 Forms usually are defined by using the `Neos.Fusion.Form:Form` prototype 
