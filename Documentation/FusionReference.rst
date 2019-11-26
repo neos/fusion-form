@@ -60,7 +60,7 @@ All fields are derived from the abstract prototype `Neos.Fusion.Form:Component.F
 :field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
 :field.field: (Field, defaults to `field`) An possible field that may have been predefined in a container. If no name is given the outer field will be reused.
 :field.name: (string) The fieldname, use square bracket syntax for nested properties.
-:field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
+:field.multiple: (boolean, default = false) Determine whether the field can contain multiple values like checkboxes or selects.
 :field.value: (any, default = null) The target value of fields (for checkbox, radio and button)
 :attributes: (`Neos.Fusion:DataStructure`_) input attributes, will override all automatically rendered ones
 :content: (string) field content, supported where needed
@@ -98,24 +98,24 @@ Extends `Neos.Fusion.Form:Input`_ and uses the default type `submit`.
 Neos.Fusion.Form:Checkbox
 -------------------------
 
-Extend `Neos.Fusion.Form:Component.Field`_ to render an input of type "checkbox".
+Extends `Neos.Fusion.Form:Component.Field`_ to render an input of type "checkbox".
 
 Neos.Fusion.Form:Radio
 ----------------------
 
-Extend `Neos.Fusion.Form:Component.Field`_ to render an input of type "radio".
+Extends `Neos.Fusion.Form:Component.Field`_ to render an input of type "radio".
 
 Neos.Fusion.Form:Textarea
 -------------------------
 
-Extend `Neos.Fusion.Form:Component.Field`_ to render an textarea tag.
+Extends `Neos.Fusion.Form:Component.Field`_ to render an textarea tag.
 
 Neos.Fusion.Form:Select
 -----------------------
 
-A `Neos.Fusion.Form:Component.Field`_ that renders a select tag. The options are expected as afx `content`.
+Extends `Neos.Fusion.Form:Component.Field`_ and renders a select tag. The options are expected as afx `content`.
 If the prototype `Neos.Fusion.Form:Select.Option`_ is used for defining the options the selected state is
-applied automaticvally by comparing `field.value` with `option.value`.
+applied automatically by comparing the stringified `field.value` with `option.value`.
 
 Neos.Fusion.Form:Select.Option
 ------------------------------
@@ -140,10 +140,15 @@ Example::
 Neos.Fusion.Form:Neos.BackendModule.FieldContainer
 --------------------------------------------------
 
-For use in Backend Modules a special component is created that renders a label and validation results
-for the defined field. The actual input elements are passed as afx-content. The container extends
-`Neos.Fusion.Form:Compnent.Field` which allows to define a `field` that will be used in controls inside as long as
-no other `field.name` is defined on the inner controls.
+For use in Neos Backend Modules a special component is created that renders a label and validation results
+for the defined field using the class and html structures for the neos backend. The actual input elements are passed
+as afx-content to the container. The container extends `Neos.Fusion.Form:Compnent.Field` which allows to define a
+`field` that will be used by all fields inside that do not have another `field.name` defined. The container also adjusts
+the rendering of checkboxes and radio inputs to the needs of the Neos backend.
+
+.. note:
+  Do not use this container in frontend projects. It will be modified in the future as the Neos backend evolves.
+  Instead use this prototype as template to create project specific field-containers.
 
 :field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
 :field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
@@ -168,9 +173,9 @@ In some cases multiple inputs are combined in a single FieldContainer::
 
     renderer = afx
         <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[roles]" label="user.role" multiple>
-            <label>Restricted Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" /></label>
-            <label>Editor <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" /></label>
-            <label>Administrator <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" /></label>
+            <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" >Restricted Editor</Neos.Fusion.Form:Checkbox>
+            <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" >Editor</Neos.Fusion.Form:Checkbox>
+            <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" >Administrator</Neos.Fusion.Form:Checkbox>
         </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
     `
 
