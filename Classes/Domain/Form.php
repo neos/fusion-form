@@ -197,18 +197,11 @@ class Form extends AbstractFormObject
      */
     public function calculateHiddenFields(string $content = null): array
     {
-        $form = $this;
         $hiddenFields = [];
 
-        if ($form) {
-            $request = $form->getRequest();
-            $fieldNamePrefix = $form->getFieldNamePrefix() ?: '';
-            $data = $form->getData();
-        } else {
-            $request = null;
-            $fieldNamePrefix = '';
-            $data = null;
-        }
+        $request = $this->getRequest();
+        $fieldNamePrefix = $this->getFieldNamePrefix() ?: '' ;
+        $data = $this->getData();
 
         // parse given content to render hidden fields for
         $domDocument = new \DOMDocument('1.0', 'UTF-8');
