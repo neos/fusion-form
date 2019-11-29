@@ -305,7 +305,7 @@ prototype(Vendor.Site:Form.DatetimeLocal) < prototype(Neos.Fusion.Form:Component
     renderer = Neos.Fusion:Component {
 
         # the `field` provides the name
-        name={field.getName()}
+        name = ${field.getName()}
         
         #
         # the value is fetched from the `field` with fallback to target value
