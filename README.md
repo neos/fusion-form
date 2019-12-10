@@ -281,7 +281,7 @@ prototypeVendor.Site:Form.Textarea)  < prototype(Neos.Fusion.Form:Component.Fiel
             name={field.name}
             {...props.attributes}
         >
-            {field.getCurrentValueStringified() || props.content)}
+            {String.htmlspecialchars(field.getCurrentValueStringified() || props.content)}
         </textarea>
     `
 }
