@@ -24,5 +24,4 @@ prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Component.Field)
             />
         `
     }
-
 }

@@ -1,3 +1,5 @@
 prototype(Neos.Fusion.Form:Textfield)  < prototype(Neos.Fusion.Form:Input) {
+
     attributes.type = "text"
+
 }

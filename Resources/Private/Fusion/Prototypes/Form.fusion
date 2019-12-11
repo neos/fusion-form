@@ -1,20 +1,5 @@
 prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:Component.Form) {
 
-    @propTypes {
-        attributes = ${PropTypes.dataStructure({})}
-        content = ${PropTypes.string}
-    }
-
-    #
-    # html attributes for the form
-    #
-    attributes = Neos.Fusion:DataStructure
-
-    #
-    # form content
-    #
-    content = null
-
     renderer = afx`
         <form
             action={form.getTarget()}

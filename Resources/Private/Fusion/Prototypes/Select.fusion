@@ -9,6 +9,4 @@ prototype(Neos.Fusion.Form:Select)  < prototype(Neos.Fusion.Form:Component.Field
             {props.content}
         </select>
     `
-
-
 }

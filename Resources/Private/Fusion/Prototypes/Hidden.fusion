@@ -1,3 +1,5 @@
 prototype(Neos.Fusion.Form:Hidden)  < prototype(Neos.Fusion.Form:Input) {
+
     attributes.type = "hidden"
+
 }
