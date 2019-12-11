@@ -15,18 +15,13 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:Component.Form) {
                 >
                     <input type="hidden" name={fieldName} value={fieldValue} />
                 </Neos.Fusion:Loop>
-                <Neos.Fusion:Join
-                    @if.isNoGetRequest={String.toLowerCase(form.getMethod()) != 'get'}
-                    @if.isSessionPresent={Security.isAuthenticated()}
-                >
-                    <input
-                        @cache.mode="uncached"
-                        @cache.context={[]}
-                        type="hidden"
-                        name="__csrfToken"
-                        value={Security.csrfToken()}
-                    />
-                </Neos.Fusion:Join>
+                <input
+                    @cache.mode="uncached"
+                    @cache.context={[]}
+                    type="hidden"
+                    name="__csrfToken"
+                    value={Security.csrfToken()}
+                />
             </div>
             {props.content}
         </form>
