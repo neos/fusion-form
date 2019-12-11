@@ -19,7 +19,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:Component.Form) {
         <form
             action={form.getTarget()}
             method={form.getMethod()}
-            enctype={form.getEncoding}
+            enctype={form.getEncoding()}
             {...props.attributes}
         >
             <div style="display: none">
