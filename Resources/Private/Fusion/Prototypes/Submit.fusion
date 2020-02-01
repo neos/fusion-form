@@ -1,5 +1,4 @@
 prototype(Neos.Fusion.Form:Submit) < prototype(Neos.Fusion.Form:Input) {
 
     attributes.type="submit"
-
 }

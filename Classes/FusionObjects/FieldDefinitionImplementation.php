@@ -19,7 +19,6 @@ use Neos\Fusion\Form\Domain\Field;
 
 class FieldDefinitionImplementation extends AbstractFusionObject
 {
-
     /**
      * @return Form|null
      */
@@ -73,11 +72,11 @@ class FieldDefinitionImplementation extends AbstractFusionObject
 
         // reuse outer field if no name is given
         if ($field && !$name) {
-            if (is_null($value)) {
+            if ($value === null) {
                 return $field;
-            } else {
-                return $field->withTargetValue($value);
             }
+
+            return $field->withTargetValue($value);
         }
 
         return new Field(

@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Component.Field) {
+prototype(Neos.Fusion.Form:Textarea) < prototype(Neos.Fusion.Form:Component.Field) {
 
     renderer = afx`
         <textarea

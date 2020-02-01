@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:Input)  < prototype(Neos.Fusion.Form:Component.Field) {
+prototype(Neos.Fusion.Form:Input) < prototype(Neos.Fusion.Form:Component.Field) {
 
     attributes.type = 'text'
 

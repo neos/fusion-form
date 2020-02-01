@@ -90,8 +90,14 @@ class Form extends AbstractFormObject
      * @param string $method
      * @param string|null $encoding
      */
-    public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, string $target = null, string $method = "get", string $encoding = null)
-    {
+    public function __construct(
+        ActionRequest $request = null,
+        $data = null,
+        string $fieldNamePrefix = null,
+        string $target = null,
+        string $method = 'get',
+        string $encoding = null
+    ) {
         $this->request = $request;
         $this->data = $data;
         $this->fieldNamePrefix = $fieldNamePrefix;
@@ -319,7 +325,7 @@ class Form extends AbstractFormObject
         // A signed array of all properties the property mapper is allowed to convert from string to the target type
         // so no property mapping configuration is needed on the target controller
         //
-        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
+        $hiddenFields[$this->prefixFieldName('__trustedProperties', $fieldNamePrefix)] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
 
         return $hiddenFields;
     }

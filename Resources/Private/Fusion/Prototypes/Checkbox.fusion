@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:Checkbox)  < prototype(Neos.Fusion.Form:Component.Field) {
+prototype(Neos.Fusion.Form:Checkbox) < prototype(Neos.Fusion.Form:Component.Field) {
 
     renderer = Neos.Fusion:Component {
 

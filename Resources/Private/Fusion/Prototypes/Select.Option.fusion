@@ -1,4 +1,4 @@
-prototype(Neos.Fusion.Form:Select.Option)  < prototype(Neos.Fusion.Form:Component.Option) {
+prototype(Neos.Fusion.Form:Select.Option) < prototype(Neos.Fusion.Form:Component.Option) {
 
     renderer = Neos.Fusion:Component {
 

@@ -1,6 +1,7 @@
 <?php
 namespace Neos\Fusion\Form\Tests\Functional;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Neos\Fusion\Form\Domain\Form;
 use Neos\Fusion\Form\Domain\Field;
@@ -9,6 +10,9 @@ use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\Controller\MvcPropertyMappingConfigurationService;
 use Neos\Flow\Mvc\ActionRequest;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionObject;
 
 class FormTest extends TestCase
 {
@@ -25,10 +29,11 @@ class FormTest extends TestCase
 
     /**
      * @return Form
+     * @throws ReflectionException
      */
     protected function createForm(): Form
     {
-        $reflector = new \ReflectionClass(Form::class);
+        $reflector = new ReflectionClass(Form::class);
         $form = $reflector->newInstanceArgs(func_get_args());
 
         $this->injectDependency($form, 'persistenceManager', $this->persistenceManager);
@@ -46,15 +51,16 @@ class FormTest extends TestCase
      * @param mixed $dependency The dependency to inject – usually an object but can also be any other type
      * @return void
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws ReflectionException
      */
     protected function injectDependency($target, $name, $dependency)
     {
         if (!is_object($target)) {
-            throw new \InvalidArgumentException('Wrong type for argument $target, must be object.');
+            throw new InvalidArgumentException('Wrong type for argument $target, must be object.');
         }
 
-        $objectReflection = new \ReflectionObject($target);
+        $objectReflection = new ReflectionObject($target);
         if ($objectReflection->hasProperty($name)) {
             $property = $objectReflection->getProperty($name);
             $property->setAccessible(true);
@@ -337,9 +343,9 @@ CONTENT;
         $form = $this->createForm();
         $hiddenFields = $form->calculateHiddenFields($content);
 
-        $this->assertEquals("", $hiddenFields['select[multiple]']);
-        $this->assertEquals("", $hiddenFields['input[checkbox]']);
-        $this->assertEquals("", $hiddenFields['input[checkboxMultiple]']);
+        $this->assertEquals('', $hiddenFields['select[multiple]']);
+        $this->assertEquals('', $hiddenFields['input[checkbox]']);
+        $this->assertEquals('', $hiddenFields['input[checkboxMultiple]']);
     }
 
     /**

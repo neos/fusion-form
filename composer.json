@@ -7,6 +7,8 @@
     ],
     "require": {
         "php" : ">7.1",
+        "ext-dom": "*",
+        "ext-libxml": "*",
         "neos/fusion": "^4.3 || ^5.0 || dev-master",
         "neos/fusion-afx": "^1.2 || dev-master",
         "neos/utility-arrays": "*",

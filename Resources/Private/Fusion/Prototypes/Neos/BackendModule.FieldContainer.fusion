@@ -1,7 +1,4 @@
-/**
- *
- */
-prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.Fusion.Form:Component.Field) {
+prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer) < prototype(Neos.Fusion.Form:Component.Field) {
 
     @propTypes {
         label = ${PropTypes.string}
@@ -96,8 +93,8 @@ prototype(Neos.Fusion.Form:Neos.BackendModule.FieldContainer)  < prototype(Neos.
                     class="neos-radio"
                     for={field.getName() + '-' + field.getTargetValueStringified()}
                 >
-                {value}<span></span>
-                {props.content || field.getTargetValueStringified()}
+                    {value}<span></span>
+                    {props.content || field.getTargetValueStringified()}
                 </label>
             `
         }
