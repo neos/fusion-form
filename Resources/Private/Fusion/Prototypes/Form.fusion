@@ -17,6 +17,7 @@ prototype(Neos.Fusion.Form:Form) < prototype(Neos.Fusion.Form:Component.Form) {
                 </Neos.Fusion:Loop>
                 <Neos.Fusion:Join
                     @if.isNoGetRequest={String.toLowerCase(form.getMethod()) != 'get'}
+                    @if.isAuthenticated={Security.isAuthenticated()}
                 >
                     <input
                         @cache.mode="uncached"
