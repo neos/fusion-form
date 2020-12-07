@@ -8,7 +8,7 @@
     "require": {
         "php" : ">7.1",
         "neos/fusion": "^4.3 || ^5.0 || ^7.0 || dev-master",
-        "neos/fusion-afx": "^1.2 || dev-master",
+        "neos/fusion-afx": "^1.2 || ^7.0 || dev-master",
         "neos/utility-arrays": "*",
         "neos/utility-objecthandling": "*"
     },
