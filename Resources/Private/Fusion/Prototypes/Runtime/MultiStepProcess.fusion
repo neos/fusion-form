@@ -1,0 +1,3 @@
+prototype(Neos.Fusion.Form:Runtime.MultiStepProcess) {
+    @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\MultiStepProcessImplementation'
+}

@@ -1,0 +1,4 @@
+
+prototype(Neos.Fusion.Form:Runtime.ActionCollection) {
+    @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\ActionCollectionImplementation'
+}

@@ -3,6 +3,12 @@ Neos:
     fusion:
       autoInclude:
         Neos.Fusion.Form: true
+
+  Fusion:
+    defaultContext:
+      Schema: 'Neos\Fusion\Form\Runtime\Helper\SchemaHelper'
+      Object: 'Neos\Fusion\Form\Runtime\Helper\ObjectHelper'
+
   DocTools:
     collections:
       FusionForm:

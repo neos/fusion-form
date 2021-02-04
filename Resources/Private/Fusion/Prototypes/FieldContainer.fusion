@@ -1,0 +1,80 @@
+prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion.Form:Component.Field) {
+
+    @propTypes {
+        label = ${PropTypes.string}
+        content = ${PropTypes.string}
+    }
+
+    #
+    # label and afx content
+    #
+    label = null
+
+    #
+    # attributes for the container
+    #
+    attributes = Neos.Fusion:DataStructure
+
+    #
+    # container content
+    #
+    content = null
+
+    renderer = afx`
+        <div class={field.hasErrors() ? 'error' : ''} {...props.attributes} >
+            <label for={field.getName()} @if.has={props.label}>
+                {props.label}
+            </label>
+            {props.content}
+            <ul @if.hasErrors={field.hasErrors()} class="errors">
+                <Neos.Fusion:Loop items={field.getResult().flattenedErrors} itemName="errors" >
+                    <Neos.Fusion:Loop items={errors} itemName="error" >
+                        <li>{error}</li>
+                    </Neos.Fusion:Loop>
+                </Neos.Fusion:Loop>
+            </ul>
+        </div>
+    `
+
+    #
+    # All FieldComponents will render the field.name as id so
+    # the label for from the FieldContainer references them correctly
+    #
+    prototype(Neos.Fusion.Form:Component.Field) {
+        attributes.id = ${field.getName()}
+    }
+
+    #
+    # Render checkbox into label
+    #
+    prototype(Neos.Fusion.Form:Checkbox) {
+        attributes.id = ${field.getName() + '-' + field.getTargetValueStringified()}
+        renderer.@process.wrapInLabel {
+            expression = afx`
+                <label
+                        for={field.getName() + '-' + field.getTargetValueStringified()}
+                >
+                    {value}{props.content || field.getTargetValueStringified()}
+                </label>
+            `
+        }
+    }
+
+    #
+    # Render radio box into label
+    #
+    prototype(Neos.Fusion.Form:Radio) {
+        attributes.id = ${field.getName() + '-' + field.getTargetValueStringified()}
+        renderer.@process.wrapInLabel {
+            expression = afx`
+                <label
+                        class="neos-radio"
+                        for={field.getName() + '-' + field.getTargetValueStringified()}
+                >
+                    {value}{props.content || field.getTargetValueStringified()}
+                </label>
+            `
+        }
+    }
+}
+

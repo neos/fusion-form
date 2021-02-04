@@ -280,7 +280,9 @@ class Form extends AbstractFormObject
                         for ($i = 0; $i < $optionCount; $i++) {
                             $formFieldNames[] = $name;
                         }
-                    } else {
+                    } if (substr( $name, -18)  == '[__collectionName]' || substr( $name, -41) === '[originallySubmittedResource][__identity]') {
+                        // ignore special fields for file uploads
+                    }  else {
                         $formFieldNames[] = $name;
                     }
                 }

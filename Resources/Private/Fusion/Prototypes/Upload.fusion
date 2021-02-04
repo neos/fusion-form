@@ -1,5 +1,23 @@
-prototype(Neos.Fusion.Form:Upload)  < prototype(Neos.Fusion.Form:Input) {
+prototype(Neos.Fusion.Form:Upload)  < prototype(Neos.Fusion.Form:Component.Field) {
 
     attributes.type = "file"
+    collection = "persistent"
 
+    renderer = afx`
+        <input
+            @if.has={Type.instance(field.getCurrentValue(), 'Neos\Flow\ResourceManagement\PersistentResource')}
+            type="hidden" name={field.getName() + '[originallySubmittedResource][__identity]'}
+            value={Object.getObjectIdentifier(field.getCurrentValue())}
+        />
+        <input
+            @if.has={props.collection}
+            type="hidden"
+            name={field.getName() + '[__collectionName]'}
+            value={props.collection}
+        />
+        <input
+            name={field.getName()}
+            {...props.attributes}
+        />
+    `
 }
