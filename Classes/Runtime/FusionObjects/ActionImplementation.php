@@ -35,17 +35,25 @@ class ActionImplementation extends AbstractFusionObject implements ActionInterfa
     protected $identifier;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $options = [];
 
-    public function evaluate()
+    /**
+     * @return $this
+     */
+    public function evaluate(): self
     {
         $this->identifier = $this->fusionValue('identifier');
         $this->options = $this->fusionValue('options');
         return $this;
     }
 
+    /**
+     * @param mixed[] $data
+     * @return ActionResponse|null
+     * @throws \Neos\Fusion\Form\Runtime\Domain\Exception\NoSuchActionException
+     */
     public function handle(array $data = []): ?ActionResponse
     {
         $action = $this->actionResolver->createAction($this->identifier);

@@ -23,7 +23,7 @@ use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\Fusion\Form\Runtime\Helper\SchemaDefinitionToken;
 use Neos\Fusion\FusionObjects\DataStructureImplementation;
 
-class ActionCollectionImplementation extends DataStructureImplementation implements ActionInterface
+class ActionCollectionImplementation extends AbstractCollectionFusionObject implements ActionInterface
 {
 
     /**
@@ -37,7 +37,14 @@ class ActionCollectionImplementation extends DataStructureImplementation impleme
      */
     protected $subActions = [];
 
-    public function evaluate()
+    /**
+     * @return $this
+     * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationException
+     * @throws \Neos\Flow\Mvc\Exception\StopActionException
+     * @throws \Neos\Flow\Security\Exception
+     * @throws \Neos\Fusion\Exception
+     */
+    public function evaluate(): self
     {
         $subActionKeys = $this->sortNestedFusionKeys();
 
@@ -72,6 +79,10 @@ class ActionCollectionImplementation extends DataStructureImplementation impleme
         return $this;
     }
 
+    /**
+     * @param mixed[] $data
+     * @return ActionResponse|null
+     */
     public function handle(array $data = []): ?ActionResponse
     {
         $response = new ActionResponse();
@@ -92,19 +103,5 @@ class ActionCollectionImplementation extends DataStructureImplementation impleme
             }
         }
         return $response;
-    }
-
-    /**
-     * Returns TRUE if the given property has no object type assigned
-     *
-     * @param mixed $property
-     * @return bool
-     */
-    private function isUntypedProperty($property): bool
-    {
-        if (!is_array($property)) {
-            return false;
-        }
-        return array_intersect_key(array_flip(Parser::$reservedParseTreeKeys), $property) === [];
     }
 }

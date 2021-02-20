@@ -19,13 +19,28 @@ use Neos\Fusion\Form\Domain\Form;
 
 interface ProcessInterface
 {
-    public function handle(ActionRequest $request);
+    /**
+     * @param ActionRequest $request
+     */
+    public function handle(ActionRequest $request): void;
 
+    /**
+     * @return bool
+     */
     public function isFinished(): bool;
 
+    /**
+     * @return string
+     */
     public function render(): string;
 
-    public function setData(array $data);
+    /**
+     * @param mixed[] $data
+     */
+    public function setData(array $data): void;
 
+    /**
+     * @return mixed[]
+     */
     public function getData(): array;
 }

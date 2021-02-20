@@ -30,7 +30,7 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
      * Convert a value to a string representation for beeing rendered as an html form value
      *
      * @param mixed $value
-     * @return string|null
+     * @return string
      */
     protected function stringifyValue($value): string
     {
@@ -46,8 +46,8 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
     /**
      * Convert an array of values to an array of string representation for beeing rendered as an html form value
      *
-     * @param iterable $value
-     * @return array|null
+     * @param mixed[] $value
+     * @return string[]
      */
     protected function stringifyMultivalue(iterable $value = null): array
     {
@@ -58,15 +58,15 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
             }
             return $result;
         } else {
-            return null;
+            return [];
         }
     }
 
     /**
      * Prepend the given fieldNamePrefix to the fieldName the
      *
-     * @param string $name
-     * @param string|null $prefix
+     * @param string $fieldName
+     * @param string|null $fieldNamePrefix
      * @return string
      */
     protected function prefixFieldName(string $fieldName, string $fieldNamePrefix = null): string
@@ -86,7 +86,7 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
     /**
      * Convert the given html fieldName to a dot seperated path
      *
-     * @param $name
+     * @param string $name
      * @return string
      */
     protected function fieldNameToPath($name): string
@@ -98,7 +98,7 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
     /**
      * Convert the given dot seperated $path to an html fieldName
      *
-     * @param $name
+     * @param string $path
      * @return string
      */
     protected function pathToFieldName($path): string

@@ -27,8 +27,8 @@ class LogAction implements ActionInterface
     protected $loggerFactory;
 
     /**
-     * @param array $options
-     * @return string|null
+     * @param mixed[] $options
+     * @return ActionResponse|null
      */
     public function handle(array $options = []): ?ActionResponse
     {

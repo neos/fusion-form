@@ -16,13 +16,13 @@ namespace Neos\Fusion\Form\Runtime\Domain\Model;
 class FormState
 {
     /**
-     * @var array|null
+     * @var mixed[][]|null
      */
     protected $parts = [];
 
     /**
      * FormState constructor.
-     * @param array $parts
+     * @param mixed[][] $parts
      */
     public function __construct(array $parts = [])
     {
@@ -40,16 +40,16 @@ class FormState
 
     /**
      * @param string $partName
-     * @param array|null $partData
+     * @param mixed[]|null $partData
      */
-    public function commitPart(string $partName, ?array $partData)
+    public function commitPart(string $partName, ?array $partData): void
     {
         $this->parts[$partName] = $partData;
     }
 
     /**
      * @param string $partName
-     * @return array|null
+     * @return mixed[]|null
      */
     public function getPart(string $partName): ?array
     {
@@ -57,7 +57,7 @@ class FormState
     }
 
     /**
-     * @return array
+     * @return mixed[][]
      */
     public function getAll(): array
     {

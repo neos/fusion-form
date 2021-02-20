@@ -30,7 +30,6 @@ class ActionResolver
 
     /**
      * @param string $handlerType
-     * @param ControllerContext $controllerContext
      * @return ActionInterface
      * @throws NoSuchActionException
      */

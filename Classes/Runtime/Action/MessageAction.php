@@ -18,6 +18,10 @@ use Neos\Flow\Mvc\ActionResponse;
 
 class MessageAction implements ActionInterface
 {
+    /**
+     * @param mixed[] $options
+     * @return ActionResponse|null
+     */
     public function handle(array $options = []): ?ActionResponse
     {
         $response = new ActionResponse();

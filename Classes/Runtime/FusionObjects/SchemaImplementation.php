@@ -21,9 +21,8 @@ use Neos\Flow\Validation\ValidatorResolver;
 use Neos\Fusion\Form\Runtime\Domain\Model\ModelResult;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
 use Neos\Fusion\Form\Runtime\Helper\SchemaDefinitionToken;
-use Neos\Fusion\FusionObjects\DataStructureImplementation;
 
-class SchemaImplementation extends DataStructureImplementation implements SchemaInterface
+class SchemaImplementation extends AbstractCollectionFusionObject implements SchemaInterface
 {
 
     /**
@@ -49,14 +48,18 @@ class SchemaImplementation extends DataStructureImplementation implements Schema
      */
     protected $subschemas = [];
 
-    public function evaluate()
+    /**
+     * @return $this
+     */
+    public function evaluate(): self
     {
-        $subValues = parent::evaluate();
-        foreach ($subValues as $fieldName => $subValue) {
-            if ($subValue instanceof SchemaInterface) {
-                $this->subschemas[$fieldName] = $subValue;
-            } elseif (is_string($subValue)) {
-                $this->subschemas[$fieldName] = new SchemaDefinitionToken($subValue);
+        $keys = $this->sortNestedFusionKeys();
+        foreach ($keys as $name) {
+            $value = $this->fusionValue($name);
+            if ($value instanceof SchemaInterface) {
+                $this->subschemas[$name] = $value;
+            } elseif (is_string($value)) {
+                $this->subschemas[$name] = new SchemaDefinitionToken($value);
             } else {
                 throw new \InvalidArgumentException('Schema fields have to implement the SchemaInterface');
             }
@@ -65,15 +68,13 @@ class SchemaImplementation extends DataStructureImplementation implements Schema
     }
 
     /**
-     * @param array $data
-     * @return array
-     * @throws \Neos\Flow\Property\Exception
-     * @throws \Neos\Flow\Security\Exception
+     * @param mixed $data
+     * @return mixed[]
      */
     public function convert($data): array
     {
-        if (!is_iterable($data)) {
-            throw new \InvalidArgumentException('The nested schema can only handle iterables');
+        if (!is_array($data)) {
+            throw new \InvalidArgumentException('The nested schema can only handle arrays');
         }
         $result = [];
         foreach ($this->subschemas as $fieldName => $fieldSchema) {
@@ -86,13 +87,13 @@ class SchemaImplementation extends DataStructureImplementation implements Schema
     }
 
     /**
-     * @param $data
+     * @param mixed $data
      * @return Result
      */
     public function validate($data): Result
     {
-        if (!is_iterable($data)) {
-            throw new \InvalidArgumentException('The nested schema can only handle iterables');
+        if (!is_array($data)) {
+            throw new \InvalidArgumentException('The nested schema can only handle arrays');
         }
         $result = new Result();
         foreach ($this->subschemas as $fieldName => $fieldSchema) {

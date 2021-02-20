@@ -15,11 +15,16 @@ class ObjectHelper implements ProtectedContextAwareInterface
      */
     protected $persistenceManager;
 
+    /**
+     * @param mixed $subject
+     * @return string|null
+     */
     public function getObjectIdentifier($subject): ?string
     {
         if (is_object($subject)) {
             return $this->persistenceManager->getIdentifierByObject($subject);
         }
+        return null;
     }
 
     public function allowsCallOfMethod($methodName)

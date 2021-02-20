@@ -15,7 +15,6 @@ namespace Neos\Fusion\Form\Runtime\Action;
 
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\ResourceManagement\PersistentResource;
-use Neos\Form\Exception\FinisherException;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\SwiftMailer\Message as SwiftMailerMessage;
@@ -26,10 +25,9 @@ class EmailAction implements ActionInterface
 {
 
     /**
-     * @param array $options
-     * @return string|null
+     * @param mixed[] $options
+     * @return ActionResponse|null
      * @throws ActionException
-     * @throws FinisherException
      */
     public function handle(array $options = []): ?ActionResponse
     {
@@ -126,28 +124,30 @@ class EmailAction implements ActionInterface
 
     /**
      * @param SwiftMailerMessage $mail
-     * @param array $options
+     * @param mixed[] $options
      */
-    protected function addAttachments(SwiftMailerMessage $mail, array $options)
+    protected function addAttachments(SwiftMailerMessage $mail, array $options): void
     {
         $attachments = $options['attachments'] ?? null;
         if (is_array($attachments)) {
             foreach ($attachments as $attachment) {
                 if (is_string($attachment)) {
                     $mail->attach(\Swift_Attachment::fromPath($attachment));
-                    continue;
                 } elseif (is_object($attachment) && ($attachment instanceof UploadedFileInterface)) {
                     $mail->attach(new \Swift_Attachment($attachment->getStream()->getContents(), $attachment->getClientFilename(), $attachment->getClientMediaType()));
-                    continue;
                 } elseif (is_object($attachment) && ($attachment instanceof PersistentResource)) {
-                    $mail->attach(new \Swift_Attachment(stream_get_contents($attachment->getStream()), $attachment->getFilename(), $attachment->getMediaType()));
-                    continue;
+                    $stream = $attachment->getStream();
+                    if (!is_bool($stream)) {
+                        $content = stream_get_contents($stream);
+                        if (!is_bool($content)) {
+                            $mail->attach(new \Swift_Attachment($content, $attachment->getFilename(), $attachment->getMediaType()));
+                        }
+                    }
                 } elseif (is_array($attachment) && isset($attachment['content']) && isset($attachment['name'])) {
                     $content = $attachment['content'];
                     $name = $attachment['name'];
                     $type =  $attachment['type'] ?? MediaTypes::getMediaTypeFromFilename($name);
                     $mail->attach(new \Swift_Attachment($content, $name, $type));
-                    continue;
                 }
             }
         }

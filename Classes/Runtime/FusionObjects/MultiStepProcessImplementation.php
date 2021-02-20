@@ -18,14 +18,11 @@ use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use Neos\Fusion\Form\Domain\Form;
 use Neos\Fusion\Form\Runtime\Domain\Model\FormState;
-use Neos\Fusion\Form\Runtime\Domain\ProcessCollectionInterface;
 use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
-use Neos\Fusion\FusionObjects\DataStructureImplementation;
 use Neos\Utility\Arrays;
 
-class MultiStepProcessImplementation extends DataStructureImplementation implements ProcessInterface
+class MultiStepProcessImplementation extends AbstractCollectionFusionObject implements ProcessInterface
 {
     /**
      * @Flow\Inject
@@ -35,22 +32,22 @@ class MultiStepProcessImplementation extends DataStructureImplementation impleme
     protected $hashService;
 
     /**
-     * @var FormState
+     * @var FormState|null
      */
     protected $state;
 
     /**
-     * @var \ArrayIterator
+     * @var \ArrayIterator<string, ProcessInterface>
      */
     protected $subProcessIterator;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $subProcessKeys;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $data;
 
@@ -62,12 +59,12 @@ class MultiStepProcessImplementation extends DataStructureImplementation impleme
      * @throws \Neos\Flow\Security\Exception
      * @throws \Neos\Fusion\Exception
      */
-    public function evaluate()
+    public function evaluate(): self
     {
         $subProcessKeys = $this->sortNestedFusionKeys();
 
         if (count($subProcessKeys) === 0) {
-            return [];
+            throw new \Neos\Fusion\Exception("No Subprocesses found");
         }
 
         $subProcesses = [];
@@ -84,7 +81,9 @@ class MultiStepProcessImplementation extends DataStructureImplementation impleme
             if ($value === null && $this->runtime->getLastEvaluationStatus() === Runtime::EVALUATION_SKIPPED) {
                 continue;
             }
-            $subProcesses[$key] = $value;
+            if ($value instanceof ProcessInterface) {
+                $subProcesses[$key] = $value;
+            }
         }
 
         $this->subProcessIterator = new \ArrayIterator($subProcesses);
@@ -93,7 +92,7 @@ class MultiStepProcessImplementation extends DataStructureImplementation impleme
         return $this;
     }
 
-    public function handle(ActionRequest $request)
+    public function handle(ActionRequest $request): void
     {
         $internalArguments = $request->getInternalArguments();
 
@@ -184,11 +183,6 @@ class MultiStepProcessImplementation extends DataStructureImplementation impleme
         return $result;
     }
 
-    protected function getPageCollection(): ProcessCollectionInterface
-    {
-        return $this->fusionValue('content');
-    }
-
     public function render(): string
     {
         $content = $this->subProcessIterator->current()->render();
@@ -196,17 +190,26 @@ class MultiStepProcessImplementation extends DataStructureImplementation impleme
         return $state . $content;
     }
 
-    public function setData(array $data)
+    /**
+     * @param mixed[] $data
+     */
+    public function setData(array $data): void
     {
         $this->data = $data;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getData(): array
     {
         // initial data
         $data = $this->data;
 
         // internal arguments for form navigation
+        /**
+         * @var int $currentIndex
+         */
         $currentIndex = array_search($this->subProcessIterator->key(), $this->subProcessKeys);
         $data['__state'] = $this->state ? $this->hashService->appendHmac(base64_encode(serialize($this->state))) : null;
         $data['__current'] = $this->subProcessIterator->key();
@@ -227,19 +230,5 @@ class MultiStepProcessImplementation extends DataStructureImplementation impleme
         }
 
         return $data;
-    }
-
-    /**
-     * Returns TRUE if the given property has no object type assigned
-     *
-     * @param mixed $property
-     * @return bool
-     */
-    private function isUntypedProperty($property): bool
-    {
-        if (!is_array($property)) {
-            return false;
-        }
-        return array_intersect_key(array_flip(Parser::$reservedParseTreeKeys), $property) === [];
     }
 }

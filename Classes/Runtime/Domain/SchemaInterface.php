@@ -17,7 +17,15 @@ use Neos\Error\Messages\Result;
 
 interface SchemaInterface
 {
+    /**
+     * @param mixed[] $data
+     * @return Result
+     */
     public function validate($data): Result;
 
+    /**
+     * @param mixed[] $data
+     * @return mixed
+     */
     public function convert($data);
 }

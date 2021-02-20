@@ -20,6 +20,11 @@ use Neos\Flow\Http\Component\SetHeaderComponent;
 
 class RedirectAction implements ActionInterface
 {
+    /**
+     * @param mixed[] $options
+     * @return ActionResponse|null
+     * @throws ActionException
+     */
     public function handle(array $options = []): ?ActionResponse
     {
         $uri = $options['uri'];

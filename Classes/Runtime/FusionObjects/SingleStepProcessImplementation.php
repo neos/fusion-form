@@ -25,7 +25,7 @@ use Neos\Fusion\FusionObjects\AbstractFusionObject;
 class SingleStepProcessImplementation extends AbstractFusionObject implements ProcessInterface
 {
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $data = [];
 
@@ -34,12 +34,22 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
      */
     protected $isFinished = false;
 
-    public function evaluate()
+    /**
+     * @return $this
+     */
+    public function evaluate(): self
     {
         return $this;
     }
 
-    public function handle(ActionRequest $request)
+    /**
+     * @param ActionRequest $request
+     * @throws \Neos\Flow\Mvc\Exception\InvalidActionNameException
+     * @throws \Neos\Flow\Mvc\Exception\InvalidArgumentNameException
+     * @throws \Neos\Flow\Mvc\Exception\InvalidArgumentTypeException
+     * @throws \Neos\Flow\Mvc\Exception\InvalidControllerNameException
+     */
+    public function handle(ActionRequest $request): void
     {
         $arguments = $request->getArguments();
         $internalArguments = $request->getInternalArguments();
@@ -61,21 +71,38 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
         return $this->isFinished;
     }
 
+    /**
+     * @return string
+     * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationException
+     * @throws \Neos\Flow\Mvc\Exception\StopActionException
+     * @throws \Neos\Flow\Security\Exception
+     * @throws \Neos\Fusion\Exception
+     * @throws \Neos\Fusion\Exception\RuntimeException
+     */
     public function render(): string
     {
         return $this->runtime->evaluate($this->path . '/content', $this);
     }
 
-    public function setData(array $data)
+    /**
+     * @param mixed[] $data
+     */
+    public function setData(array $data): void
     {
         $this->data = $data;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getData(): array
     {
         return $this->data;
     }
 
+    /**
+     * @return SchemaInterface
+     */
     protected function getSchema(): SchemaInterface
     {
         return $this->fusionValue('schema');

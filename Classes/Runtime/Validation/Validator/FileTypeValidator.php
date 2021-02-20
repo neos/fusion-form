@@ -23,7 +23,7 @@ use Neos\Flow\ResourceManagement\PersistentResource;
 class FileTypeValidator extends AbstractValidator
 {
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $supportedOptions = array(
         'allowedExtensions' => array([], 'Array of allowed file extensions', 'array', false),

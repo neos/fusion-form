@@ -38,14 +38,14 @@ class SchemaDefinitionToken implements ProtectedContextAwareInterface, SchemaInt
     protected $targetType;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $validators = [];
 
     /**
      * SchemaDefinitionToken constructor.
      * @param string $targetType
-     * @param array $validators
+     * @param mixed[] $validators
      */
     public function __construct(string $targetType, array $validators = [])
     {
@@ -54,11 +54,11 @@ class SchemaDefinitionToken implements ProtectedContextAwareInterface, SchemaInt
     }
 
     /**
-     * @param $identifier
-     * @param array|null $options
+     * @param string $identifier
+     * @param mixed[]|null $options
      * @return $this
      */
-    public function validator($identifier, ?array $options = null): self
+    public function validator(string $identifier, ?array $options = null): self
     {
         $this->validators[] = [
             'identifier' => $identifier,
@@ -68,7 +68,7 @@ class SchemaDefinitionToken implements ProtectedContextAwareInterface, SchemaInt
     }
 
     /**
-     * @param $data
+     * @param mixed $data
      * @return Result
      * @throws \Neos\Flow\Validation\Exception\InvalidValidationConfigurationException
      * @throws \Neos\Flow\Validation\Exception\NoSuchValidatorException
@@ -89,7 +89,7 @@ class SchemaDefinitionToken implements ProtectedContextAwareInterface, SchemaInt
     }
 
     /**
-     * @param $data
+     * @param mixed $data
      * @return mixed|\Neos\Error\Messages\Error|null
      * @throws \Neos\Flow\Property\Exception
      * @throws \Neos\Flow\Security\Exception
