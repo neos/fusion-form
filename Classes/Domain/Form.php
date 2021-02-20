@@ -100,8 +100,9 @@ class Form extends AbstractFormObject
         $this->encoding = $encoding;
 
         // determine submitted values and result from request
-        /** @phpstan-ignore-next-line the return type of getInternalArgument is misleading */
+        /** @phpstan-ignore-next-line the return type of $request->getInternalArgument is misleading */
         $this->submittedValues = $request ? $request->getInternalArgument('__submittedArguments') : null;
+        /** @phpstan-ignore-next-line the return type of $request->getInternalArgument is misleading */
         $this->result = $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : null;
 
         // determine fieldNamePrefix if none was given from request
@@ -254,15 +255,20 @@ class Form extends AbstractFormObject
         // send a value for an unchecked checkbox or a select without any value
         //
         $elements = $xpath->query("//*[(local-name()='input' and @type='checkbox') or (local-name()='select' and @multiple)]");
-        foreach ($elements as $element) {
-            $name = (string)$element->getAttribute('name');
-            if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
-                if (substr_compare($name, '[]', -2, 2) === 0) {
-                    $fieldName = substr($name, 0, -2);
-                } else {
-                    $fieldName = $name;
+        if ($elements instanceof \DOMNodeList) {
+            foreach ($elements as $element) {
+                /**
+                 * @var \DOMElement $element
+                 */
+                $name = (string)$element->getAttribute('name');
+                if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
+                    if (substr_compare($name, '[]', -2, 2) === 0) {
+                        $fieldName = substr($name, 0, -2);
+                    } else {
+                        $fieldName = $name;
+                    }
+                    $hiddenFields[$fieldName] = "";
                 }
-                $hiddenFields[ $fieldName ] = "";
             }
         }
 
@@ -272,17 +278,25 @@ class Form extends AbstractFormObject
         $formFieldNames = [];
         if ($content) {
             $elements = $xpath->query("//*[(local-name()='input' or local-name()='select' or local-name()='button' or local-name()='textarea') and @name]");
-            foreach ($elements as $element) {
-                $name = (string)$element->getAttribute('name');
-                if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
-                    // multiselects have to add the fieldname for every option
-                    if ($element->nodeName === 'select' && (bool)$element->getAttribute('multiple')) {
-                        $optionCount = $xpath->query(".//option", $element)->length;
-                        for ($i = 0; $i < $optionCount; $i++) {
+            if ($elements instanceof \DOMNodeList) {
+                foreach ($elements as $element) {
+                    /**
+                     * @var \DOMElement $element
+                     */
+                    $name = (string)$element->getAttribute('name');
+                    if (substr_compare($name, $fieldNamePrefix, 0, strlen($fieldNamePrefix)) === 0) {
+                        // multiselects have to add the fieldname for every option
+                        if ($element->nodeName === 'select' && (bool)$element->getAttribute('multiple')) {
+                            $options = $xpath->query(".//option", $element);
+                            if ($options instanceof \DOMNodeList) {
+                                $optionCount = $options->length;
+                                for ($i = 0; $i < $optionCount; $i++) {
+                                    $formFieldNames[] = $name;
+                                }
+                            }
+                        } else {
                             $formFieldNames[] = $name;
                         }
-                    } else {
-                        $formFieldNames[] = $name;
                     }
                 }
             }
