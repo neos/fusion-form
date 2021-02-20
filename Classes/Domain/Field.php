@@ -27,7 +27,7 @@ class Field extends AbstractFormObject
 {
 
     /**
-     * @var
+     * @var Form
      */
     protected $form;
 
@@ -115,7 +115,7 @@ class Field extends AbstractFormObject
     /**
      * Determine the current result of a field in case of validation errors
      *
-     * @param $path
+     * @param string $path
      * @return Result|null
      */
     protected function findResultByPath($path): ?Result
@@ -215,7 +215,7 @@ class Field extends AbstractFormObject
      */
     public function hasErrors(): bool
     {
-        if ($this->result) {
+        if ($this->result instanceof Result) {
             return $this->result->hasErrors();
         }
         return false;
