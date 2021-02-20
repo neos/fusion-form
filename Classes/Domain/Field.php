@@ -52,7 +52,7 @@ class Field extends AbstractFormObject
     protected $multiple;
 
     /**
-     * @var bool
+     * @var Result
      */
     protected $result;
 

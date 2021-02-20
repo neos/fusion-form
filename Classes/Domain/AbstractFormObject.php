@@ -58,7 +58,7 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
             }
             return $result;
         } else {
-            return null;
+            return [];
         }
     }
 

@@ -72,12 +72,12 @@ class Form extends AbstractFormObject
     protected $fieldNamePrefix;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $submittedValues;
 
     /**
-     * @var Result
+     * @var Result|null
      */
     protected $result;
 
@@ -100,6 +100,7 @@ class Form extends AbstractFormObject
         $this->encoding = $encoding;
 
         // determine submitted values and result from request
+        /** @phpstan-ignore-next-line the return type of getInternalArgument is misleading */
         $this->submittedValues = $request ? $request->getInternalArgument('__submittedArguments') : null;
         $this->result = $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : null;
 
