@@ -13,7 +13,8 @@
         "neos/utility-objecthandling": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.1 || ^8.0 || ^9.0"
+        "phpunit/phpunit": "^7.1 || ^8.0 || ^9.0",
+        "phpstan/phpstan": "^0.12.78"
     },
     "autoload": {
         "psr-4": {
@@ -28,12 +29,8 @@
     "extra": {
     },
     "scripts": {
-        "test:functional": [
-            "composer install",
-            "vendor/bin/phpunit Tests/Functional"
-        ],
-        "test": [
-            "composer test:functional"
-        ]
+        "test:functional": ["vendor/bin/phpunit Tests/Functional"],
+        "test:stan": ["vendor/bin/phpstan analyse -l 1 Classes"],
+        "test": ["composer install", "composer test:functional", "composer  test:stan"]
     }
 }
