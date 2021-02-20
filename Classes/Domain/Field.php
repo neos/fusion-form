@@ -27,7 +27,7 @@ class Field extends AbstractFormObject
 {
 
     /**
-     * @var Form
+     * @var Form|null
      */
     protected $form;
 
@@ -52,7 +52,7 @@ class Field extends AbstractFormObject
     protected $multiple;
 
     /**
-     * @var Result
+     * @var Result|null
      */
     protected $result;
 
