@@ -72,7 +72,7 @@ class Form extends AbstractFormObject
     protected $fieldNamePrefix;
 
     /**
-     * @var array|null
+     * @var mixed[]|null
      */
     protected $submittedValues;
 
@@ -135,7 +135,7 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return array|null The previously submitted values when validation errors prevented processing the data
+     * @return mixed[]|null The previously submitted values when validation errors prevented processing the data
      */
     public function getSubmittedValues(): ?array
     {
@@ -194,7 +194,7 @@ class Form extends AbstractFormObject
      * fields aswell.
      *
      * @param string $content The form html body, usually renderd via afx
-     * @return array hiddenFields as key value pairs
+     * @return string[] hiddenFields as key value pairs
      */
     public function calculateHiddenFields(string $content = null): array
     {

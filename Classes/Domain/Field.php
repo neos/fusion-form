@@ -167,7 +167,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return array The current value of the field converted to an array of strings. Only used in multifields.
+     * @return string[] The current value of the field converted to an array of strings. Only used in multifields.
      */
     public function getCurrentMultivalueStringified(): array
     {

@@ -46,8 +46,8 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
     /**
      * Convert an array of values to an array of string representation for beeing rendered as an html form value
      *
-     * @param iterable $value
-     * @return array
+     * @param mixed[] $value
+     * @return string[]
      */
     protected function stringifyMultivalue(iterable $value = null): array
     {
