@@ -13,15 +13,22 @@ namespace Neos\Fusion\Form\Runtime\FusionObjects;
  * source code.
  */
 
+use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\Form\Domain\Form;
-use Neos\Fusion\Form\Runtime\Domain\Model\SerializableUploadedFile;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
-use Psr\Http\Message\UploadedFileInterface;
+use Neos\Flow\Security\Cryptography\HashService;
 
 class RuntimeFormImplementation extends AbstractFusionObject
 {
+    /**
+     * @Flow\Inject
+     * @var HashService
+     * @internal
+     */
+    protected $hashService;
+
     /**
      * @return string
      */
@@ -70,12 +77,23 @@ class RuntimeFormImplementation extends AbstractFusionObject
 
         //
         // prepare subrequest for the form id-namespace and transfer the arguments
+        // only arguments present in __trustedProperties are transferred
         //
         $request =  $this->getRuntime()->getControllerContext()->getRequest();
         $formRequest = $request->createSubRequest();
         $formRequest->setArgumentNamespace($identifier);
         if ($request->hasArgument($identifier) === true && is_array($request->getArgument($identifier))) {
-            $formRequest->setArguments($request->getArgument($identifier));
+            $submittedData = $request->getArgument($identifier);
+            $subrequestArguments = [];
+            if ($submittedData['__trustedProperties']) {
+                $trustedProperties = unserialize($this->hashService->validateAndStripHmac($submittedData['__trustedProperties']), ['allowed_classes'=>false]);
+                foreach ($trustedProperties as $field => $number) {
+                    if (array_key_exists($field, $submittedData)) {
+                        $subrequestArguments[$field] = $submittedData[$field];
+                    }
+                }
+            }
+            $formRequest->setArguments($subrequestArguments);
         }
 
         if ($data) {

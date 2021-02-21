@@ -101,7 +101,7 @@ class MultiStepProcessImplementation extends AbstractCollectionFusionObject impl
             && $internalArguments['__state']
         ) {
             $validatedState = $this->hashService->validateAndStripHmac($internalArguments['__state']);
-            $this->state = unserialize(base64_decode($validatedState), [FormState::class]);
+            $this->state = unserialize(base64_decode($validatedState), ['allowed_classes' => [FormState::class]]);
         }
 
 //        // restore/initialize subprocess state
