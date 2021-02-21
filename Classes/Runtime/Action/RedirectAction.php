@@ -13,6 +13,7 @@ namespace Neos\Fusion\Form\Runtime\Action;
  * source code.
  */
 
+use GuzzleHttp\Psr7\Uri;
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
@@ -36,8 +37,7 @@ class RedirectAction implements ActionInterface
         $status = $options['status'] ?? 303;
 
         $response = new ActionResponse();
-        $response->setComponentParameter(SetHeaderComponent::class, 'Location', $uri);
-        $response->setStatusCode($status);
+        $response->setRedirectUri(new Uri($uri), $status);
         return $response;
     }
 }
