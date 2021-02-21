@@ -6,11 +6,13 @@
         "GPL-3.0-or-later"
     ],
     "require": {
-        "php" : ">7.1",
-        "neos/fusion": "^4.3 || ^5.0 || ^7.0 || dev-master",
+        "php" : ">7.2",
+        "neos/flow": "^6.0 || ^7.0 || dev-master",
+        "neos/fusion": "^5.0 || ^7.0 || dev-master",
         "neos/fusion-afx": "^1.2 || ^7.0 || dev-master",
         "neos/utility-arrays": "*",
-        "neos/utility-objecthandling": "*"
+        "neos/utility-objecthandling": "*",
+        "guzzlehttp/psr7": "^1.4 || ~2.0"
     },
     "require-dev": {
         "neos/swiftmailer": "*",

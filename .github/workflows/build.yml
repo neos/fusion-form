@@ -14,12 +14,10 @@ jobs:
             fail-fast: false
             matrix:
                 php-versions: [ '7.3', '7.4' ]
-                flow-versions: [ '5.3', '6.3', '7.0' ]
+                flow-versions: [ '6.3', '7.0' ]
                 include:
-                    -   flow-versions: '5.3'
-                        php-versions: '7.1'
-                    -   flow-versions: '5.3'
-                        php-versions: '7.2'
+                    - php-versions: '7.2'
+                      flow-versions: '6.0'
 
         runs-on: ubuntu-latest
 
