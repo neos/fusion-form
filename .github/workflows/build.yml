@@ -8,7 +8,7 @@ on:
 
 jobs:
     test:
-        name: "Test"
+        name: "Test (PHP ${{ matrix.php-versions }}, Flow ${{ matrix.flow-versions }})"
 
         strategy:
             fail-fast: false
