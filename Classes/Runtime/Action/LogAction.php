@@ -18,7 +18,7 @@ use Neos\Flow\Mvc\ActionResponse;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\Flow\Log\PsrLoggerFactoryInterface;
 
-class LogAction implements ActionInterface
+class LogAction extends AbstractAction
 {
     /**
      * @Flow\Inject
@@ -27,17 +27,16 @@ class LogAction implements ActionInterface
     protected $loggerFactory;
 
     /**
-     * @param mixed[] $options
      * @return ActionResponse|null
      */
-    public function handle(array $options = []): ?ActionResponse
+    public function perform(): ?ActionResponse
     {
-        $logger = $this->loggerFactory->get($options['logger'] ?? 'systemLogger');
+        $logger = $this->loggerFactory->get($this->options['logger'] ?? 'systemLogger');
 
         $logger->log(
-            $options['level'] ?? 'info',
-            $options['message'] ?? '',
-            $options['context'] ?? []
+            $this->options['level'] ?? 'info',
+            $this->options['message'] ?? '',
+            $this->options['context'] ?? []
         );
 
         return null;

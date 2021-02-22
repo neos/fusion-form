@@ -9,14 +9,7 @@ prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
     actions = Neos.Fusion.Form:Runtime.ActionCollection
 
-    formHeader = afx`
-        {Json.stringify(data)}
-        <div>
-            <Neos.Fusion:Loop items={data.__all} itemName="page">
-                <Neos.Fusion.Form:Button field.name="__target" field.value={page} formnovalidate="formnovalidate">{page}</Neos.Fusion.Form:Button>
-            </Neos.Fusion:Loop>
-        </div>
-    `
+    formHeader = ""
 
     formFooter = afx`
         <Neos.Fusion.Form:Button field.name="__target" field.value={data.__prev} @if.hasPrev={data.__prev} formnovalidate="formnovalidate">prev</Neos.Fusion.Form:Button>

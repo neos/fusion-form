@@ -16,25 +16,22 @@ namespace Neos\Fusion\Form\Runtime\Action;
 use GuzzleHttp\Psr7\Uri;
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
-use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
-use Neos\Flow\Http\Component\SetHeaderComponent;
 
-class RedirectAction implements ActionInterface
+class RedirectAction extends AbstractAction
 {
     /**
-     * @param mixed[] $options
      * @return ActionResponse|null
      * @throws ActionException
      */
-    public function handle(array $options = []): ?ActionResponse
+    public function perform(): ?ActionResponse
     {
-        $uri = $options['uri'];
+        $uri = $this->options['uri'];
 
         if (!$uri) {
             throw new ActionException('No uri for redirect action was define.', 1583249244);
         }
 
-        $status = $options['status'] ?? 303;
+        $status = $this->options['status'] ?? 303;
 
         $response = new ActionResponse();
         $response->setRedirectUri(new Uri($uri), $status);

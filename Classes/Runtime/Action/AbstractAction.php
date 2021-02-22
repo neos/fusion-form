@@ -13,18 +13,20 @@ namespace Neos\Fusion\Form\Runtime\Action;
  * source code.
  */
 
-use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
-use Neos\Flow\Mvc\ActionResponse;
+use Neos\Fusion\Form\Runtime\Domain\ConfigurableActionInterface;
 
-class MessageAction extends AbstractAction
+abstract class AbstractAction implements ConfigurableActionInterface
 {
     /**
-     * @return ActionResponse|null
+     * @var mixed[]
      */
-    public function perform(): ?ActionResponse
+    protected $options;
+
+    /**
+     * @param array $options
+     */
+    public function setOptions(array $options = [])
     {
-        $response = new ActionResponse();
-        $response->setContent($this->options['message']);
-        return $response;
+        $this->options = $options;
     }
 }

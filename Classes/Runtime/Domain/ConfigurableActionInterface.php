@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Neos\Fusion\Form\Runtime\Action;
+namespace Neos\Fusion\Form\Runtime\Domain;
 
 /*
  * This file is part of the Neos.Fusion.Form package.
@@ -13,18 +13,12 @@ namespace Neos\Fusion\Form\Runtime\Action;
  * source code.
  */
 
-use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\Flow\Mvc\ActionResponse;
 
-class MessageAction extends AbstractAction
+interface ConfigurableActionInterface extends ActionInterface
 {
     /**
-     * @return ActionResponse|null
+     * @param mixed[] $options
      */
-    public function perform(): ?ActionResponse
-    {
-        $response = new ActionResponse();
-        $response->setContent($this->options['message']);
-        return $response;
-    }
+    public function setOptions(array $options = []);
 }

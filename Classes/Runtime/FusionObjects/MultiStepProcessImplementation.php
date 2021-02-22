@@ -18,7 +18,7 @@ use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use Neos\Fusion\Form\Runtime\Domain\Model\FormState;
+use Neos\Fusion\Form\Runtime\Domain\FormState;
 use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
 use Neos\Utility\Arrays;
 

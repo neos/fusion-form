@@ -16,38 +16,36 @@ namespace Neos\Fusion\Form\Runtime\Action;
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
-use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\SwiftMailer\Message as SwiftMailerMessage;
 use Neos\Utility\MediaTypes;
 use Psr\Http\Message\UploadedFileInterface;
 
-class EmailAction implements ActionInterface
+class EmailAction extends AbstractAction
 {
 
     /**
-     * @param mixed[] $options
      * @return ActionResponse|null
      * @throws ActionException
      */
-    public function handle(array $options = []): ?ActionResponse
+    public function perform(): ?ActionResponse
     {
         if (!class_exists(SwiftMailerMessage::class)) {
             throw new ActionException('The "neos/swiftmailer" doesn\'t seem to be installed, but is required for the EmailFinisher to work!', 1503392532);
         }
 
-        $subject = $options['subject'] ?? null;
-        $text = $options['text'] ?? null;
-        $html = $options['html'] ?? null;
+        $subject = $this->options['subject'] ?? null;
+        $text = $this->options['text'] ?? null;
+        $html = $this->options['html'] ?? null;
 
-        $recipientAddress = $options['recipientAddress'] ?? null;
-        $recipientName = $options['recipientName'] ?? null;
-        $senderAddress = $options['senderAddress'] ?? null;
-        $senderName = $options['senderName'] ?? null;
-        $replyToAddress = $options['replyToAddress'] ?? null;
-        $carbonCopyAddress = $options['carbonCopyAddress'] ?? null;
-        $blindCarbonCopyAddress = $options['blindCarbonCopyAddress'] ?? null;
+        $recipientAddress = $this->options['recipientAddress'] ?? null;
+        $recipientName = $this->options['recipientName'] ?? null;
+        $senderAddress = $this->options['senderAddress'] ?? null;
+        $senderName = $this->options['senderName'] ?? null;
+        $replyToAddress = $this->options['replyToAddress'] ?? null;
+        $carbonCopyAddress = $this->options['carbonCopyAddress'] ?? null;
+        $blindCarbonCopyAddress = $this->options['blindCarbonCopyAddress'] ?? null;
 
-        $testMode = $options['testMode'] ?? false;
+        $testMode = $this->options['testMode'] ?? false;
 
         if ($subject === null) {
             throw new ActionException('The option "subject" must be set for the EmailFinisher.', 1327060320);
@@ -95,7 +93,7 @@ class EmailAction implements ActionInterface
             $mail->setBody($html, 'text/html');
         }
 
-        $this->addAttachments($mail, $options);
+        $this->addAttachments($mail);
 
         if ($testMode === true) {
             $response = new ActionResponse();
@@ -124,11 +122,11 @@ class EmailAction implements ActionInterface
 
     /**
      * @param SwiftMailerMessage $mail
-     * @param mixed[] $options
+     * @param mixed[] $this->options
      */
-    protected function addAttachments(SwiftMailerMessage $mail, array $options): void
+    protected function addAttachments(SwiftMailerMessage $mail): void
     {
-        $attachments = $options['attachments'] ?? null;
+        $attachments = $this->options['attachments'] ?? null;
         if (is_array($attachments)) {
             foreach ($attachments as $attachment) {
                 if (is_string($attachment)) {

@@ -15,9 +15,9 @@ namespace Neos\Fusion\Form\Runtime\FusionObjects;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\ActionResponse;
-use Neos\Fusion\Core\Parser;
-use Neos\Fusion\Form\Runtime\Domain\Service\ActionResolver;
+use Neos\Fusion\Form\Runtime\Domain\ActionResolver;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
+use Neos\Fusion\Form\Runtime\Domain\ConfigurableActionInterface;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 
 class ActionImplementation extends AbstractFusionObject implements ActionInterface
@@ -50,13 +50,15 @@ class ActionImplementation extends AbstractFusionObject implements ActionInterfa
     }
 
     /**
-     * @param mixed[] $data
      * @return ActionResponse|null
      * @throws \Neos\Fusion\Form\Runtime\Domain\Exception\NoSuchActionException
      */
-    public function handle(array $data = []): ?ActionResponse
+    public function perform(): ?ActionResponse
     {
         $action = $this->actionResolver->createAction($this->identifier);
-        return $action->handle($this->options ?? []);
+        if ($action instanceof ConfigurableActionInterface) {
+            $action->setOptions($this->options);
+        }
+        return $action->perform();
     }
 }

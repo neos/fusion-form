@@ -18,8 +18,7 @@ use Neos\Flow\Mvc\ActionResponse;
 interface ActionInterface
 {
     /**
-     * @param mixed[] $options
      * @return ActionResponse|null
      */
-    public function handle(array $options = []): ?ActionResponse;
+    public function perform(): ?ActionResponse;
 }

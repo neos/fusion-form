@@ -138,7 +138,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
         //
         $this->getRuntime()->pushContext('data', $process->getData());
         $actions = $this->getActions();
-        $actionResponse = $actions->handle($process->getData());
+        $actionResponse = $actions->perform();
         $this->getRuntime()->popContext();
         if ($actionResponse) {
             $result = $actionResponse->getContent();

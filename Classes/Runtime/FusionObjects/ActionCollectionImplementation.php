@@ -18,7 +18,7 @@ use Neos\Flow\Mvc\ActionResponse;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
-use Neos\Fusion\Form\Runtime\Domain\Service\ActionResolver;
+use Neos\Fusion\Form\Runtime\Domain\ActionResolver;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\Fusion\Form\Runtime\Helper\SchemaDefinitionToken;
 use Neos\Fusion\FusionObjects\DataStructureImplementation;
@@ -80,14 +80,13 @@ class ActionCollectionImplementation extends AbstractCollectionFusionObject impl
     }
 
     /**
-     * @param mixed[] $data
      * @return ActionResponse|null
      */
-    public function handle(array $data = []): ?ActionResponse
+    public function perform(): ?ActionResponse
     {
         $response = new ActionResponse();
         foreach ($this->subActions as $subactions) {
-            $subActionResponse = $subactions->handle($data);
+            $subActionResponse = $subactions->perform();
 
             if ($subActionResponse) {
                 // content of multiple responses is concatenated
