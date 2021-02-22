@@ -122,7 +122,6 @@ class EmailAction extends AbstractAction
 
     /**
      * @param SwiftMailerMessage $mail
-     * @param mixed[] $this->options
      */
     protected function addAttachments(SwiftMailerMessage $mail): void
     {

@@ -23,9 +23,9 @@ abstract class AbstractAction implements ConfigurableActionInterface
     protected $options;
 
     /**
-     * @param array $options
+     * @param mixed[] $options
      */
-    public function setOptions(array $options = [])
+    public function setOptions(array $options = []): void
     {
         $this->options = $options;
     }
