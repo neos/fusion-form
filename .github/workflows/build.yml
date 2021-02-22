@@ -8,7 +8,7 @@ on:
 
 jobs:
     test:
-        name: "Functional Test"
+        name: "Test (PHP ${{ matrix.php-versions }}, Flow ${{ matrix.flow-versions }})"
 
         strategy:
             fail-fast: false
@@ -22,23 +22,20 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            -   name: Checkout
-                uses: actions/checkout@v2
-                with:
-                    path: ${{ env.FLOW_FOLDER }}
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                  path: ${{ env.FLOW_FOLDER }}
 
-            -   name: Setup PHP
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: ${{ matrix.php-versions }}
-                    extensions: mbstring, xml, json, zlib, iconv, intl, pdo_sqlite
-                    ini-values: date.timezone="Africa/Tunis", opcache.fast_shutdown=0, apc.enable_cli=on
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+                  extensions: mbstring, xml, json, zlib, iconv, intl, pdo_sqlite
+                  ini-values: date.timezone="Africa/Tunis", opcache.fast_shutdown=0, apc.enable_cli=on
 
-            -   name: Set Flow Version
-                run: composer require neos/flow ^${{ matrix.flow-versions }} --no-progress --no-interaction
+            - name: Set Flow Version
+              run: composer require neos/flow ^${{ matrix.flow-versions }} --no-progress --no-interaction
 
-            -   name: Run Functional Tests
-                run: composer test:functional
-
-            -   name: Run Static Analysis
-                run: composer test:stan
+            - name: Run Tests
+              run: composer test
