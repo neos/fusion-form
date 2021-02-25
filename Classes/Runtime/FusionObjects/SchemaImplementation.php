@@ -20,7 +20,7 @@ use Neos\Flow\Property\PropertyMappingConfiguration;
 use Neos\Flow\Validation\ValidatorResolver;
 use Neos\Fusion\Form\Runtime\Domain\Model\ModelResult;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
-use Neos\Fusion\Form\Runtime\Helper\SchemaDefinitionToken;
+use Neos\Fusion\Form\Runtime\Helper\SchemaDefinition;
 
 class SchemaImplementation extends AbstractCollectionFusionObject implements SchemaInterface
 {
@@ -59,7 +59,7 @@ class SchemaImplementation extends AbstractCollectionFusionObject implements Sch
             if ($value instanceof SchemaInterface) {
                 $this->subschemas[$name] = $value;
             } elseif (is_string($value)) {
-                $this->subschemas[$name] = new SchemaDefinitionToken($value);
+                $this->subschemas[$name] = new SchemaDefinition($value);
             } else {
                 throw new \InvalidArgumentException('Schema fields have to implement the SchemaInterface');
             }

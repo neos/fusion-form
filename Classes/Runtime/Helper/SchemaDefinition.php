@@ -11,7 +11,7 @@ use Neos\Flow\Property\PropertyMappingConfiguration;
 use Neos\Flow\Validation\ValidatorResolver;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
 
-class SchemaDefinitionToken implements ProtectedContextAwareInterface, SchemaInterface
+class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterface
 {
 
     /**

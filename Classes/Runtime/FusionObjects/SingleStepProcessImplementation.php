@@ -56,11 +56,12 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
         $schema = $this->getSchema();
 
         if ($arguments || $internalArguments) {
-            $this->data = $schema->convert($arguments);
-            $result = $schema->validate($this->data);
-            $request->setArgument('__submittedArguments', $this->data);
+            $data = $schema->convert($arguments);
+            $result = $schema->validate($data);
+            $request->setArgument('__submittedArguments', $data);
             $request->setArgument('__submittedArgumentValidationResults', $result);
             if (!$result->hasErrors()) {
+                $this->data = $data;
                 $this->isFinished = true;
             }
         }

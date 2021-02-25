@@ -13,43 +13,60 @@ namespace Neos\Fusion\Form\Runtime\FusionObjects;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\ActionResponse;
-use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
-use Neos\Fusion\Form\Runtime\Domain\ActionResolver;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
-use Neos\Fusion\Form\Runtime\Helper\SchemaDefinitionToken;
-use Neos\Fusion\FusionObjects\DataStructureImplementation;
 
 class ActionCollectionImplementation extends AbstractCollectionFusionObject implements ActionInterface
 {
 
     /**
-     * @var ActionResolver
-     * @Flow\Inject
-     */
-    protected $actionResolver;
-
-    /**
-     * @var ActionInterface[]
-     */
-    protected $subActions = [];
-
-    /**
      * @return $this
+     */
+    public function evaluate(): self
+    {
+        return $this;
+    }
+
+    /**
+     * @return ActionResponse|null
+     */
+    public function perform(): ?ActionResponse
+    {
+        $response = new ActionResponse();
+        $subActions = $this->getSubActions();
+        foreach ($subActions as $subactions) {
+            $subActionResponse = $subactions->perform();
+            if ($subActionResponse) {
+                // content of multiple responses is concatenated
+                if ($subActionResponse->getContent()) {
+                    $mergedContent = $response->getContent() . $subActionResponse->getContent();
+                    $subActionResponse->setContent($mergedContent);
+                }
+                // preserve non 200 status codes that would otherwise be overwritten
+                if ($response->getStatusCode() !== 200 && $subActionResponse->getStatusCode() == 200) {
+                    $subActionResponse->setStatusCode($response->getStatusCode());
+                }
+                $subActionResponse->mergeIntoParentResponse($response);
+            }
+        }
+        return $response;
+    }
+
+    /**
+     * @return ActionInterface[]
      * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationException
      * @throws \Neos\Flow\Mvc\Exception\StopActionException
      * @throws \Neos\Flow\Security\Exception
      * @throws \Neos\Fusion\Exception
      */
-    public function evaluate(): self
+    protected function getSubActions(): array
     {
+        $subActions = [];
         $subActionKeys = $this->sortNestedFusionKeys();
 
         if (count($subActionKeys) === 0) {
-            return $this;
+            return [];
         }
 
         $subValues = [];
@@ -71,36 +88,12 @@ class ActionCollectionImplementation extends AbstractCollectionFusionObject impl
 
         foreach ($subValues as $fieldName => $subValue) {
             if ($subValue instanceof ActionInterface) {
-                $this->subActions[$fieldName] = $subValue;
+                $subActions[$fieldName] = $subValue;
             } else {
                 throw new \InvalidArgumentException('Actions have to implement the ActionInterface ' . $fieldName);
             }
         }
-        return $this;
-    }
 
-    /**
-     * @return ActionResponse|null
-     */
-    public function perform(): ?ActionResponse
-    {
-        $response = new ActionResponse();
-        foreach ($this->subActions as $subactions) {
-            $subActionResponse = $subactions->perform();
-
-            if ($subActionResponse) {
-                // content of multiple responses is concatenated
-                if ($subActionResponse->getContent()) {
-                    $mergedContent = $response->getContent() . $subActionResponse->getContent();
-                    $subActionResponse->setContent($mergedContent);
-                }
-                // preserve non 200 status codes that would otherwise be overwritten
-                if ($response->getStatusCode() !== 200 && $subActionResponse->getStatusCode() == 200) {
-                    $subActionResponse->setStatusCode($response->getStatusCode());
-                }
-                $subActionResponse->mergeIntoParentResponse($response);
-            }
-        }
-        return $response;
+        return $subActions;
     }
 }

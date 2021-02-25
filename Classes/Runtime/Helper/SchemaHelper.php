@@ -10,7 +10,7 @@ class SchemaHelper implements ProtectedContextAwareInterface
 {
     public function type(string $typeName): SchemaInterface
     {
-        return new SchemaDefinitionToken($typeName);
+        return new SchemaDefinition($typeName);
     }
 
     public function allowsCallOfMethod($methodName)
