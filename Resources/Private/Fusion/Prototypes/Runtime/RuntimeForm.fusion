@@ -17,10 +17,8 @@ prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
         <Neos.Fusion.Form:Button field.name="__target" @if.hasNoNext={!data.__next}>Submit</Neos.Fusion.Form:Button>
     `
 
-    formRenderer = afx`
+    renderer = afx`
         <Neos.Fusion.Form:Form form={form}>
-            <Neos.Fusion.Form:Hidden field.name="__state" field.value={data.__state} @if.has={data.__state} />
-            <Neos.Fusion.Form:Hidden field.name="__current"  field.value={data.__current} @if.has={data.__current} />
             {header}
             {content}
             {footer}

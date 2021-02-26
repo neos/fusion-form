@@ -1,3 +1,12 @@
 prototype(Neos.Fusion.Form:Runtime.MultiStepProcess) {
     @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\MultiStepProcessImplementation'
+
+    steps = Neos.Fusion.Form:Runtime.ProcessCollection
+
+    renderer = afx`
+        <Neos.Fusion.Form:Hidden field.name="__state" attributes.value={state} @if.has={state} />
+        <Neos.Fusion.Form:Hidden field.name="__current" attributes.value={current} @if.has={current} />
+        {content}
+    `
+
 }

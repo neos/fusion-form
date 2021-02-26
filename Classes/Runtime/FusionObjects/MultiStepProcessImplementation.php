@@ -16,13 +16,13 @@ namespace Neos\Fusion\Form\Runtime\FusionObjects;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\ActionRequest;
-use Neos\Fusion\Core\Parser;
-use Neos\Fusion\Core\Runtime;
 use Neos\Fusion\Form\Runtime\Domain\FormState;
 use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
+use Neos\Fusion\Form\Runtime\Domain\ProcessCollectionInterface;
+use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use Neos\Utility\Arrays;
 
-class MultiStepProcessImplementation extends AbstractCollectionFusionObject implements ProcessInterface
+class MultiStepProcessImplementation extends AbstractFusionObject implements ProcessInterface
 {
     /**
      * @Flow\Inject
@@ -37,66 +37,31 @@ class MultiStepProcessImplementation extends AbstractCollectionFusionObject impl
     protected $state;
 
     /**
-     * @var \ArrayIterator<string, ProcessInterface>
-     */
-    protected $subProcessIterator;
-
-    /**
-     * @var string[]
-     */
-    protected $subProcessKeys;
-
-    /**
      * @var mixed[]
      */
     protected $data;
 
     /**
-     *
-     * @return $this
-     * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationException
-     * @throws \Neos\Flow\Mvc\Exception\StopActionException
-     * @throws \Neos\Flow\Security\Exception
-     * @throws \Neos\Fusion\Exception
+     * @var string
      */
-    public function evaluate(): self
+    protected $currentSubProcessKey;
+
+    /**
+     * @var string
+     */
+    protected $targetSubProcessKey;
+
+    /**
+     * @return $this
+     */
+    public function evaluate()
     {
-        $subProcessKeys = $this->sortNestedFusionKeys();
-
-        if (count($subProcessKeys) === 0) {
-            throw new \Neos\Fusion\Exception("No Subprocesses found");
-        }
-
-        $subProcesses = [];
-        foreach ($subProcessKeys as $key) {
-            $propertyPath = $key;
-            if ($this->isUntypedProperty($this->properties[$key])) {
-                $propertyPath .= '<Neos.Fusion.Form:Runtime.SingleStepProcess>';
-            }
-            try {
-                $value = $this->fusionValue($propertyPath);
-            } catch (\Exception $e) {
-                $value = $this->runtime->handleRenderingException($this->path . '/' . $key, $e);
-            }
-            if ($value === null && $this->runtime->getLastEvaluationStatus() === Runtime::EVALUATION_SKIPPED) {
-                continue;
-            }
-            if ($value instanceof ProcessInterface) {
-                $subProcesses[$key] = $value;
-            }
-        }
-
-        $this->subProcessIterator = new \ArrayIterator($subProcesses);
-        $this->subProcessKeys = $subProcessKeys;
-
         return $this;
     }
 
     /**
      * @param mixed[]|null $data
      * @param ActionRequest $request
-     * @throws \Neos\Flow\Security\Exception\InvalidArgumentForHashGenerationException
-     * @throws \Neos\Flow\Security\Exception\InvalidHashException
      */
     public function handle($data = null, ActionRequest $request): void
     {
@@ -104,7 +69,7 @@ class MultiStepProcessImplementation extends AbstractCollectionFusionObject impl
 
         $internalArguments = $request->getInternalArguments();
 
-        // restore/init state
+        // restore state
         if (array_key_exists('__state', $internalArguments)
             && $internalArguments['__state']
         ) {
@@ -112,90 +77,84 @@ class MultiStepProcessImplementation extends AbstractCollectionFusionObject impl
             $this->state = unserialize(base64_decode($validatedState), ['allowed_classes' => [FormState::class]]);
         }
 
-//        // restore/initialize subprocess state
-//        $this->subProcessIterator->rewind();
-//        foreach ($this->subProcessIterator as $key => $subprocess) {
-//            if ($this->state && $this->state->hasPart($key)) {
-//                $subprocess->setData($this->state->getPart($key));
-//            } else {
-//                $subprocess->setData($this->data);
-//            }
-//        }
+        // evaluate the subprocesses this has to be done after tge state was restored
+        // as the current data may affect @if conditions
+        $subProcesses = $this->getCurrentSubProcesses();
 
-        // select current page
+        // select current subprocess
         if (array_key_exists('__current', $internalArguments)
             && $internalArguments['__current']
-            && $this->subProcessIterator->offsetExists($internalArguments['__current'])
         ) {
-            $this->subProcessIterator->rewind();
-            while ($this->subProcessIterator->key() !== $internalArguments['__current']) {
-                $this->subProcessIterator->next();
-            }
+            $this->currentSubProcessKey = $internalArguments['__current'];
         } else {
-            $this->subProcessIterator->rewind();
+            $subProcessKeys = array_keys($subProcesses);
+            $this->currentSubProcessKey = (string)reset($subProcessKeys);
         }
 
-        // pass request to current subprocess
-        $this->subProcessIterator->current()->handle($this->data, $request);
+        // find current and handle
+        $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
+        $currentSubProcess->handle($this->data, $request);
 
-        if ($this->subProcessIterator->current()->isFinished()) {
+        if ($currentSubProcess->isFinished()) {
             if (!$this->state) {
                 $this->state = new FormState();
             }
 
             $this->state->commitPart(
-                $this->subProcessIterator->key(),
-                $this->subProcessIterator->current()->getData()
+                $this->currentSubProcessKey,
+                $currentSubProcess->getData()
             );
-
-            // find missing pages
-            $this->subProcessIterator->rewind();
-            while ($this->subProcessIterator->valid()) {
-                if ($this->state->hasPart($this->subProcessIterator->key()) == false) {
-                    break;
-                }
-                $this->subProcessIterator->next();
-            }
-
-            if (!$this->subProcessIterator->valid()) {
-                $this->subProcessIterator->rewind();
-            }
-        }
-
-        // select target but only for previously submitted parts
-        if (array_key_exists('__target', $internalArguments)
-            && $internalArguments['__target']
-            && $this->subProcessIterator->offsetExists($internalArguments['__target'])
-            && $this->state
-            && $this->state->hasPart($internalArguments['__target'])
-        ) {
-            $this->subProcessIterator->rewind();
-            while ($this->subProcessIterator->key() !== $internalArguments['__target']) {
-                $this->subProcessIterator->next();
-            }
         }
     }
 
+    /**
+     * @return bool
+     */
     public function isFinished(): bool
     {
         if (!$this->state) {
             return false;
         }
-        $result = true;
-        foreach ($this->subProcessKeys as $key) {
-            if ($this->state->hasPart($key) == false) {
-                $result =  false;
-                break;
+
+        $subProcesses = $this->getCurrentSubProcesses();
+
+        foreach ($subProcesses as $subProcessKey => $subProcess) {
+            if ($this->state->hasPart($subProcessKey) == false) {
+                return false;
             }
         }
-        return $result;
+        return true;
     }
 
+    /**
+     * @return string
+     */
     public function render(): string
     {
-        $content = $this->subProcessIterator->current()->render();
-        $state =  $this->runtime->evaluate($this->path . '/state', $this);
-        return $state . $content;
+        $subProcesses = $this->getCurrentSubProcesses();
+        if ($this->targetSubProcessKey) {
+            $current = $this->targetSubProcessKey;
+        } else {
+            foreach ($subProcesses as $subProcessKey => $subProcess) {
+                if (!$this->state || !$this->state->hasPart($subProcessKey)) {
+                    $current = $subProcessKey;
+                    break;
+                }
+            }
+        }
+
+        if (isset($current) && $current && array_key_exists($current, $subProcesses)) {
+            $context = $this->getRuntime()->getCurrentContext();
+            $context['state'] = $this->state ? $this->hashService->appendHmac(base64_encode(serialize($this->state))) : null;
+            $context['current'] = $current;
+            $context['content'] = $subProcesses[$current]->render();
+            $this->getRuntime()->pushContextArray($context);
+            $result = $this->runtime->evaluate($this->path . '/renderer');
+            $this->getRuntime()->popContext();
+            return $result;
+        }
+
+        return '';
     }
 
     /**
@@ -206,29 +165,36 @@ class MultiStepProcessImplementation extends AbstractCollectionFusionObject impl
         // initial data
         $data = $this->data;
 
-        // internal arguments for form navigation
-        /**
-         * @var int $currentIndex
-         */
-        $currentIndex = array_search($this->subProcessIterator->key(), $this->subProcessKeys);
-        $data['__state'] = $this->state ? $this->hashService->appendHmac(base64_encode(serialize($this->state))) : null;
-        $data['__current'] = $this->subProcessIterator->key();
-        $data['__prev'] = ($currentIndex > 0) ? $this->subProcessKeys[$currentIndex - 1]: null ;
-        $data['__next'] = ($currentIndex < (count($this->subProcessKeys) - 1)) ? $this->subProcessKeys[$currentIndex + 1] : null;
-        $data['__all'] = $this->subProcessKeys;
-
-        // collect subprocess data from state
+        // add subprocess data from state
         if ($this->state) {
-            foreach ($this->subProcessKeys as $key) {
-                if ($this->state->hasPart($key)) {
-                    $data = Arrays::arrayMergeRecursiveOverrule(
-                        $data,
-                        $this->state->getPart($key)
-                    );
-                }
+            foreach ($this->state->getAll() as $subProcessKey => $subProcessData) {
+                $data = Arrays::arrayMergeRecursiveOverrule(
+                    $data,
+                    $subProcessData
+                );
             }
         }
 
         return $data;
+    }
+
+    /**
+     * @return ProcessInterface[]
+     */
+    protected function getCurrentSubProcesses(): array
+    {
+        $this->runtime->pushContext('data', $this->getData());
+        $collection = $this->getProcessCollection();
+        $result = $collection->getItems();
+        $this->runtime->popContext();
+        return $result;
+    }
+
+    /**
+     * @return ProcessCollectionInterface
+     */
+    protected function getProcessCollection(): ProcessCollectionInterface
+    {
+        return $this->fusionValue('steps');
     }
 }

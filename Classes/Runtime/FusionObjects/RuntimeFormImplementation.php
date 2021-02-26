@@ -123,7 +123,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
             $context['content'] = $process->render();
             $context['footer'] = $this->runtime->evaluate($this->path . '/formFooter', $this);
             $this->runtime->pushContextArray($context);
-            $result = $this->runtime->evaluate($this->path . '/formRenderer', $this);
+            $result = $this->runtime->evaluate($this->path . '/renderer', $this);
             $this->runtime->popContext();
             $this->runtime->popContext();
             return $result;
