@@ -43,8 +43,8 @@ class ActionImplementation extends AbstractFusionObject implements ActionInterfa
      */
     public function perform(): ?ActionResponse
     {
-        $identifier = $this->fusionValue('identifier');
-        $action = $this->actionResolver->createAction($identifier);
+        $type = $this->fusionValue('type');
+        $action = $this->actionResolver->createAction($type);
         if ($action instanceof ConfigurableActionInterface) {
             $options = $this->fusionValue('options');
             $action = $action->withOptions($options);

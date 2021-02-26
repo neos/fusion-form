@@ -54,14 +54,14 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
     }
 
     /**
-     * @param string $identifier
+     * @param string $type
      * @param mixed[]|null $options
      * @return $this
      */
-    public function validator(string $identifier, ?array $options = null): self
+    public function validator(string $type, ?array $options = null): self
     {
         $this->validators[] = [
-            'identifier' => $identifier,
+            'type' => $type,
             'options' => $options
         ];
         return $this;
@@ -79,7 +79,7 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
 
         foreach ($this->validators as $validationConfiguration) {
             $validator = $this->validatorResolver->createValidator(
-                $validationConfiguration['identifier'],
+                $validationConfiguration['type'],
                 $validationConfiguration['options'] ?? []
             );
             $propertyValidationResult->merge($validator->validate($data));
