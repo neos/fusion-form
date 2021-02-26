@@ -24,6 +24,7 @@ use Neos\Fusion\Form\Runtime\Helper\SchemaDefinition;
 
 class SchemaImplementation extends AbstractCollectionFusionObject implements SchemaInterface
 {
+    protected $itemInterface = SchemaInterface::class;
 
     /**
      * @var ValidatorResolver
@@ -44,30 +45,6 @@ class SchemaImplementation extends AbstractCollectionFusionObject implements Sch
     protected $propertyMappingConfiguration;
 
     /**
-     * @var SchemaInterface[]
-     */
-    protected $subschemas = [];
-
-    /**
-     * @return $this
-     */
-    public function evaluate(): self
-    {
-        $keys = $this->sortNestedFusionKeys();
-        foreach ($keys as $name) {
-            $value = $this->fusionValue($name);
-            if ($value instanceof SchemaInterface) {
-                $this->subschemas[$name] = $value;
-            } elseif (is_string($value)) {
-                $this->subschemas[$name] = new SchemaDefinition($value);
-            } else {
-                throw new \InvalidArgumentException('Schema fields have to implement the SchemaInterface');
-            }
-        }
-        return $this;
-    }
-
-    /**
      * @param mixed $data
      * @return mixed[]
      */
@@ -77,7 +54,13 @@ class SchemaImplementation extends AbstractCollectionFusionObject implements Sch
             throw new \InvalidArgumentException('The nested schema can only handle arrays');
         }
         $result = [];
-        foreach ($this->subschemas as $fieldName => $fieldSchema) {
+
+        /**
+         * @var SchemaInterface[] $subschemas
+         */
+        $subschemas = $this->getItems();
+
+        foreach ($subschemas as $fieldName => $fieldSchema) {
             if ($fieldSchema instanceof SchemaInterface) {
                 $fieldValue = $data[$fieldName] ?? null;
                 $result[$fieldName] = $fieldSchema->convert($fieldValue);
@@ -96,7 +79,13 @@ class SchemaImplementation extends AbstractCollectionFusionObject implements Sch
             throw new \InvalidArgumentException('The nested schema can only handle arrays');
         }
         $result = new Result();
-        foreach ($this->subschemas as $fieldName => $fieldSchema) {
+
+        /**
+         * @var SchemaInterface[] $subschemas
+         */
+        $subschemas = $this->getItems();
+
+        foreach ($subschemas as $fieldName => $fieldSchema) {
             if ($fieldSchema instanceof SchemaInterface) {
                 $fieldValue = $data[$fieldName] ?? null;
                 $result->forProperty($fieldName)->merge($fieldSchema->validate($fieldValue));
