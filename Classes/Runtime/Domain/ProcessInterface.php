@@ -20,9 +20,10 @@ use Neos\Fusion\Form\Domain\Form;
 interface ProcessInterface
 {
     /**
+     * @param mixed[]|null $data
      * @param ActionRequest $request
      */
-    public function handle(ActionRequest $request): void;
+    public function handle($data = null, ActionRequest $request): void;
 
     /**
      * @return bool
@@ -33,11 +34,6 @@ interface ProcessInterface
      * @return string
      */
     public function render(): string;
-
-    /**
-     * @param mixed[] $data
-     */
-    public function setData(array $data): void;
 
     /**
      * @return mixed[]

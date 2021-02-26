@@ -96,14 +96,10 @@ class RuntimeFormImplementation extends AbstractFusionObject
             $formRequest->setArguments($subrequestArguments);
         }
 
-        if ($data) {
-            $process->setData($data);
-        }
-
         //
         // let the process handle the formRequest
         //
-        $process->handle($formRequest);
+        $process->handle($data, $formRequest);
 
         //
         // if more data is needed the process is asked to render the form

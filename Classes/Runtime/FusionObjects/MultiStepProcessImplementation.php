@@ -92,8 +92,16 @@ class MultiStepProcessImplementation extends AbstractCollectionFusionObject impl
         return $this;
     }
 
-    public function handle(ActionRequest $request): void
+    /**
+     * @param mixed[]|null $data
+     * @param ActionRequest $request
+     * @throws \Neos\Flow\Security\Exception\InvalidArgumentForHashGenerationException
+     * @throws \Neos\Flow\Security\Exception\InvalidHashException
+     */
+    public function handle($data = null, ActionRequest $request): void
     {
+        $this->data = $data;
+
         $internalArguments = $request->getInternalArguments();
 
         // restore/init state
@@ -128,7 +136,7 @@ class MultiStepProcessImplementation extends AbstractCollectionFusionObject impl
         }
 
         // pass request to current subprocess
-        $this->subProcessIterator->current()->handle($request);
+        $this->subProcessIterator->current()->handle($this->data, $request);
 
         if ($this->subProcessIterator->current()->isFinished()) {
             if (!$this->state) {
@@ -188,14 +196,6 @@ class MultiStepProcessImplementation extends AbstractCollectionFusionObject impl
         $content = $this->subProcessIterator->current()->render();
         $state =  $this->runtime->evaluate($this->path . '/state', $this);
         return $state . $content;
-    }
-
-    /**
-     * @param mixed[] $data
-     */
-    public function setData(array $data): void
-    {
-        $this->data = $data;
     }
 
     /**

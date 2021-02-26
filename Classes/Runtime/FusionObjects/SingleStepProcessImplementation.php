@@ -43,14 +43,17 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
     }
 
     /**
+     * @param mixed[]|null $data
      * @param ActionRequest $request
      * @throws \Neos\Flow\Mvc\Exception\InvalidActionNameException
      * @throws \Neos\Flow\Mvc\Exception\InvalidArgumentNameException
      * @throws \Neos\Flow\Mvc\Exception\InvalidArgumentTypeException
      * @throws \Neos\Flow\Mvc\Exception\InvalidControllerNameException
      */
-    public function handle(ActionRequest $request): void
+    public function handle($data = null, ActionRequest $request): void
     {
+        $this->data = $data;
+
         $arguments = $request->getArguments();
         $internalArguments = $request->getInternalArguments();
         $schema = $this->getSchema();
@@ -85,13 +88,6 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
         return $this->runtime->evaluate($this->path . '/content', $this);
     }
 
-    /**
-     * @param mixed[] $data
-     */
-    public function setData(array $data): void
-    {
-        $this->data = $data;
-    }
 
     /**
      * @return mixed[]
