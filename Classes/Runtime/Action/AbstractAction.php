@@ -25,8 +25,13 @@ abstract class AbstractAction implements ConfigurableActionInterface
     /**
      * @param mixed[] $options
      */
-    public function setOptions(array $options = []): void
+    public function withOptions(array $options = []): ConfigurableActionInterface
     {
-        $this->options = $options;
+        if ($this->options) {
+            $options = array_merge($this->options, $options);
+        }
+        $subject = new static();
+        $subject->options = $options;
+        return $subject;
     }
 }

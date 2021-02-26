@@ -20,5 +20,5 @@ interface ConfigurableActionInterface extends ActionInterface
     /**
      * @param mixed[] $options
      */
-    public function setOptions(array $options = []): void;
+    public function withOptions(array $options = []): ConfigurableActionInterface;
 }
