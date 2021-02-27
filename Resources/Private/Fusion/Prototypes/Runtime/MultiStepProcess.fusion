@@ -3,10 +3,22 @@ prototype(Neos.Fusion.Form:Runtime.MultiStepProcess) {
 
     steps = Neos.Fusion.Form:Runtime.ProcessCollection
 
-    renderer = afx`
-        <Neos.Fusion.Form:Hidden field.name="__state" attributes.value={state} @if.has={state} />
-        <Neos.Fusion.Form:Hidden field.name="__current" attributes.value={current} @if.has={current} />
-        {content}
+    header = null
+
+    footer = afx`
+        <Neos.Fusion.Form:Button field.name="__target" attributes.value={process.prev} @if.hasPrev={process.prev} formnovalidate="formnovalidate">prev</Neos.Fusion.Form:Button>
+        <Neos.Fusion.Form:Button field.name="__target" attributes.value={process.next} @if.hasNext={process.next}>next</Neos.Fusion.Form:Button>
+        <Neos.Fusion.Form:Button field.name="__target" @if.hasNoNext={process.isLast}>Submit</Neos.Fusion.Form:Button>
     `
+
+    hiddenFields = afx`
+        <Neos.Fusion.Form:Hidden field.name="__state" attributes.value={process.state} @if.has={process.state} />
+        <Neos.Fusion.Form:Hidden field.name="__current" attributes.value={process.current} @if.has={process.current} />
+    `
+
+    prototype(Neos.Fusion.Form:Runtime.SingleStepProcess) {
+        header = null
+        footer = null
+    }
 
 }

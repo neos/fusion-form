@@ -85,10 +85,17 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         if (array_key_exists('__current', $internalArguments)
             && $internalArguments['__current']
         ) {
-            $this->currentSubProcessKey = $internalArguments['__current'];
+            $this->currentSubProcessKey = (string)$internalArguments['__current'];
         } else {
             $subProcessKeys = array_keys($subProcesses);
             $this->currentSubProcessKey = (string)reset($subProcessKeys);
+        }
+
+        // store target subprocess
+        if (array_key_exists('__target', $internalArguments)
+            && $internalArguments['__target']
+        ) {
+            $this->targetSubProcessKey = (string)$internalArguments['__target'];
         }
 
         // find current and handle
@@ -133,25 +140,24 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
     {
         $subProcesses = $this->getCurrentSubProcesses();
         if ($this->targetSubProcessKey) {
-            $current = $this->targetSubProcessKey;
+            $renderSubProcessKey = $this->targetSubProcessKey;
         } else {
             foreach ($subProcesses as $subProcessKey => $subProcess) {
                 if (!$this->state || !$this->state->hasPart($subProcessKey)) {
-                    $current = $subProcessKey;
+                    $renderSubProcessKey = $subProcessKey;
                     break;
                 }
             }
         }
 
-        if (isset($current) && $current && array_key_exists($current, $subProcesses)) {
-            $context = $this->getRuntime()->getCurrentContext();
-            $context['state'] = $this->state ? $this->hashService->appendHmac(base64_encode(serialize($this->state))) : null;
-            $context['current'] = $current;
-            $context['content'] = $subProcesses[$current]->render();
-            $this->getRuntime()->pushContextArray($context);
-            $result = $this->runtime->evaluate($this->path . '/renderer');
+        if (isset($renderSubProcessKey) && $renderSubProcessKey && array_key_exists($renderSubProcessKey, $subProcesses)) {
+            $this->getRuntime()->pushContext('process', $this->prepareProcessInformations($renderSubProcessKey, $subProcesses));
+            $hiddenFields = $this->runtime->evaluate($this->path . '/hiddenFields') ?? '';
+            $header = $this->runtime->evaluate($this->path . '/header') ?? '';
+            $body = $subProcesses[$renderSubProcessKey]->render();
+            $footer = $this->runtime->evaluate($this->path . '/footer') ?? '';
             $this->getRuntime()->popContext();
-            return $result;
+            return $hiddenFields . $header . $body . $footer;
         }
 
         return '';
@@ -176,6 +182,28 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         }
 
         return $data;
+    }
+
+    /**
+     * @param string|int $subProcessKey
+     * @param ProcessInterface[] $subProcesses
+     * @return mixed[]
+     */
+    protected function prepareProcessInformations($subProcessKey, array $subProcesses): array
+    {
+        $subProcessKeys = array_keys($subProcesses);
+        $currentIndex = array_search($subProcessKey, $subProcessKeys);
+
+        $process = [];
+        $process['state'] = $this->state ? $this->hashService->appendHmac(base64_encode(serialize($this->state))) : null;
+        $process['current'] = $subProcessKey;
+        $process['prev'] = ($currentIndex > 0) ? $subProcessKeys[$currentIndex - 1]: null ;
+        $process['next'] = ($currentIndex < (count($subProcessKeys) - 1)) ? $subProcessKeys[$currentIndex + 1] : null;
+        $process['all'] = $subProcessKeys;
+        $process['isFirst'] = ($subProcessKey === reset($subProcessKeys));
+        $process['isLast'] = ($subProcessKey === end($subProcessKeys));
+
+        return $process;
     }
 
     /**

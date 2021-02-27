@@ -85,7 +85,10 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
      */
     public function render(): string
     {
-        return $this->runtime->evaluate($this->path . '/content', $this);
+        $header = $this->runtime->evaluate($this->path . '/header', $this) ?? '';
+        $content = $this->runtime->evaluate($this->path . '/content', $this) ?? '';
+        $footer = $this->runtime->evaluate($this->path . '/footer', $this) ?? '';
+        return $header . $content . $footer;
     }
 
 

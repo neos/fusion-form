@@ -3,5 +3,11 @@ prototype(Neos.Fusion.Form:Runtime.SingleStepProcess) {
 
     schema = Neos.Fusion.Form:Runtime.Schema
 
-    content = ''
+    content = null
+
+    header = null
+
+    footer = afx`
+        <Neos.Fusion.Form:Button>Submit</Neos.Fusion.Form:Button>
+    `
 }
