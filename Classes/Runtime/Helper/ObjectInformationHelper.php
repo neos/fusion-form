@@ -7,7 +7,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 
-class ObjectHelper implements ProtectedContextAwareInterface
+class ObjectInformationHelper implements ProtectedContextAwareInterface
 {
     /**
      * @var PersistenceManagerInterface

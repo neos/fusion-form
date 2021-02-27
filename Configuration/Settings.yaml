@@ -7,7 +7,7 @@ Neos:
   Fusion:
     defaultContext:
       Schema: 'Neos\Fusion\Form\Runtime\Helper\SchemaHelper'
-      Object: 'Neos\Fusion\Form\Runtime\Helper\ObjectHelper'
+      Form.Runtime.ObjectInformation: 'Neos\Fusion\Form\Runtime\Helper\ObjectInformationHelper'
 
   DocTools:
     collections:

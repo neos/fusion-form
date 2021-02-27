@@ -22,7 +22,7 @@ use Neos\Fusion\Form\Runtime\Domain\Model\ModelResult;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
 use Neos\Fusion\Form\Runtime\Helper\SchemaDefinition;
 
-class SchemaImplementation extends AbstractCollectionFusionObject implements SchemaInterface
+class SchemaCollectionImplementation extends AbstractCollectionFusionObject implements SchemaInterface
 {
     protected $itemInterface = SchemaInterface::class;
 
