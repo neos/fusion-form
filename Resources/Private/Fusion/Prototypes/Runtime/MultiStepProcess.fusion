@@ -6,9 +6,9 @@ prototype(Neos.Fusion.Form:Runtime.MultiStepProcess) {
     header = null
 
     footer = afx`
-        <Neos.Fusion.Form:Button field.name="__target" attributes.value={process.prev} @if.hasPrev={process.prev} formnovalidate="formnovalidate">prev</Neos.Fusion.Form:Button>
-        <Neos.Fusion.Form:Button field.name="__target" attributes.value={process.next} @if.hasNext={process.next}>next</Neos.Fusion.Form:Button>
-        <Neos.Fusion.Form:Button field.name="__target" @if.hasNoNext={process.isLast}>Submit</Neos.Fusion.Form:Button>
+        <Neos.Fusion.Form:Button field.name="__target" attributes.value={process.prev} @if.hasPrev={process.prev} formnovalidate="formnovalidate">{Translation.id('forms.navigation.previousPage').package('Neos.Fusion.Form')}</Neos.Fusion.Form:Button>
+        <Neos.Fusion.Form:Button field.name="__target" attributes.value={process.next} @if.hasNext={process.next}>{Translation.id('forms.navigation.nextPage').package('Neos.Fusion.Form')}</Neos.Fusion.Form:Button>
+        <Neos.Fusion.Form:Button field.name="__target" @if.hasNoNext={process.isLast}>{Translation.id('forms.navigation.submit').package('Neos.Fusion.Form')}</Neos.Fusion.Form:Button>
     `
 
     hiddenFields = afx`

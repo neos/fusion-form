@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="" product-name="Neos.Fusion.Form" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="forms.navigation.previousPage" xml:space="preserve">
+                <source>Previous page</source>
+            </trans-unit>
+            <trans-unit id="forms.navigation.nextPage" xml:space="preserve">
+                <source>Next page</source>
+            </trans-unit>
+            <trans-unit id="forms.navigation.submit" xml:space="preserve">
+                <source>Submit</source>
+            </trans-unit>
+            <trans-unit id="forms.pages.labelTitle" xml:space="preserve">
+                <source>Label</source>
+            </trans-unit>
+            <trans-unit id="forms.pages.valueTitle" xml:space="preserve">
+                <source>Value</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

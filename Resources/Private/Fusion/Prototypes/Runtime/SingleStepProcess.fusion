@@ -8,6 +8,6 @@ prototype(Neos.Fusion.Form:Runtime.SingleStepProcess) {
     header = null
 
     footer = afx`
-        <Neos.Fusion.Form:Button>Submit</Neos.Fusion.Form:Button>
+        <Neos.Fusion.Form:Button>{Translation.id('forms.navigation.submit').package('Neos.Fusion.Form')}</Neos.Fusion.Form:Button>
     `
 }
