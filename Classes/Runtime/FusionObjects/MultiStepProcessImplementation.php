@@ -16,6 +16,7 @@ namespace Neos\Fusion\Form\Runtime\FusionObjects;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\ActionRequest;
+use Neos\Error\Messages\Result;
 use Neos\Fusion\Form\Runtime\Domain\FormState;
 use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
 use Neos\Fusion\Form\Runtime\Domain\ProcessCollectionInterface;
@@ -91,9 +92,11 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             $this->currentSubProcessKey = (string)reset($subProcessKeys);
         }
 
-        // store target subprocess
+        // store target subprocess, but only if it already was submitted
         if (array_key_exists('__target', $internalArguments)
             && $internalArguments['__target']
+            && $this->state
+            && $this->state->hasPart($internalArguments['__target'])
         ) {
             $this->targetSubProcessKey = (string)$internalArguments['__target'];
         }
@@ -111,6 +114,11 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
                 $this->currentSubProcessKey,
                 $currentSubProcess->getData()
             );
+        } else {
+            if ($this->targetSubProcessKey) {
+                $request->setArgument('__submittedArguments', []);
+                $request->setArgument('__submittedArgumentValidationResults', new Result());
+            }
         }
     }
 
