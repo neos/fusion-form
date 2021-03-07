@@ -27,7 +27,7 @@ class Field extends AbstractFormObject
 {
 
     /**
-     * @var
+     * @var Form|null
      */
     protected $form;
 
@@ -52,7 +52,7 @@ class Field extends AbstractFormObject
     protected $multiple;
 
     /**
-     * @var bool
+     * @var Result|null
      */
     protected $result;
 
@@ -115,7 +115,7 @@ class Field extends AbstractFormObject
     /**
      * Determine the current result of a field in case of validation errors
      *
-     * @param $path
+     * @param string $path
      * @return Result|null
      */
     protected function findResultByPath($path): ?Result
@@ -167,7 +167,7 @@ class Field extends AbstractFormObject
     }
 
     /**
-     * @return array The current value of the field converted to an array of strings. Only used in multifields.
+     * @return string[] The current value of the field converted to an array of strings. Only used in multifields.
      */
     public function getCurrentMultivalueStringified(): array
     {
@@ -215,7 +215,7 @@ class Field extends AbstractFormObject
      */
     public function hasErrors(): bool
     {
-        if ($this->result) {
+        if ($this->result instanceof Result) {
             return $this->result->hasErrors();
         }
         return false;
