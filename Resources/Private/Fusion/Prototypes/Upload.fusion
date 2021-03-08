@@ -7,7 +7,7 @@ prototype(Neos.Fusion.Form:Upload)  < prototype(Neos.Fusion.Form:Component.Field
         <input
             @if.has={Type.instance(field.getCurrentValue(), 'Neos\Flow\ResourceManagement\PersistentResource')}
             type="hidden" name={field.getName() + '[originallySubmittedResource][__identity]'}
-            value={Object.getObjectIdentifier(field.getCurrentValue())}
+            value={field.getCurrentValueStringified()}
         />
         <input
             @if.has={props.collection}
