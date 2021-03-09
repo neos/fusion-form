@@ -18,9 +18,10 @@ use Neos\Flow\Mvc\ActionResponse;
 use Neos\Fusion\Form\Runtime\Domain\ActionResolver;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\Fusion\Form\Runtime\Domain\ConfigurableActionInterface;
-use Neos\Fusion\FusionObjects\AbstractFusionObject;
+use Neos\Fusion\FusionObjects\AbstractArrayFusionObject;
+use Neos\Fusion\FusionObjects\DataStructureImplementation;
 
-class ActionImplementation extends AbstractFusionObject implements ActionInterface
+class ActionImplementation extends AbstractArrayFusionObject implements ActionInterface
 {
 
     /**
@@ -43,10 +44,20 @@ class ActionImplementation extends AbstractFusionObject implements ActionInterfa
      */
     public function perform(): ?ActionResponse
     {
-        $type = $this->fusionValue('type');
+        $type = null;
+        $options = [];
+        foreach ($this->properties as $propertyName => $propertyConfiguration) {
+            if (in_array($propertyName, $this->ignoreProperties)) {
+                continue;
+            }
+            if ($propertyName  == 'type') {
+                $type = $this->fusionValue($propertyName);
+            } else {
+                $options[$propertyName] = $this->fusionValue($propertyName);
+            }
+        }
         $action = $this->actionResolver->createAction($type);
         if ($action instanceof ConfigurableActionInterface) {
-            $options = $this->fusionValue('options');
             $action = $action->withOptions($options);
         }
         return $action->perform();

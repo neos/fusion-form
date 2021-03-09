@@ -71,10 +71,10 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
         $validators = $this->getValidators();
 
         foreach ($validators as $validationConfiguration) {
-            $validator = $this->validatorResolver->createValidator(
-                $validationConfiguration['type'],
-                $validationConfiguration['options'] ?? []
-            );
+            $type = $validationConfiguration['type'];
+            $options = $validationConfiguration;
+            unset($options['type']);
+            $validator = $this->validatorResolver->createValidator($type, $options);
             $propertyValidationResult->merge($validator->validate($data));
         }
 
@@ -94,6 +94,6 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
      */
     protected function getValidators(): array
     {
-        return $this->fusionValue('validators');
+        return $this->fusionValue('validator');
     }
 }
