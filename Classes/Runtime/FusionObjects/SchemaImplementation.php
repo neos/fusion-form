@@ -18,15 +18,11 @@ use Neos\Error\Messages\Result;
 use Neos\Flow\Property\PropertyMapper;
 use Neos\Flow\Property\PropertyMappingConfiguration;
 use Neos\Flow\Validation\ValidatorResolver;
-use Neos\Fusion\Form\Runtime\Domain\Model\ModelResult;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
-use Neos\Fusion\Form\Runtime\Helper\SchemaDefinition;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 
 class SchemaImplementation extends AbstractFusionObject implements SchemaInterface
 {
-    protected $itemInterface = SchemaInterface::class;
-
     /**
      * @var PropertyMapper
      * @Flow\Inject
@@ -94,7 +90,7 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     protected function getValidators(): array
     {
