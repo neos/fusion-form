@@ -7,7 +7,7 @@ prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
     process = Neos.Fusion.Form:Runtime.SingleStepProcess
 
-    actions = Neos.Fusion.Form:Runtime.ActionCollection
+    action = Neos.Fusion.Form:Runtime.ActionCollection
 
     form = afx`
         <Neos.Fusion.Form:Form form={form}>

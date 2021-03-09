@@ -15,34 +15,13 @@ namespace Neos\Fusion\Form\Runtime\FusionObjects;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Result;
-use Neos\Flow\Property\PropertyMapper;
-use Neos\Flow\Property\PropertyMappingConfiguration;
-use Neos\Flow\Validation\ValidatorResolver;
-use Neos\Fusion\Form\Runtime\Domain\Model\ModelResult;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
-use Neos\Fusion\Form\Runtime\Helper\SchemaDefinition;
 
 class SchemaCollectionImplementation extends AbstractCollectionFusionObject implements SchemaInterface
 {
     protected $itemInterface = SchemaInterface::class;
 
-    /**
-     * @var ValidatorResolver
-     * @Flow\Inject
-     */
-    protected $validatorResolver;
-
-    /**
-     * @var PropertyMapper
-     * @Flow\Inject
-     */
-    protected $propertyMapper;
-
-    /**
-     * @var PropertyMappingConfiguration
-     * @Flow\Inject
-     */
-    protected $propertyMappingConfiguration;
+    protected $itemPrototype = 'Neos.Fusion.Form:Runtime.Schema';
 
     /**
      * @param mixed $data

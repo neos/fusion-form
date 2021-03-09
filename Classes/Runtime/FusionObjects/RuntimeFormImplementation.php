@@ -61,9 +61,9 @@ class RuntimeFormImplementation extends AbstractFusionObject
     /**
      * @return ActionInterface
      */
-    protected function getActions(): ActionInterface
+    protected function getAction(): ActionInterface
     {
-        return  $this->fusionValue('actions');
+        return  $this->fusionValue('action');
     }
 
     /**
@@ -131,7 +131,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
         // return the text content of the action response, headers are merged  into the the main response
         //
         $this->getRuntime()->pushContext('data', $process->getData());
-        $actions = $this->getActions();
+        $actions = $this->getAction();
         $actionResponse = $actions->perform();
         $this->getRuntime()->popContext();
         if ($actionResponse) {
