@@ -8,6 +8,7 @@ use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Error\Messages\Result;
 use Neos\Flow\Property\PropertyMapper;
 use Neos\Flow\Property\PropertyMappingConfiguration;
+use Neos\Flow\Validation\Validator\NotEmptyValidator;
 use Neos\Flow\Validation\ValidatorResolver;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
 
@@ -43,6 +44,11 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
     protected $validators = [];
 
     /**
+     * @var mixed[]
+     */
+    protected $typeConverterOptions;
+
+    /**
      * SchemaDefinitionToken constructor.
      * @param string $targetType
      * @param mixed[] $validators
@@ -63,6 +69,22 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
         $this->validators[] = [
             'type' => $type,
             'options' => $options
+        ];
+        return $this;
+    }
+
+    /**
+     * @param string $className
+     * @param string $optionName
+     * @param mixed $optionValue
+     * @return $this
+     */
+    public function typeConverterOption(string $className, string $optionName, $optionValue): self
+    {
+        $this->typeConverterOptions[] = [
+            'class' => $className,
+            'option' => $optionName,
+            'value' => $optionValue
         ];
         return $this;
     }
@@ -96,6 +118,18 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
      */
     public function convert($data)
     {
+        if ($this->typeConverterOptions) {
+            foreach ($this->typeConverterOptions as $typeConverterOption) {
+                if (array_key_exists('class', $typeConverterOption) && array_key_exists('option', $typeConverterOption)) {
+                    $this->propertyMappingConfiguration->setTypeConverterOption(
+                        $typeConverterOption['class'],
+                        $typeConverterOption['option'],
+                        $typeConverterOption['value'] ?? null
+                    );
+                }
+            }
+        }
+
         $mappedValue = $this->propertyMapper->convert($data, $this->targetType, $this->propertyMappingConfiguration);
         $mappingResult = $this->propertyMapper->getMessages();
         if ($mappingResult->hasErrors()) {
@@ -106,14 +140,23 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
     }
 
     /**
+     * Add a NotEmpty Validator
+     * @return $this
+     */
+    public function isRequired(): SchemaDefinition
+    {
+        return $this->validator(NotEmptyValidator::class);
+    }
+
+    /**
      * @param string $methodName
      * @return bool
      */
     public function allowsCallOfMethod($methodName)
     {
-        if (in_array($methodName, ['validator'])) {
-            return true;
+        if ($methodName === 'convert' || $methodName === 'validate') {
+            return false;
         }
-        return false;
+        return true;
     }
 }

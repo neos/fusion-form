@@ -1,7 +1,7 @@
 prototype(Neos.Fusion.Form:Upload)  < prototype(Neos.Fusion.Form:Component.Field) {
 
     attributes.type = "file"
-    collection = "persistent"
+    collection = null
 
     renderer = afx`
         <input
