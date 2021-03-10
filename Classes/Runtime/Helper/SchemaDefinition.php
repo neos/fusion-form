@@ -50,18 +50,22 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
 
     /**
      * SchemaDefinitionToken constructor.
-     * @param string $targetType
-     * @param mixed[] $validators
+     * @param string $targetType The expected type the submitted value will be converted to
+     * @param mixed[] $validators The validators to use
+     * @param mixed[] $validatorOptions The validators to use
      */
-    public function __construct(string $targetType, array $validators = [])
+    public function __construct(string $targetType = 'string', array $validators = [], array $validatorOptions = [])
     {
         $this->targetType = $targetType;
         $this->validators = $validators;
+        $this->typeConverterOptions = $validatorOptions;
     }
 
     /**
-     * @param string $type
-     * @param mixed[]|null $options
+     * Add a validator to the schema
+     *
+     * @param string $type The validaor indentifier or className
+     * @param mixed[]|null $options The options to set for the validator
      * @return $this
      */
     public function validator(string $type, ?array $options = null): self
@@ -74,9 +78,11 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
     }
 
     /**
-     * @param string $className
-     * @param string $optionName
-     * @param mixed $optionValue
+     * Add a typeConverter option to the schema
+     *
+     * @param string $className The typeConverter className to set options for
+     * @param string $optionName The option name
+     * @param mixed $optionValue The value to set
      * @return $this
      */
     public function typeConverterOption(string $className, string $optionName, $optionValue): self
@@ -88,6 +94,19 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
         ];
         return $this;
     }
+
+    /**
+     * Add a NotEmpty Validator
+     * @return $this
+     */
+    public function isRequired(): SchemaDefinition
+    {
+        return $this->validator(NotEmptyValidator::class);
+    }
+
+    #
+    # Methods required by the SchemaInterface
+    #
 
     /**
      * @param mixed $data
@@ -139,14 +158,9 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
         }
     }
 
-    /**
-     * Add a NotEmpty Validator
-     * @return $this
-     */
-    public function isRequired(): SchemaDefinition
-    {
-        return $this->validator(NotEmptyValidator::class);
-    }
+    #
+    # Method required by the ProtectedContextAwareInterface
+    #
 
     /**
      * @param string $methodName
@@ -154,7 +168,7 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
      */
     public function allowsCallOfMethod($methodName)
     {
-        if ($methodName === 'convert' || $methodName === 'validate') {
+        if (in_array($methodName, ['__construct', 'convert', 'validate'])) {
             return false;
         }
         return true;
