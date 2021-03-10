@@ -20,23 +20,6 @@ The algorithm is as follows:
 3. If the `process` is not finished render form tag an delegates the body rendering to the `process`.
 4. If the `process` is finished the the data and execute the `action`.
 
-Example::
-
-  renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
-    # the form argument namespace
-    identifier = 'example'
-
-    # initial form data to prefill the fields
-    data = Neos.Fusion:DataStructure
-
-    # the form process that is responsible for rendering the form and
-    # collecting the data
-    process = Neos.Fusion.Form:Runtime.SingleStepForm
-
-    # action that is processed after the form process is finished
-    action =  Neos.Fusion.Form:Runtime.Actions
-  }
-
 :identifier: (`string`), Form argument namespace. If no identifier is defined the hash of the current fusion path is used as namespace.
 :data: (`mixed`, defaults to `Neos.Fusion:DataStructure`_) The initial data that is given to the form process as input value.
 :process: (`ProcessInterface`, defaults to `Neos.Fusion.Form:Runtime.SingleStepProcess`_) The process will handle each request until it declares itself finished.
@@ -44,11 +27,33 @@ Example::
 
 .. note:: While the `process` renders and the `action` is executed the current `data` is always in the Fusion context and can be used by Fusion.
 
+Example::
+
+	renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
+		# the form argument namespace
+		identifier = 'example'
+
+		# initial form data to prefill the fields
+		data = Neos.Fusion:DataStructure
+
+		# the form process that is responsible for rendering the form and
+		# collecting the data
+		process = Neos.Fusion.Form:Runtime.SingleStepForm
+
+		# action that is processed after the form process is finished
+		action =  Neos.Fusion.Form:Runtime.Actions
+	}
+
 Neos.Fusion.Form:Runtime.SingleStepProcess
 ------------------------------------------
 
 The most common and simple form process consists of a single page. The actual form is defined as `content`
 and may be afx or a prototype. It is responsible for rendering the form
+
+:content: (`string`) The form body to be rendered.
+:schema: (`SchemaInterface`, defaults to `Neos.Fusion.Form:Runtime.SchemaCollection`_) The schema to convert and validate the submitted data with.
+:header: (`string`) The form header is rendered before the body. By default this is empty, create derived prototypes to change this.
+:footer: (`string`, defaults to a single submit button) The form footer contains a single submit button by default, create derived prototypes to change this.
 
 Example::
 
@@ -57,57 +62,47 @@ Example::
 			identifier = "singleStepExample"
 
 			process = Neos.Fusion.Form:Runtime.SingleStepProcess {
-
 				content = afx`
-					<fieldset>
-						<legend>name</legend>
-						<Neos.Fusion.Form:FieldContainer field.name="firstName" label="First Name">
-							<Neos.Fusion.Form:Input />
-						</Neos.Fusion.Form:FieldContainer>
-						<Neos.Fusion.Form:FieldContainer field.name="lastName" label="Last Name">
-							<Neos.Fusion.Form:Input />
-						</Neos.Fusion.Form:FieldContainer>
-					</fieldset>
-					<fieldset>
-						<legend>file</legend>
-						<Neos.Fusion.Form:FieldContainer field.name="file" label="File">
-							<Neos.Fusion.Form:Upload />
-						</Neos.Fusion.Form:FieldContainer>
-					</fieldset>
+					<Neos.Fusion.Form:FieldContainer field.name="firstName" label="First Name">
+						<Neos.Fusion.Form:Input />
+					</Neos.Fusion.Form:FieldContainer>
+					<Neos.Fusion.Form:FieldContainer field.name="lastName" label="Last Name">
+						<Neos.Fusion.Form:Input />
+					</Neos.Fusion.Form:FieldContainer>
+					<Neos.Fusion.Form:FieldContainer field.name="file" label="File">
+						<Neos.Fusion.Form:Upload />
+					</Neos.Fusion.Form:FieldContainer>
 				`
-
 				schema {
 					firstName = ${Schema.type("string").validator('NotEmpty')}
 					lastName = ${Schema.type("string").validator('NotEmpty').validator('StringLength', {minimum: 6, maximum: 12})}
 					file = ${Schema.type("Neos\Flow\ResourceManagement\PersistentResource").validator('NotEmpty').validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
-
 				}
 			}
 
 			action {
 				message {
 					type = 'Neos.Fusion.Form.Runtime:Message'
-				   message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
+					options {
+						message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
+					}
 				}
 				email {
 					type = 'Neos.Fusion.Form.Runtime:Email'
-					senderAddress = ${q(node).property('mailFrom')}
-					recipientAddress = ${q(node).property('mailTo')}
-					subject = ${q(node).property('mailSubject')}
-					text = afx`Thank you {data.firstName} {data.lastName}`
-					html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1></p>`
-					attachments {
-						upload = ${data.file}
+					options {
+						senderAddress = ${q(node).property('mailFrom')}
+						recipientAddress = ${q(node).property('mailTo')}
+						subject = ${q(node).property('mailSubject')}
+						text = afx`Thank you {data.firstName} {data.lastName}`
+						html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1></p>`
+						attachments {
+							upload = ${data.file}
+						}
 					}
 				}
 			}
 		}
 	}
-
-:content: (`string`) The form body to be rendered.
-:schema: (`SchemaInterface`, defaults to `Neos.Fusion.Form:Runtime.SchemaCollection`_) The schema to convert and validate the submitted data with.
-:header: (`string`) The form header is rendered before the body. By default this is empty, create derived prototypes to change this.
-:footer: (`string`, defaults to a single submit button) The form footer contains a single submit button by default, create derived prototypes to change this.
 
 Neos.Fusion.Form:Runtime.MultiStepProcess
 -----------------------------------------
@@ -115,6 +110,22 @@ Neos.Fusion.Form:Runtime.MultiStepProcess
 The multistep process allows to define use multiple `steps` that will usually be of type SingleStepProcess. The multistep process
 persists the current form state as hidden field and otherwise passes the rendering of the form-body to the currently active
 sub procces.
+
+:steps: (`ProcessCollectionInterface`, defaults to `Neos.Fusion.Form:Runtime.ProcessCollection`_)
+:header: (`string`) The form header is rendered before the body. By default this is empty, create derived prototypes to change this.
+:footer: (`string`, defaults to Next/Back and Submit buttons) The form footer contains a pre/next/submit button by default, create derived prototypes to change this.
+
+During rendering a `process` variable is added to the context that contains the following information:
+
+:process.state: (`string|null`) Serialized and signed form state, if a previous state is present
+:process.current: (`string`) Current subprocess key
+:process.prev: (`string|null`) Previous subprocess key
+:process.next: (`string|null`) Next subprocess key
+:process.all: (`array`) List of all subprocess keys
+:process.isFirst: (`boolean`) True if the current subprocess is the first one
+:process.isLast: (`boolean`) True if the current subprocess is the last one
+
+.. note:: Inside the MultiStepProcess the header and footer of the SingleStepProcess used as subprocess elements are suppressed.
 
 Example::
 
@@ -127,17 +138,13 @@ Example::
 				steps {
 					first {
 						content = afx`
-							<fieldset>
-								<legend>name</legend>
-								<Neos.Fusion.Form:FieldContainer field.name="firstName" label="First Name">
-									<Neos.Fusion.Form:Input @validate />
-								</Neos.Fusion.Form:FieldContainer>
-								<Neos.Fusion.Form:FieldContainer field.name="lastName" label="Last Name">
-									<Neos.Fusion.Form:Input />
-								</Neos.Fusion.Form:FieldContainer>
-							</fieldset>
+							<Neos.Fusion.Form:FieldContainer field.name="firstName" label="First Name">
+								<Neos.Fusion.Form:Input @validate />
+							</Neos.Fusion.Form:FieldContainer>
+							<Neos.Fusion.Form:FieldContainer field.name="lastName" label="Last Name">
+								<Neos.Fusion.Form:Input />
+							</Neos.Fusion.Form:FieldContainer>
 						`
-
 						schema {
 							firstName = ${Schema.type("string").validator('NotEmpty')}
 							lastName = ${Schema.type("string").validator('NotEmpty').validator('StringLength', {minimum: 6, maximum: 12})}
@@ -146,17 +153,13 @@ Example::
 
 					second {
 						content = afx`
-							<fieldset>
-								<legend>address</legend>
-								<Neos.Fusion.Form:FieldContainer field.name="street" label="Street">
-									<Neos.Fusion.Form:Input />
-								</Neos.Fusion.Form:FieldContainer>
-								<Neos.Fusion.Form:FieldContainer field.name="city" label="City">
-									<Neos.Fusion.Form:Input />
-								</Neos.Fusion.Form:FieldContainer>
-							</fieldset>
+							<Neos.Fusion.Form:FieldContainer field.name="street" label="Street">
+								<Neos.Fusion.Form:Input />
+							</Neos.Fusion.Form:FieldContainer>
+							<Neos.Fusion.Form:FieldContainer field.name="city" label="City">
+								<Neos.Fusion.Form:Input />
+							</Neos.Fusion.Form:FieldContainer>
 						`
-
 						schema {
 							street = ${Schema.type("string").validator('NotEmpty')}
 							city = ${Schema.type("string").validator('NotEmpty')}
@@ -165,12 +168,9 @@ Example::
 
 					third {
 						content = afx`
-							<fieldset>
-								<legend>file</legend>
-								<Neos.Fusion.Form:FieldContainer field.name="file" label="File">
-									<Neos.Fusion.Form:Upload />
-								</Neos.Fusion.Form:FieldContainer>
-							</fieldset>
+							<Neos.Fusion.Form:FieldContainer field.name="file" label="File">
+								<Neos.Fusion.Form:Upload />
+							</Neos.Fusion.Form:FieldContainer>
 						`
 						schema {
 							file = ${Schema.type("Neos\Flow\ResourceManagement\PersistentResource").validator('NotEmpty').validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
@@ -189,43 +189,31 @@ Example::
 
 				email {
 					type = 'Neos.Fusion.Form.Runtime:Email'
-					senderAddress = ${q(node).property('mailFrom')}
-					recipientAddress = ${q(node).property('mailTo')}
-
-					subject = ${q(node).property('mailSubject')}
-					text = afx`Thank you {data.firstName} {data.lastName} from {data.city}, {data.street}`
-					html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1><p>from {data.city}, {data.street}</p>`
-
-					attachments {
-						upload = ${data.file}
+					options {
+						senderAddress = ${q(node).property('mailFrom')}
+						recipientAddress = ${q(node).property('mailTo')}
+						subject = ${q(node).property('mailSubject')}
+						text = afx`Thank you {data.firstName} {data.lastName} from {data.city}, {data.street}`
+						html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1><p>from {data.city}, {data.street}</p>`
+						attachments {
+							upload = ${data.file}
+						}
 					}
 				}
 
 				redirect {
 					type = 'Neos.Fusion.Form.Runtime:Redirect'
-					uri = Neos.Neos:NodeUri {
-						node = ${q(node).property('thankyou')}
+					options {
+						uri = Neos.Neos:NodeUri {
+							node = ${q(node).property('thankyou')}
+						}
 					}
 				}
 			}
 		}
 	}
 
-:steps: (`ProcessCollectionInterface`, defaults to `Neos.Fusion.Form:Runtime.ProcessCollection`_)
-:header: (`string`) The form header is rendered before the body. By default this is empty, create derived prototypes to change this.
-:footer: (`string`, defaults to Next/Back and Submit buttons) The form footer contains a pre/next/submit button by default, create derived prototypes to change this.
 
-During rendering a `process` variable is added to the context that contains the following information:
-
-:process.state: (`string|null`) Serialized and signed form state, if a previous state is present
-:process.current: (`string`) Current subprocess key
-:process.prev: (`string|null`) Previous subprocess key
-:process.next: (`string|null`) Next subprocess key
-:process.all: (`array`) List of all subprocess keys
-:process.isFirst: (`boolean`) True if the current subprocess is the first one
-:process.isLast: (`boolean`) True if the current subprocess is the last one
-
-.. note:: Inside the MultiStepProcess the header and footer of the SingleStepProcess used as subprocess elements are suppressed.
 
 Neos.Fusion.Form:Runtime.ActionCollection
 -----------------------------------------
@@ -246,13 +234,13 @@ The form package already comes with the following action types `Email`, `Log`, `
 
 Example::
 
-  messageAction = Neos.Fusion.Form:Runtime.Action {
-    type = 'Neos.Fusion.Form.Runtime:Message'
-    message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
-  }
+	messageAction = Neos.Fusion.Form:Runtime.Action {
+		type = 'Neos.Fusion.Form.Runtime:Message'
+		message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
+	}
 
 :type: (`string`) To to be used by the Action resolver to determine the implementation class. Can be an Identifier or a ClassName.
-:*: (`array` defaults to `Neos.Fusion:DataStructure`_) The options that for configuring the action.
+:options: (`array` defaults to `Neos.Fusion:DataStructure`) The options that are set on ConfigurableActions
 
 Neos.Fusion.Form:Runtime.SchemaCollection
 -----------------------------------------
@@ -263,10 +251,10 @@ The subschemas can be created with the Eeel `Schema.type(...)` helper or the `Ne
 
 Example::
 
-  schema = Neos.Fusion.Form:Runtime.SchemaCollection {
-    firstName = ${Schema.type("string").validator('NotEmpty')}
-    lastName = ${Schema.type("string").validator('NotEmpty').validator('StringLength', {minimum: 10, maximum: 40})}
-  }
+	schema = Neos.Fusion.Form:Runtime.SchemaCollection {
+		firstName = ${Schema.type("string").validator('NotEmpty')}
+		lastName = ${Schema.type("string").validator('NotEmpty').validator('StringLength', {minimum: 10, maximum: 40})}
+	}
 
 :[key]: (`SchemaInterface`, defaults to `Neos.Fusion.Form:Runtime.Schema`_)
 
@@ -283,24 +271,24 @@ one or more validators that are again identified by `type` all other properties 
 
 Example::
 
-  firstName = Neos.Fusion.Form:Runtime.Schema {
-    type = "string"
-    validator.notEmpty.type = "NotEmpty"
-    validator.stringLength.type = "NotEmpty"
-    validator.stringLength.minimum = 10
-    validator.stringLength.maximum = 40
-  }
+	firstName = Neos.Fusion.Form:Runtime.Schema {
+		type = "string"
+		validator.notEmpty.type = "NotEmpty"
+		validator.stringLength.type = "NotEmpty"
+		validator.stringLength.options.minimum = 10
+		validator.stringLength.options.maximum = 40
+	}
 
-  file = Neos.Fusion.Form:Runtime.Schema {
-    type = "Neos\Flow\ResourceManagement\PersistentResource"
-    validator.file.type = 'Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator'
-    validator.file.allowedExtensions:['txt', 'jpg']
-  }
+	file = Neos.Fusion.Form:Runtime.Schema {
+		type = "Neos\Flow\ResourceManagement\PersistentResource"
+		validator.file.type = 'Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator'
+		validator.file.options.allowedExtensions:['txt', 'jpg']
+	}
 
 :type: (`string`) A type that is used by the property mapper to
 :validator: (`array` defaults to `Neos.Fusion:DataStructure`_)
 :validator.[key].type: (`string`) The type of the validator, className or identifier.
-:validator.[key].*: (`any`) Options for the validator.
+:validator.[key].options: (`array`) Options for the validator if needed.
 
 Neos.Fusion.Form:Runtime.ProcessCollection
 ------------------------------------------
