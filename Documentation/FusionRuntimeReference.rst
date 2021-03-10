@@ -285,8 +285,19 @@ Example::
 		validator.file.options.allowedExtensions:['txt', 'jpg']
 	}
 
+	date {
+		type = "DateTime"
+		typeConverterOptions.datetime {
+			class = "Neos\\Flow\\Property\\TypeConverter\\DateTimeConverter"
+			option = "dateFormat"
+			value = "Y-m-d"
+		}
+		validator.notEmpty.type = 'NotEmpty'
+	}
+
 :type: (`string`) A type that is used by the property mapper to
 :validator: (`ValidatorInterface`, defaults to `Neos.Fusion.Form:Runtime.ValidatorCollection`_)
+:typeConverterOptions: (array, defaults to `Neos.Fusion:DataStructure`) array of {class, option, value} objects
 
 Neos.Fusion.Form:Runtime.ProcessCollection
 ------------------------------------------

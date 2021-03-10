@@ -46,6 +46,19 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
      */
     public function convert($data)
     {
+        $typeConverterOptions = $this->getTypeConverterOptions();
+        if ($typeConverterOptions) {
+            foreach ($typeConverterOptions as $typeConverterOption) {
+                if (array_key_exists('class', $typeConverterOption) && array_key_exists('option', $typeConverterOption)) {
+                    $this->propertyMappingConfiguration->setTypeConverterOption(
+                        $typeConverterOption['class'],
+                        $typeConverterOption['option'],
+                        $typeConverterOption['value'] ?? null
+                    );
+                }
+            }
+        }
+
         $mappedValue = $this->propertyMapper->convert($data, $this->getType(), $this->propertyMappingConfiguration);
         $mappingResult = $this->propertyMapper->getMessages();
         if ($mappingResult->hasErrors()) {
@@ -71,6 +84,14 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
     protected function getType():string
     {
         return $this->fusionValue('type');
+    }
+
+    /**
+     * @return mixed[]|null
+     */
+    protected function getTypeConverterOptions(): ?array
+    {
+        return $this->fusionValue('typeConverterOptions');
     }
 
     /**
