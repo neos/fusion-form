@@ -17,7 +17,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Result;
 use Neos\Flow\Property\PropertyMapper;
 use Neos\Flow\Property\PropertyMappingConfiguration;
-use Neos\Flow\Validation\ValidatorResolver;
+use Neos\Flow\Validation\Validator\ValidatorInterface;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 
@@ -34,12 +34,6 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
      * @Flow\Inject
      */
     protected $propertyMappingConfiguration;
-
-    /**
-     * @var ValidatorResolver
-     * @Flow\Inject
-     */
-    protected $validatorResolver;
 
     public function evaluate()
     {
@@ -67,20 +61,8 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
      */
     public function validate($data): Result
     {
-        $propertyValidationResult = new Result();
-        $validators = $this->getValidators();
-
-        foreach ($validators as $validationConfiguration) {
-            if (array_key_exists('type', $validationConfiguration)) {
-                $validator = $this->validatorResolver->createValidator(
-                    $validationConfiguration['type'],
-                    $validationConfiguration['options'] ?? []
-                );
-                $propertyValidationResult->merge($validator->validate($data));
-            }
-        }
-
-        return $propertyValidationResult;
+        $validator = $this->getValidator();
+        return $validator->validate($data);
     }
 
     /**
@@ -92,9 +74,9 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
     }
 
     /**
-     * @return array[]
+     * @return ValidatorInterface
      */
-    protected function getValidators(): array
+    protected function getValidator(): ValidatorInterface
     {
         return $this->fusionValue('validator');
     }

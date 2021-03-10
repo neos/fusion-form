@@ -259,7 +259,7 @@ Example::
 :[key]: (`SchemaInterface`, defaults to `Neos.Fusion.Form:Runtime.Schema`_)
 
 .. note:: When the items are evaluated it is checked that all items satisfy the `SchemaInterface`.
-If untyped items are found they are evaluated as `Neos.Fusion.Form:Runtime.Schems`.
+If untyped items are found they are evaluated as `Neos.Fusion.Form:Runtime.Schema`.
 
 
 Neos.Fusion.Form:Runtime.Schema
@@ -267,7 +267,7 @@ Neos.Fusion.Form:Runtime.Schema
 
 The `Schema` implements the `SchemaInterface` and allows to define a target type and validators for a property.
 The `type` property identifies the the target type for the property mapping. The key `validator` allows to define
-one or more validators that are again identified by `type` all other properties are passed as validator options.
+one or more validators.
 
 Example::
 
@@ -286,9 +286,7 @@ Example::
 	}
 
 :type: (`string`) A type that is used by the property mapper to
-:validator: (`array` defaults to `Neos.Fusion:DataStructure`_)
-:validator.[key].type: (`string`) The type of the validator, className or identifier.
-:validator.[key].options: (`array`) Options for the validator if needed.
+:validator: (`ValidatorInterface`, defaults to `Neos.Fusion.Form:Runtime.ValidatorCollection`_)
 
 Neos.Fusion.Form:Runtime.ProcessCollection
 ------------------------------------------
@@ -299,3 +297,38 @@ the `ProcessInterface` that are to be rendered by the `Neos.Fusion.Form:Runtime.
 :[key]: (`ProcessInterface`, defaults to `Neos.Fusion.Form:Runtime.SingleStepProcess`_)
 
 .. note:: All properties that have no prototype specified will be evaluated as `Neos.Fusion.Form:Runtime.SingleStepProcess`.
+
+
+Neos.Fusion.Form:Runtime.ValidatorCollection
+--------------------------------------------
+
+The `ValidatorCollection` implements the `validatorInterface` for an array of multiple named properties.
+It will execute all validator that are defined and merge the results into one.
+
+:[key]: (`ValidatorInterface`, defaults to `Neos.Fusion.Form:Runtime.Validator`_)
+
+.. note:: When the items are evaluated it is checked that all items satisfy the `ValidatorInterface`.
+If untyped items are found they are evaluated as `Neos.Fusion.Form:Runtime.Validator`.
+
+Neos.Fusion.Form:Runtime.Validator
+----------------------------------
+
+The `Validator` implements the `ValidatorInterface` and to secify the valdator `type`
+and configure via `options`.
+
+Example::
+
+	stringLength = Neos.Fusion.Form:Runtime.Validator {
+		type = "NotEmpty"
+		options {
+			minimum = 10
+			maximum = 40
+		}
+	}
+	fileType = Neos.Fusion.Form:Runtime.Validator {
+		type = "Neos\Flow\ResourceManagement\PersistentResource"
+		options.allowedExtensions:['txt', 'jpg']
+	}
+
+:type: (`string`) A class name or identifier to be resolved by the validator resolver.
+:options: (`array`, defaults to `Neos.Fusion:DataStructure`_)
