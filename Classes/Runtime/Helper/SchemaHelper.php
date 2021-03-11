@@ -13,12 +13,12 @@ class SchemaHelper implements ProtectedContextAwareInterface
 {
     /**
      * Create a schema for the given type
-     * @param string $typeName The type or className that is expected
+     * @param string $type The type or className that is expected
      * @return SchemaInterface
      */
-    public function type(string $typeName): SchemaInterface
+    public function forType(string $type): SchemaInterface
     {
-        return new SchemaDefinition($typeName);
+        return new SchemaDefinition($type);
     }
 
     #

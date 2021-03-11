@@ -3,7 +3,7 @@
 Fusion Form Helper Reference
 ============================
 
-This reference was automatically generated from code on 2021-03-10
+This reference was automatically generated from code on 2021-03-11
 
 
 .. _`Fusion Form Helper Reference: Neos\Fusion\Form\Runtime\Helper\SchemaDefinition`:
@@ -87,6 +87,15 @@ Create a float schema
 
 **Return** (SchemaInterface)
 
+Schema.forType(type)
+^^^^^^^^^^^^^^^^^^^^
+
+Create a schema for the given type
+
+* ``type`` (string) The type or className that is expected
+
+**Return** (SchemaInterface)
+
 Schema.int()
 ^^^^^^^^^^^^
 
@@ -114,15 +123,6 @@ Schema.string()
 ^^^^^^^^^^^^^^^
 
 Create a string schema
-
-**Return** (SchemaInterface)
-
-Schema.type(typeName)
-^^^^^^^^^^^^^^^^^^^^^
-
-Create a schema for the given type
-
-* ``typeName`` (string) The type or className that is expected
 
 **Return** (SchemaInterface)
 

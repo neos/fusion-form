@@ -74,9 +74,9 @@ Example::
 					</Neos.Fusion.Form:FieldContainer>
 				`
 				schema {
-					firstName = ${Schema.type("string").validator('NotEmpty')}
-					lastName = ${Schema.type("string").validator('NotEmpty').validator('StringLength', {minimum: 6, maximum: 12})}
-					file = ${Schema.type("Neos\Flow\ResourceManagement\PersistentResource").validator('NotEmpty').validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+					firstName = ${Schema.string().isRequired()}
+					lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
+					file = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
 				}
 			}
 
@@ -146,8 +146,8 @@ Example::
 							</Neos.Fusion.Form:FieldContainer>
 						`
 						schema {
-							firstName = ${Schema.type("string").validator('NotEmpty')}
-							lastName = ${Schema.type("string").validator('NotEmpty').validator('StringLength', {minimum: 6, maximum: 12})}
+							firstName = ${Schema.string().isRequired()}
+							lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
 						}
 					}
 
@@ -161,8 +161,8 @@ Example::
 							</Neos.Fusion.Form:FieldContainer>
 						`
 						schema {
-							street = ${Schema.type("string").validator('NotEmpty')}
-							city = ${Schema.type("string").validator('NotEmpty')}
+							street = ${Schema.string().isRequired()}
+							city = ${Schema.string().isRequired()}
 						}
 					}
 
@@ -173,7 +173,7 @@ Example::
 							</Neos.Fusion.Form:FieldContainer>
 						`
 						schema {
-							file = ${Schema.type("Neos\Flow\ResourceManagement\PersistentResource").validator('NotEmpty').validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+							file = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
 						}
 					}
 
@@ -247,13 +247,14 @@ Neos.Fusion.Form:Runtime.SchemaCollection
 
 The `SchemaCollection` implements the `SchemaInterface` for an array of multiple named properties.
 It will execute all subschemas that are defined for each subkey and merge the results into one.
-The subschemas can be created with the Eeel `Schema.type(...)` helper or the `Neos.Fusion.Form:Runtime.Schema` prototype.
+The subschemas can be created with the Eeel `Schema.forType(...)` helper or the `Neos.Fusion.Form:Runtime.Schema`
+prototype.
 
 Example::
 
 	schema = Neos.Fusion.Form:Runtime.SchemaCollection {
-		firstName = ${Schema.type("string").validator('NotEmpty')}
-		lastName = ${Schema.type("string").validator('NotEmpty').validator('StringLength', {minimum: 10, maximum: 40})}
+		firstName = ${Schema.forType("string").validator('NotEmpty')}
+		lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 10, maximum: 40})}
 	}
 
 :[key]: (`SchemaInterface`, defaults to `Neos.Fusion.Form:Runtime.Schema`_)
