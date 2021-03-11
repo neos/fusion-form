@@ -20,16 +20,16 @@ use Neos\Fusion\Form\Domain\Form;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
-use Neos\Flow\Security\Cryptography\HashService;
+use Neos\Fusion\Form\Runtime\Domain\FormRequestFactory;
 
 class RuntimeFormImplementation extends AbstractFusionObject
 {
+
     /**
+     * @var FormRequestFactory
      * @Flow\Inject
-     * @var HashService
-     * @internal
      */
-    protected $hashService;
+    protected $formRequestFactory;
 
     /**
      * @return string
@@ -61,14 +61,6 @@ class RuntimeFormImplementation extends AbstractFusionObject
     }
 
     /**
-     * @return ActionInterface
-     */
-    protected function getAction(): ActionInterface
-    {
-        return  $this->fusionValue('action');
-    }
-
-    /**
      * @return ActionRequest
      */
     protected function getCurrentActionRequest(): ActionRequest
@@ -93,47 +85,18 @@ class RuntimeFormImplementation extends AbstractFusionObject
         $data = $this->getData();
         $process = $this->getProcess();
 
-        $formRequest = $this->createFormRequest($identifier);
+        $formRequest = $this->formRequestFactory->createFormRequest($this->getCurrentActionRequest(), $identifier);
         $process->handle($data, $formRequest);
         if ($process->isFinished() === false) {
-            return $this->renderForm($identifier, $formRequest, $process);
+            return $this->renderForm($process, $formRequest);
         } else {
             return $this->performAction($process->getData());
         }
     }
 
     /**
-     * Prepare subrequest for the identifier namespace and transfer the arguments
-     * only arguments present in __trustedProperties are transferred
-     *
-     * @param string $identifier
-     * @return ActionRequest
-     */
-    protected function createFormRequest(string $identifier): ActionRequest
-    {
-        $request = $this->getCurrentActionRequest();
-        $formRequest = $request->createSubRequest();
-        $formRequest->setArgumentNamespace($identifier);
-        if ($request->hasArgument($identifier) === true && is_array($request->getArgument($identifier))) {
-            $submittedData = $request->getArgument($identifier);
-            $subrequestArguments = [];
-            if ($submittedData['__trustedProperties']) {
-                $trustedProperties = unserialize($this->hashService->validateAndStripHmac($submittedData['__trustedProperties']), ['allowed_classes' => false]);
-                foreach ($trustedProperties as $field => $number) {
-                    if (array_key_exists($field, $submittedData)) {
-                        $subrequestArguments[$field] = $submittedData[$field];
-                    }
-                }
-            }
-            $formRequest->setArguments($subrequestArguments);
-        }
-        return $formRequest;
-    }
-
-    /**
-     * @param string $identifier
-     * @param ActionRequest $formRequest
      * @param ProcessInterface $process
+     * @param ActionRequest $formRequest
      * @return mixed|string|null
      * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationException
      * @throws \Neos\Flow\Mvc\Exception\StopActionException
@@ -141,13 +104,13 @@ class RuntimeFormImplementation extends AbstractFusionObject
      * @throws \Neos\Fusion\Exception
      * @throws \Neos\Fusion\Exception\RuntimeException
      */
-    protected function renderForm(string $identifier, ActionRequest $formRequest, ProcessInterface $process)
+    protected function renderForm(ProcessInterface $process, ActionRequest $formRequest)
     {
         $data = $process->getData();
         $form = new Form(
             $formRequest,
             $data,
-            $identifier,
+            $formRequest->getArgumentNamespace(),
             null,
             'post',
             'multipart/form-data'
@@ -175,7 +138,8 @@ class RuntimeFormImplementation extends AbstractFusionObject
     protected function performAction($data): string
     {
         $this->getRuntime()->pushContext('data', $data);
-        $action = $this->getAction();
+        $action = $this->runtime->evaluate($this->path . '/action', $this);
+        assert($action instanceof ActionInterface);
         $actionResponse = $action->perform();
         $this->getRuntime()->popContext();
         if ($actionResponse) {
