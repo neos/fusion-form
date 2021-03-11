@@ -14,6 +14,8 @@ namespace Neos\Fusion\Form\Runtime\FusionObjects;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Mvc\ActionResponse;
 use Neos\Fusion\Form\Domain\Form;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
@@ -67,26 +69,56 @@ class RuntimeFormImplementation extends AbstractFusionObject
     }
 
     /**
+     * @return ActionRequest
+     */
+    protected function getCurrentActionRequest(): ActionRequest
+    {
+        return $this->getRuntime()->getControllerContext()->getRequest();
+    }
+
+    /**
+     * @return ActionResponse
+     */
+    protected function getCurrentActionResponse(): ActionResponse
+    {
+        return $this->getRuntime()->getControllerContext()->getResponse();
+    }
+
+    /**
      * @return string
      */
     public function evaluate(): string
     {
         $identifier = $this->getIdentifier();
-        $process = $this->getProcess();
         $data = $this->getData();
+        $process = $this->getProcess();
 
-        //
-        // prepare subrequest for the form id-namespace and transfer the arguments
-        // only arguments present in __trustedProperties are transferred
-        //
-        $request =  $this->getRuntime()->getControllerContext()->getRequest();
+        $formRequest = $this->createFormRequest($identifier);
+        $process->handle($data, $formRequest);
+        if ($process->isFinished() === false) {
+            return $this->renderForm($identifier, $formRequest, $process);
+        } else {
+            return $this->performAction($process->getData());
+        }
+    }
+
+    /**
+     * Prepare subrequest for the identifier namespace and transfer the arguments
+     * only arguments present in __trustedProperties are transferred
+     *
+     * @param string $identifier
+     * @return ActionRequest
+     */
+    protected function createFormRequest(string $identifier): ActionRequest
+    {
+        $request = $this->getCurrentActionRequest();
         $formRequest = $request->createSubRequest();
         $formRequest->setArgumentNamespace($identifier);
         if ($request->hasArgument($identifier) === true && is_array($request->getArgument($identifier))) {
             $submittedData = $request->getArgument($identifier);
             $subrequestArguments = [];
             if ($submittedData['__trustedProperties']) {
-                $trustedProperties = unserialize($this->hashService->validateAndStripHmac($submittedData['__trustedProperties']), ['allowed_classes'=>false]);
+                $trustedProperties = unserialize($this->hashService->validateAndStripHmac($submittedData['__trustedProperties']), ['allowed_classes' => false]);
                 foreach ($trustedProperties as $field => $number) {
                     if (array_key_exists($field, $submittedData)) {
                         $subrequestArguments[$field] = $submittedData[$field];
@@ -95,52 +127,64 @@ class RuntimeFormImplementation extends AbstractFusionObject
             }
             $formRequest->setArguments($subrequestArguments);
         }
+        return $formRequest;
+    }
 
-        //
-        // let the process handle the formRequest
-        //
-        $process->handle($data, $formRequest);
+    /**
+     * @param string $identifier
+     * @param ActionRequest $formRequest
+     * @param ProcessInterface $process
+     * @return mixed|string|null
+     * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationException
+     * @throws \Neos\Flow\Mvc\Exception\StopActionException
+     * @throws \Neos\Flow\Security\Exception
+     * @throws \Neos\Fusion\Exception
+     * @throws \Neos\Fusion\Exception\RuntimeException
+     */
+    protected function renderForm(string $identifier, ActionRequest $formRequest, ProcessInterface $process)
+    {
+        $data = $process->getData();
+        $form = new Form(
+            $formRequest,
+            $data,
+            $identifier,
+            null,
+            'post',
+            'multipart/form-data'
+        );
 
-        //
-        // if more data is needed the process is asked to render the form
-        //
-        if ($process->isFinished() === false) {
-            $data = $process->getData();
-            $form = new Form(
-                $formRequest,
-                $data,
-                $identifier,
-                null,
-                'post',
-                'multipart/form-data'
-            );
+        $context = $this->runtime->getCurrentContext();
+        $context['form'] = $form;
+        $context['data'] = $data;
+        $this->runtime->pushContextArray($context);
+        $context['content'] = $process->render();
+        $this->runtime->pushContextArray($context);
+        $result = $this->runtime->evaluate($this->path . '/form', $this);
+        $this->runtime->popContext();
+        $this->runtime->popContext();
+        return $result;
+    }
 
-            $context = $this->runtime->getCurrentContext();
-            $context['form'] = $form;
-            $context['data'] = $data;
-            $this->runtime->pushContextArray($context);
-            $context['content'] = $process->render();
-            $this->runtime->pushContextArray($context);
-            $result = $this->runtime->evaluate($this->path . '/form', $this);
-            $this->runtime->popContext();
-            $this->runtime->popContext();
-            return $result;
-        }
-
-        //
-        // return the text content of the action response, headers are merged  into the the main response
-        //
-        $this->getRuntime()->pushContext('data', $process->getData());
-        $actions = $this->getAction();
-        $actionResponse = $actions->perform();
+    /**
+     * Perform action and return the text content of the action response,
+     * headers are merged  into the the main response
+     *
+     * @param mixed[] $data
+     * @return string
+     */
+    protected function performAction($data): string
+    {
+        $this->getRuntime()->pushContext('data', $data);
+        $action = $this->getAction();
+        $actionResponse = $action->perform();
         $this->getRuntime()->popContext();
         if ($actionResponse) {
             $result = $actionResponse->getContent();
             $actionResponse->setContent('');
-            $actionResponse->mergeIntoParentResponse($this->getRuntime()->getControllerContext()->getResponse());
-            return $result;
+            $actionResponse->mergeIntoParentResponse($this->getCurrentActionResponse());
         } else {
-            return '';
+            $result = '';
         }
+        return $result;
     }
 }
