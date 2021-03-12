@@ -36,7 +36,7 @@ class ActionResolver
     public function createAction(string $handlerType): ActionInterface
     {
         if ($objectName = $this->resolveActionObjectName($handlerType)) {
-            $actionHandler = new $objectName();
+            $actionHandler = $this->objectManager->get($objectName);
         } else {
             throw new NoSuchActionException('The action handler "' . $handlerType . '" was could not be resolved!', 1581362538);
         }
@@ -50,9 +50,9 @@ class ActionResolver
 
     /**
      * @param string $handlerType Either the fully qualified class name of the action handler or the short name
-     * @return string|boolean Class name of the action handler or false if not available
+     * @return string|null Class name of the action handler or false if not available
      */
-    protected function resolveActionObjectName($handlerType)
+    protected function resolveActionObjectName($handlerType): ?string
     {
         $handlerType = ltrim($handlerType, '\\');
 
@@ -72,6 +72,6 @@ class ActionResolver
             }
         }
 
-        return false;
+        return null;
     }
 }
