@@ -206,6 +206,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         $process['prev'] = ($currentIndex > 0) ? $subProcessKeys[$currentIndex - 1]: null ;
         $process['next'] = ($currentIndex < (count($subProcessKeys) - 1)) ? $subProcessKeys[$currentIndex + 1] : null;
         $process['all'] = $subProcessKeys;
+        $process['submitted'] = $this->state ? $this->state->getCommittedPartNames() : [];
         $process['isFirst'] = ($subProcessKey === reset($subProcessKeys));
         $process['isLast'] = ($subProcessKey === end($subProcessKeys));
 

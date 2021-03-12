@@ -37,6 +37,7 @@ class FormStateTest extends TestCase
         $this->assertEmpty($state->getAll());
         $this->assertFalse($state->hasPart('example'));
         $this->assertNull($state->getPart('example'));
+        $this->assertEquals([], $state->getCommittedPartNames());
     }
 
     /**
@@ -49,6 +50,7 @@ class FormStateTest extends TestCase
         $this->assertTrue($state->hasPart('example'));
         $this->assertEquals(['value' => 'exampleValue'], $state->getPart('example'));
         $this->assertEquals(['example' => ['value' => 'exampleValue']], $state->getAll());
+        $this->assertEquals(['example'], $state->getCommittedPartNames());
     }
 
     /**
@@ -60,17 +62,33 @@ class FormStateTest extends TestCase
         $this->assertTrue($state->hasPart('example'));
         $this->assertEquals(['value' => 'exampleValue'], $state->getPart('example'));
         $this->assertEquals(['example' => ['value' => 'exampleValue']], $state->getAll());
+        $this->assertEquals(['example'], $state->getCommittedPartNames());
     }
 
     /**
      * @test
      */
-    public function comittedPartsOverwriteExistingParts()
+    public function comittedPartsOverwriteExistingPartsWithSameName()
     {
         $state = new FormState(['example' => ['value' => 'exampleValue']]);
         $state->commitPart('example', ['another' => 'exampleValue']);
         $this->assertTrue($state->hasPart('example'));
         $this->assertEquals(['another' => 'exampleValue'], $state->getPart('example'));
         $this->assertEquals(['example' => ['another' => 'exampleValue']], $state->getAll());
+        $this->assertEquals(['example'], $state->getCommittedPartNames());
+    }
+
+    /**
+     * @test
+     */
+    public function comittedPartsAreAddedIfNamesAreDifferent()
+    {
+        $state = new FormState(['example1' => ['value' => 'exampleValue']]);
+        $state->commitPart('example2', ['another' => 'exampleValue']);
+        $this->assertTrue($state->hasPart('example1'));
+        $this->assertTrue($state->hasPart('example2'));
+        $this->assertEquals(['value' => 'exampleValue'], $state->getPart('example1'));
+        $this->assertEquals(['another' => 'exampleValue'], $state->getPart('example2'));
+        $this->assertEquals(['example1', 'example2'], $state->getCommittedPartNames());
     }
 }

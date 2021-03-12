@@ -26,7 +26,12 @@ class FormState
      */
     public function __construct(array $parts = [])
     {
-        $this->parts = $parts;
+        foreach ($parts as $key => $value) {
+            // ensure only strings are used as partNames
+            if (is_string($key)) {
+                $this->parts[$key] = $value;
+            }
+        }
     }
 
     /**
@@ -54,6 +59,21 @@ class FormState
     public function getPart(string $partName): ?array
     {
         return $this->parts[$partName] ?? null;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCommittedPartNames(): array
+    {
+        // the filter function ensures that only string keys are returned.
+        // while probably obsolete this is needed for the static analysis
+        return array_filter(
+            array_keys($this->parts),
+            function ($item) {
+                return is_string($item);
+            }
+        );
     }
 
     /**

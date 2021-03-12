@@ -122,6 +122,7 @@ During rendering a `process` variable is added to the context that contains the 
 :process.prev: (`string|null`) Previous subprocess key
 :process.next: (`string|null`) Next subprocess key
 :process.all: (`array`) List of all subprocess keys
+:process.submitted: (`array`) List of all already submitted subprocess keys
 :process.isFirst: (`boolean`) True if the current subprocess is the first one
 :process.isLast: (`boolean`) True if the current subprocess is the last one
 
