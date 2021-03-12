@@ -10,10 +10,19 @@ use Neos\Flow\Security\Exception\InvalidHashException;
 
 class FormRequestFactoryTest extends TestCase
 {
+    /**
+     * @var FormRequestFactory
+     */
     protected $formRequestFactory;
 
+    /**
+     * @var HashService
+     */
     protected $mockHashService;
 
+    /**
+     * @var ServerRequestInterface
+     */
     protected $mockHttpRequest;
 
     public function setUp(): void
@@ -37,6 +46,8 @@ class FormRequestFactoryTest extends TestCase
 
         $this->assertInstanceOf(ActionRequest::class, $formRequest);
         $this->assertEquals($identifier, $formRequest->getArgumentNamespace());
+        $this->assertEquals($actionRequest, $formRequest->getParentRequest());
+        $this->assertEquals($this->mockHttpRequest, $formRequest->getHttpRequest());
         $this->assertEmpty($formRequest->getInternalArguments());
         $this->assertEmpty($formRequest->getArguments());
     }
@@ -68,6 +79,7 @@ class FormRequestFactoryTest extends TestCase
         $this->assertInstanceOf(ActionRequest::class, $formRequest);
         $this->assertEquals($identifier, $formRequest->getArgumentNamespace());
         $this->assertEquals($actionRequest, $formRequest->getParentRequest());
+        $this->assertEquals($this->mockHttpRequest, $formRequest->getHttpRequest());
         $this->assertArrayHasKey('trusted', $formRequest->getArguments());
         $this->assertArrayNotHasKey('notTrusted', $formRequest->getArguments());
         $this->assertEquals(['trusted' => 'trustedValue'], $formRequest->getArguments());

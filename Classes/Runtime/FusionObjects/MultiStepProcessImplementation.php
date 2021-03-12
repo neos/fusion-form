@@ -14,10 +14,10 @@ namespace Neos\Fusion\Form\Runtime\FusionObjects;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Error\Messages\Result;
 use Neos\Fusion\Form\Runtime\Domain\FormState;
+use Neos\Fusion\Form\Runtime\Domain\FormStateService;
 use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
 use Neos\Fusion\Form\Runtime\Domain\ProcessCollectionInterface;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
@@ -27,10 +27,9 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
 {
     /**
      * @Flow\Inject
-     * @var HashService
-     * @internal
+     * @var FormStateService
      */
-    protected $hashService;
+    protected $formStateService;
 
     /**
      * @var FormState|null
@@ -74,8 +73,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         if (array_key_exists('__state', $internalArguments)
             && $internalArguments['__state']
         ) {
-            $validatedState = $this->hashService->validateAndStripHmac($internalArguments['__state']);
-            $this->state = unserialize(base64_decode($validatedState), ['allowed_classes' => [FormState::class]]);
+            $this->state = $this->formStateService->unserializeState($internalArguments['__state']);
         }
 
         // evaluate the subprocesses this has to be done after tge state was restored
@@ -203,7 +201,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         $currentIndex = array_search($subProcessKey, $subProcessKeys);
 
         $process = [];
-        $process['state'] = $this->state ? $this->hashService->appendHmac(base64_encode(serialize($this->state))) : null;
+        $process['state'] = $this->state ? $this->formStateService->serializeState($this->state) : null;
         $process['current'] = $subProcessKey;
         $process['prev'] = ($currentIndex > 0) ? $subProcessKeys[$currentIndex - 1]: null ;
         $process['next'] = ($currentIndex < (count($subProcessKeys) - 1)) ? $subProcessKeys[$currentIndex + 1] : null;
