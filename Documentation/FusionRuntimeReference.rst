@@ -10,15 +10,15 @@ with validation and actions that handle the submitted data without implementing 
 Neos.Fusion.Form:Runtime.RuntimeForm
 ------------------------------------
 
-The runtime form prototype will pass the submitted arguments in the form-namespace in `identifier` to the `process` until
-this is finished. Then the resulting `data` is passed to the `action`.
+The runtime form prototype will pass the submitted data from namespace `identifier` to the `process` until
+this is finished. Afterwards the resulting `data` is passed to the `action`.
 
 The algorithm is as follows:
 
 1. Create a subRequest in form namespace and pass all submitted values that have trustedProperties.
 2. Let the `proccess` handle the created subrequest.
-3. If the `process` is not finished render form tag an delegates the body rendering to the `process`.
-4. If the `process` is finished the the data and execute the `action`.
+3. If the `process` is not finished render form tag and delegates the body rendering to the `process`.
+4. If the `process` is finished execute the `action` and pass the data.
 
 :identifier: (`string`), Form argument namespace. If no identifier is defined the hash of the current fusion path is used as namespace.
 :data: (`mixed`, defaults to `Neos.Fusion:DataStructure`_) The initial data that is given to the form process as input value.
@@ -29,26 +29,28 @@ The algorithm is as follows:
 
 Example::
 
-	renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
-		# the form argument namespace
-		identifier = 'example'
+    <renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
+        # the form argument namespace
+        identifier = 'example'
 
-		# initial form data to prefill the fields
-		data = Neos.Fusion:DataStructure
+        # initial form data to prefill the fields
+        data = Neos.Fusion:DataStructure
 
-		# the form process that is responsible for rendering the form and
-		# collecting the data
-		process = Neos.Fusion.Form:Runtime.SingleStepForm
+        # the form process that is responsible for rendering the form and
+        # collecting the data
+        process = Neos.Fusion.Form:Runtime.SingleStepForm
 
-		# action that is processed after the form process is finished
-		action =  Neos.Fusion.Form:Runtime.Actions
-	}
+        # action that is processed after the form process is finished
+        action =  Neos.Fusion.Form:Runtime.Actions
+    }>
 
 Neos.Fusion.Form:Runtime.SingleStepProcess
 ------------------------------------------
 
-The most common and simple form process consists of a single page. The actual form is defined as `content`
-and may be afx or a prototype. It is responsible for rendering the form
+The most common and simple form process consists of a single step. The actual form is defined as `content`. The `schema`
+is responsible for converting and validating the data.
+
+.. note:: Only values that are backed by a schema are added to the form data.
 
 :content: (`string`) The form body to be rendered.
 :schema: (`SchemaInterface`, defaults to `Neos.Fusion.Form:Runtime.SchemaCollection`_) The schema to convert and validate the submitted data with.
@@ -57,59 +59,58 @@ and may be afx or a prototype. It is responsible for rendering the form
 
 Example::
 
-	prototype(Form.Test:Content.ExampleForm) < prototype(Neos.Neos:ContentComponent) {
-		renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
-			identifier = "singleStepExample"
+    prototype(Form.Test:Content.ExampleForm) < prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
-			process = Neos.Fusion.Form:Runtime.SingleStepProcess {
-				content = afx`
-					<Neos.Fusion.Form:FieldContainer field.name="firstName" label="First Name">
-						<Neos.Fusion.Form:Input />
-					</Neos.Fusion.Form:FieldContainer>
-					<Neos.Fusion.Form:FieldContainer field.name="lastName" label="Last Name">
-						<Neos.Fusion.Form:Input />
-					</Neos.Fusion.Form:FieldContainer>
-					<Neos.Fusion.Form:FieldContainer field.name="file" label="File">
-						<Neos.Fusion.Form:Upload />
-					</Neos.Fusion.Form:FieldContainer>
-				`
-				schema {
-					firstName = ${Schema.string().isRequired()}
-					lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
-					file = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
-				}
-			}
+        identifier = "singleStepExample"
 
-			action {
-				message {
-					type = 'Neos.Fusion.Form.Runtime:Message'
-					options {
-						message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
-					}
-				}
-				email {
-					type = 'Neos.Fusion.Form.Runtime:Email'
-					options {
-						senderAddress = ${q(node).property('mailFrom')}
-						recipientAddress = ${q(node).property('mailTo')}
-						subject = ${q(node).property('mailSubject')}
-						text = afx`Thank you {data.firstName} {data.lastName}`
-						html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1></p>`
-						attachments {
-							upload = ${data.file}
-						}
-					}
-				}
-			}
-		}
-	}
+        process {
+            content = afx`
+                <Neos.Fusion.Form:FieldContainer field.name="firstName" label="First Name">
+                    <Neos.Fusion.Form:Input />
+                </Neos.Fusion.Form:FieldContainer>
+                <Neos.Fusion.Form:FieldContainer field.name="lastName" label="Last Name">
+                    <Neos.Fusion.Form:Input />
+                </Neos.Fusion.Form:FieldContainer>
+                <Neos.Fusion.Form:FieldContainer field.name="file" label="File">
+                    <Neos.Fusion.Form:Upload />
+                </Neos.Fusion.Form:FieldContainer>
+            `
+            schema {
+                firstName = ${Schema.string().isRequired()}
+                lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
+                file = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+            }
+        }
+
+        action {
+            message {
+                type = 'Neos.Fusion.Form.Runtime:Message'
+                options {
+                    message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
+                }
+            }
+            email {
+                type = 'Neos.Fusion.Form.Runtime:Email'
+                options {
+                    senderAddress = ${q(node).property('mailFrom')}
+                    recipientAddress = ${q(node).property('mailTo')}
+                    subject = ${q(node).property('mailSubject')}
+                    text = afx`Thank you {data.firstName} {data.lastName}`
+                    html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
+                    attachments {
+                        upload = ${data.file}
+                    }
+                }
+            }
+        }
+    }
 
 Neos.Fusion.Form:Runtime.MultiStepProcess
 -----------------------------------------
 
-The multistep process allows to define use multiple `steps` that will usually be of type SingleStepProcess. The multistep process
+The multistep process allows to use multiple `steps` that will are of type `SingleStepProcess`. The multistep process
 persists the current form state as hidden field and otherwise passes the rendering of the form-body to the currently active
-sub procces.
+sub procces. A multistep process is considered to be finished once all steps were successfully submitted.
 
 :steps: (`ProcessCollectionInterface`, defaults to `Neos.Fusion.Form:Runtime.ProcessCollection`_)
 :header: (`string`) The form header is rendered before the body. By default this is empty, create derived prototypes to change this.
@@ -130,89 +131,87 @@ During rendering a `process` variable is added to the context that contains the 
 
 Example::
 
-	prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Neos:ContentComponent) {
-		renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
+    prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
-			identifier = "multiStepExample"
+        identifier = "multiStepExample"
 
-			process = Neos.Fusion.Form:Runtime.MultiStepProcess {
-				steps {
-					first {
-						content = afx`
-							<Neos.Fusion.Form:FieldContainer field.name="firstName" label="First Name">
-								<Neos.Fusion.Form:Input @validate />
-							</Neos.Fusion.Form:FieldContainer>
-							<Neos.Fusion.Form:FieldContainer field.name="lastName" label="Last Name">
-								<Neos.Fusion.Form:Input />
-							</Neos.Fusion.Form:FieldContainer>
-						`
-						schema {
-							firstName = ${Schema.string().isRequired()}
-							lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
-						}
-					}
+        process = Neos.Fusion.Form:Runtime.MultiStepProcess {
+            steps {
+                first {
+                    content = afx`
+                        <Neos.Fusion.Form:FieldContainer field.name="firstName" label="First Name">
+                            <Neos.Fusion.Form:Input @validate />
+                        </Neos.Fusion.Form:FieldContainer>
+                        <Neos.Fusion.Form:FieldContainer field.name="lastName" label="Last Name">
+                            <Neos.Fusion.Form:Input />
+                        </Neos.Fusion.Form:FieldContainer>
+                    `
+                    schema {
+                        firstName = ${Schema.string().isRequired()}
+                        lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
+                    }
+                }
 
-					second {
-						content = afx`
-							<Neos.Fusion.Form:FieldContainer field.name="street" label="Street">
-								<Neos.Fusion.Form:Input />
-							</Neos.Fusion.Form:FieldContainer>
-							<Neos.Fusion.Form:FieldContainer field.name="city" label="City">
-								<Neos.Fusion.Form:Input />
-							</Neos.Fusion.Form:FieldContainer>
-						`
-						schema {
-							street = ${Schema.string().isRequired()}
-							city = ${Schema.string().isRequired()}
-						}
-					}
+                second {
+                    content = afx`
+                        <Neos.Fusion.Form:FieldContainer field.name="street" label="Street">
+                            <Neos.Fusion.Form:Input />
+                        </Neos.Fusion.Form:FieldContainer>
+                        <Neos.Fusion.Form:FieldContainer field.name="city" label="City">
+                            <Neos.Fusion.Form:Input />
+                        </Neos.Fusion.Form:FieldContainer>
+                    `
+                    schema {
+                        street = ${Schema.string().isRequired()}
+                        city = ${Schema.string().isRequired()}
+                    }
+                }
 
-					third {
-						content = afx`
-							<Neos.Fusion.Form:FieldContainer field.name="file" label="File">
-								<Neos.Fusion.Form:Upload />
-							</Neos.Fusion.Form:FieldContainer>
-						`
-						schema {
-							file = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
-						}
-					}
+                third {
+                    content = afx`
+                        <Neos.Fusion.Form:FieldContainer field.name="file" label="File">
+                            <Neos.Fusion.Form:Upload />
+                        </Neos.Fusion.Form:FieldContainer>
+                    `
+                    schema {
+                        file = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+                    }
+                }
 
-					confirmation {
-						content = afx`
-							<h1>Confirm to submit {data.firstName} {first.data.lastName} from {data.city}, {data.street}</h1>
-						`
-					}
-				}
-			}
+                confirmation {
+                    content = afx`
+                        <h1>Confirm to submit {data.firstName} {first.data.lastName} from {data.city}, {data.street}</h1>
+                    `
+                }
+            }
+        }
 
-			action {
+        action {
 
-				email {
-					type = 'Neos.Fusion.Form.Runtime:Email'
-					options {
-						senderAddress = ${q(node).property('mailFrom')}
-						recipientAddress = ${q(node).property('mailTo')}
-						subject = ${q(node).property('mailSubject')}
-						text = afx`Thank you {data.firstName} {data.lastName} from {data.city}, {data.street}`
-						html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1><p>from {data.city}, {data.street}</p>`
-						attachments {
-							upload = ${data.file}
-						}
-					}
-				}
+            email {
+                type = 'Neos.Fusion.Form.Runtime:Email'
+                options {
+                    senderAddress = ${q(node).property('mailFrom')}
+                    recipientAddress = ${q(node).property('mailTo')}
+                    subject = ${q(node).property('mailSubject')}
+                    text = afx`Thank you {data.firstName} {data.lastName} from {data.city}, {data.street}`
+                    html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1><p>from {data.city}, {data.street}</p>`
+                    attachments {
+                        upload = ${data.file}
+                    }
+                }
+            }
 
-				redirect {
-					type = 'Neos.Fusion.Form.Runtime:Redirect'
-					options {
-						uri = Neos.Neos:NodeUri {
-							node = ${q(node).property('thankyou')}
-						}
-					}
-				}
-			}
-		}
-	}
+            redirect {
+                type = 'Neos.Fusion.Form.Runtime:Redirect'
+                options {
+                    uri = Neos.Neos:NodeUri {
+                        node = ${q(node).property('thankyou')}
+                    }
+                }
+            }
+        }
+    }
 
 
 
@@ -235,10 +234,10 @@ The form package already comes with the following action types `Email`, `Log`, `
 
 Example::
 
-	messageAction = Neos.Fusion.Form:Runtime.Action {
-		type = 'Neos.Fusion.Form.Runtime:Message'
-		message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
-	}
+    messageAction = Neos.Fusion.Form:Runtime.Action {
+        type = 'Neos.Fusion.Form.Runtime:Message'
+        message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
+    }
 
 :type: (`string`) To to be used by the Action resolver to determine the implementation class. Can be an Identifier or a ClassName.
 :options: (`array` defaults to `Neos.Fusion:DataStructure`) The options that are set on ConfigurableActions
@@ -253,10 +252,10 @@ prototype.
 
 Example::
 
-	schema = Neos.Fusion.Form:Runtime.SchemaCollection {
-		firstName = ${Schema.forType("string").validator('NotEmpty')}
-		lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 10, maximum: 40})}
-	}
+    schema = Neos.Fusion.Form:Runtime.SchemaCollection {
+        firstName = ${Schema.forType("string").validator('NotEmpty')}
+        lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 10, maximum: 40})}
+    }
 
 :[key]: (`SchemaInterface`, defaults to `Neos.Fusion.Form:Runtime.Schema`_)
 
@@ -273,29 +272,29 @@ one or more validators.
 
 Example::
 
-	firstName = Neos.Fusion.Form:Runtime.Schema {
-		type = "string"
-		validator.notEmpty.type = "NotEmpty"
-		validator.stringLength.type = "NotEmpty"
-		validator.stringLength.options.minimum = 10
-		validator.stringLength.options.maximum = 40
-	}
+    firstName = Neos.Fusion.Form:Runtime.Schema {
+        type = "string"
+        validator.notEmpty.type = "NotEmpty"
+        validator.stringLength.type = "NotEmpty"
+        validator.stringLength.options.minimum = 10
+        validator.stringLength.options.maximum = 40
+    }
 
-	file = Neos.Fusion.Form:Runtime.Schema {
-		type = "Neos\Flow\ResourceManagement\PersistentResource"
-		validator.file.type = 'Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator'
-		validator.file.options.allowedExtensions:['txt', 'jpg']
-	}
+    file = Neos.Fusion.Form:Runtime.Schema {
+        type = "Neos\Flow\ResourceManagement\PersistentResource"
+        validator.file.type = 'Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator'
+        validator.file.options.allowedExtensions:['txt', 'jpg']
+    }
 
-	date {
-		type = "DateTime"
-		typeConverterOptions.datetime {
-			class = "Neos\\Flow\\Property\\TypeConverter\\DateTimeConverter"
-			option = "dateFormat"
-			value = "Y-m-d"
-		}
-		validator.notEmpty.type = 'NotEmpty'
-	}
+    date {
+        type = "DateTime"
+        typeConverterOptions.datetime {
+            class = "Neos\\Flow\\Property\\TypeConverter\\DateTimeConverter"
+            option = "dateFormat"
+            value = "Y-m-d"
+        }
+        validator.notEmpty.type = 'NotEmpty'
+    }
 
 :type: (`string`) A type that is used by the property mapper to
 :validator: (`ValidatorInterface`, defaults to `Neos.Fusion.Form:Runtime.ValidatorCollection`_)
@@ -331,17 +330,17 @@ and configure via `options`.
 
 Example::
 
-	stringLength = Neos.Fusion.Form:Runtime.Validator {
-		type = "NotEmpty"
-		options {
-			minimum = 10
-			maximum = 40
-		}
-	}
-	fileType = Neos.Fusion.Form:Runtime.Validator {
-		type = "Neos\Flow\ResourceManagement\PersistentResource"
-		options.allowedExtensions:['txt', 'jpg']
-	}
+    stringLength = Neos.Fusion.Form:Runtime.Validator {
+        type = "NotEmpty"
+        options {
+            minimum = 10
+            maximum = 40
+        }
+    }
+    fileType = Neos.Fusion.Form:Runtime.Validator {
+        type = "Neos\Flow\ResourceManagement\PersistentResource"
+        options.allowedExtensions:['txt', 'jpg']
+    }
 
 :type: (`string`) A class name or identifier to be resolved by the validator resolver.
 :options: (`array`, defaults to `Neos.Fusion:DataStructure`_)
