@@ -137,6 +137,61 @@ Example::
         </Neos.Fusion.Form:Select>
     `
 
+Neos.Fusion.Form:FieldContainer
+--------------------------------------------------
+
+The field contaimer is a component that renders a label and validation results for the defined field.
+The actual input elements are passed as afx-content to the container. The container extends `Neos.Fusion.Form:Compnent.Field`
+which allows to define a `field` that will be used by all fields inside that do not have another `field.name` defined. The container also adjusts
+the rendering of checkboxes and radio inputs to the needs of the Neos backend.
+
+.. note:
+Do not use this container in frontend projects. It will be modified in the future as the Neos backend evolves.
+Instead use this prototype as template to create project specific field-containers.
+
+:field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
+:field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
+:field.field: (Field, defaults to `field`) An possible field that may have been predefined in a container. If no name is given the outer field will be reused.
+:field.name: (string) The fieldname, use square bracket syntax for nested properties.
+:field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
+:field.value: (any, default = null) The target value of fields (for checkbox, radio and button)
+:label: (string) The label for the field, is translated using `translation.label.package` and `translation.label.source`
+:attributes: (DataStructure) attributes for the container tag
+:class: (string, default null) class for the container
+:errorClass: (string, default null) class that is added to the container and the error list once erors occur
+:content: (string) afx content
+
+Example::
+
+    renderer = afx
+        <Neos.Fusion.Form:FieldContainer field.name="user[firstName]" label="First name">
+            <Neos.Fusion.Form:Input />
+        </Neos.Fusion.Form:FieldContainer>
+    `
+
+In some cases multiple inputs are combined in a single FieldContainer::
+
+    renderer = afx
+        <Neos.Fusion.Form:FieldContainer field.name="user[roles]" label="user.role" multiple>
+            <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" >Restricted Editor</Neos.Fusion.Form:Checkbox>
+            <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" >Editor</Neos.Fusion.Form:Checkbox>
+            <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" >Administrator</Neos.Fusion.Form:Checkbox>
+        </Neos.Fusion.Form:FieldContainer>
+    `
+
+For adding translations or customizing the rendering the renderer can be overwritten::
+
+    prototype(Vendor.Site:Form.FieldContainer) < prototype(Neos.Fusion.Form:FieldContainer) {
+        renderer >
+        renderer = afx`
+            <div>
+                <label>{props.label}</label>
+                {props.content}
+            </div>
+        `
+    }
+
+
 Neos.Fusion.Form:Neos.BackendModule.FieldContainer
 --------------------------------------------------
 
@@ -164,9 +219,9 @@ the rendering of checkboxes and radio inputs to the needs of the Neos backend.
 Example::
 
     renderer = afx
-        <Neos.Fusion.`Form:Neos.BackendModule.FieldContainer field.name="user[firstName]" label="user.firstName">
+        <Neos.Fusion.Form:Neos.BackendModule.FieldContainer field.name="user[firstName]" label="user.firstName">
             <Neos.Fusion.Form:Input />
-        </Neos.Fusion.`Form:Neos.BackendModule.FieldContainer>
+        </Neos.Fusion.Form:Neos.BackendModule.FieldContainer>
     `
 
 In some cases multiple inputs are combined in a single FieldContainer::

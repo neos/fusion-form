@@ -20,13 +20,19 @@ prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion.Form:Compone
     #
     content = null
 
+    # className of the container
+    class = null
+
+    # classname for errors
+    errorClass = 'error'
+
     renderer = afx`
-        <div class={field.hasErrors() ? 'error' : ''} {...props.attributes} >
+        <div class={props.class + field.hasErrors() ? ' ' + props.errorClass : ''} {...props.attributes} >
             <label for={field.getName()} @if.has={props.label}>
                 {props.label}
             </label>
             {props.content}
-            <ul @if.hasErrors={field.hasErrors()} class="errors">
+            <ul @if.hasErrors={field.hasErrors()} class={props.errorClass}>
                 <Neos.Fusion:Loop items={field.getResult().flattenedErrors} itemName="errors" >
                     <Neos.Fusion:Loop items={errors} itemName="error" >
                         <li>{error}</li>
