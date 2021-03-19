@@ -110,7 +110,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
         $form = new Form(
             $formRequest,
             $data,
-            $formRequest->getArgumentNamespace(),
+            null,
             null,
             'post',
             'multipart/form-data'

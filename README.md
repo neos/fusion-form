@@ -4,7 +4,7 @@ Pure fusion form rendering with afx support!
 
 ## Documentation
 
-- Neos.Fusion.Form - Rendering and Data Binding
+- *Neos.Fusion.Form* - Form Rendering and Data Binding
   - [Fusion Form Basics](Documentation/FormBasics.md)
   - Tutorials
     - [Implementing custom input elements](Documentation/Tutorials/CustomFields.md)
@@ -14,7 +14,7 @@ Pure fusion form rendering with afx support!
     - [FrontendForm](Documentation/Examples/FrontendForm.md)
   - [Fusion Prototypes](Documentation/FusionReference.rst)
   - [Eel Helpers](Documentation/HelperReference.rst)
-- Form.Fusion.Form:Runtime - Runtime Single/Multistep Forms with Actions
+- *Form.Fusion.Form:Runtime* - Runtime Single/Multistep Forms with Actions
   - [Runtime Fusion Form Basics](Documentation/RuntimeFormBasics.md)
   - Tutorials
     - [Custom form action](Documentation/Tutorials/CustomFormAction.md)
@@ -58,9 +58,11 @@ concept changes you should be aware of.
 
 ### Important deviations from the concepts of the Neos.Form package 
 
-- The definitions for form rendering and validation are seperated into `content` and `schema` of the process 
-- Settings, data and node propertioes can be used via fusion to define action and controll the process.
-- The concept of finishers is replaced with `actions` 
+- The definitions for form rendering and validation are seperated into `content` and `schema` of the process.
+- Settings, form-data and node-properties can be used in unified way via fusion to define action and controll the process.
+- The concept of finishers is replaced with `actions`
+- Confirmations no special feature but can be created as "step" in a MultiStepProcess   
+- Actions can not decide to send the user back into a finished the process. 
 
 
 

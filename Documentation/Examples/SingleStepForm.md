@@ -33,7 +33,7 @@ prototype(Form.Test:Content.ExampleForm) < prototype(Neos.Fusion.Form:Runtime.Ru
     action {
         message {
             type = 'Neos.Fusion.Form.Runtime:Message'
-           options.message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
+            options.message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
         }
         email {
             type = 'Neos.Fusion.Form.Runtime:Email'
