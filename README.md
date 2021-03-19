@@ -4,26 +4,36 @@ Pure fusion form rendering with afx support!
 
 ## Documentation
 
-- *Neos.Fusion.Form* - Form Rendering and Data Binding
-  - [Fusion Form Basics](Documentation/FormBasics.md)
-  - Tutorials
-    - [Implementing custom input elements](Documentation/Tutorials/CustomFields.md)
-    - [Fusion rendering for backend modules](Documentation/Tutorials/FusionFormsInBackendModules.md)
-    - [Custom field container](Documentation/Tutorials/CustomFieldContainer.md)
-  - Examples
-    - [FrontendForm](Documentation/Examples/FrontendForm.md)
-  - [Fusion Prototypes](Documentation/FusionReference.rst)
-  - [Eel Helpers](Documentation/HelperReference.rst)
-- *Form.Fusion.Form:Runtime* - Runtime Single/Multistep Forms with Actions
-  - [Runtime Fusion Form Basics](Documentation/RuntimeFormBasics.md)
-  - Tutorials
-    - [Custom form action](Documentation/Tutorials/CustomFormAction.md)
-  - Examples
-    - [SingleStepForm](Documentation/Examples/SingleStepForm.md)
-    - [MultiStepForm](Documentation/Examples/MultiStepForm.md)
-  - [Fusion Prototypes](Documentation/FusionRuntimeReference.rst)
-  - [Eel Helpers](Documentation/RuntimeHelperReference.rst)
-  - [Form Actions](Documentation/RuntimeActionReference.rst)
+### *Neos.Fusion.Form* - Form Rendering and Data Binding
+
+This part covers the rendering of forms that a bound to objects or data and 
+will be submitted to a custom Controller Action.
+
+- [Fusion Form Basics](Documentation/FormBasics.md)
+- Tutorials
+  - [Implementing custom input elements](Documentation/Tutorials/CustomFields.md)
+  - [Fusion rendering for backend modules](Documentation/Tutorials/FusionFormsInBackendModules.md)
+  - [Custom field container](Documentation/Tutorials/CustomFieldContainer.md)
+- Examples
+  - [FrontendForm](Documentation/Examples/FrontendForm.md)
+- [Fusion Prototypes](Documentation/FusionReference.rst)
+- [Eel Helpers](Documentation/HelperReference.rst)
+
+### *Form.Fusion.Form:Runtime* - Runtime Single/Multistep Forms with Actions
+
+This part covers the definition of Forms with Validation and finishing Actions
+via Fusion. Use cases like Contact Forms, Newsletter subscriptions should 
+be implemented like this.   
+
+- [Runtime Fusion Form Basics](Documentation/RuntimeFormBasics.md)
+- Tutorials
+  - [Custom form action](Documentation/Tutorials/CustomFormAction.md)
+- Examples
+  - [SingleStepForm](Documentation/Examples/SingleStepForm.md)
+  - [MultiStepForm](Documentation/Examples/MultiStepForm.md)
+- [Fusion Prototypes](Documentation/FusionRuntimeReference.rst)
+- [Eel Helpers](Documentation/RuntimeHelperReference.rst)
+- [Form Actions](Documentation/RuntimeActionReference.rst)
 
 ## Development targets 
 
