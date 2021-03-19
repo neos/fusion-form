@@ -40,9 +40,9 @@ class FormDefinitionImplementation extends AbstractFusionObject
     /**
      * @return string|null
      */
-    protected function getFieldnamePrefix(): ?string
+    protected function getNamespace(): ?string
     {
-        return $this->fusionValue('fieldNamePrefix');
+        return $this->fusionValue('namespace');
     }
 
     /**
@@ -75,7 +75,7 @@ class FormDefinitionImplementation extends AbstractFusionObject
     {
         $request = $this->getRequest();
         $data = $this->getData();
-        $fieldNamePrefix = $this->getFieldnamePrefix();
+        $namespace = $this->getNamespace();
         $target = $this->getTarget();
         $method = $this->getMethod();
         $encoding = $this->getEncoding();
@@ -83,7 +83,7 @@ class FormDefinitionImplementation extends AbstractFusionObject
         return new Form(
             $request,
             $data,
-            $fieldNamePrefix,
+            $namespace,
             $target,
             $method,
             $encoding

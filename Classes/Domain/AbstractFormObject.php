@@ -66,16 +66,16 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
      * Prepend the given fieldNamePrefix to the fieldName the
      *
      * @param string $fieldName
-     * @param string|null $fieldNamePrefix
+     * @param string|null $namespace
      * @return string
      */
-    protected function prefixFieldName(string $fieldName, string $fieldNamePrefix = null): string
+    protected function prefixFieldName(string $fieldName, string $namespace = null): string
     {
-        if (!$fieldNamePrefix) {
+        if (!$namespace) {
             return $fieldName;
         } else {
             $fieldNameSegments = explode('[', $fieldName, 2);
-            $fieldName = $fieldNamePrefix . '[' . $fieldNameSegments[0] . ']';
+            $fieldName = $namespace . '[' . $fieldNameSegments[0] . ']';
             if (count($fieldNameSegments) > 1) {
                 $fieldName .= '[' . $fieldNameSegments[1];
             }

@@ -134,8 +134,8 @@ class Field extends AbstractFormObject
     public function getName(): ?string
     {
         if ($this->name) {
-            if ($this->form && $this->form->getFieldNamePrefix()) {
-                return $this->prefixFieldName($this->name, $this->form->getFieldNamePrefix()) . ($this->multiple ? '[]' : '');
+            if ($this->form && $this->form->getNamespace()) {
+                return $this->prefixFieldName($this->name, $this->form->getNamespace()) . ($this->multiple ? '[]' : '');
             }
             return $this->name . ($this->multiple ? '[]' : '');
         }

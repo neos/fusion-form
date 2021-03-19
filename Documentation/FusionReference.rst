@@ -19,7 +19,7 @@ In addition the form component will also:
 
 :form: (`Neos.Fusion.Form:Definition.Form`_) used to populate the `form` context but is not available via `props`
 :form.request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
-:form.namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
+:form.namespace: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
 :form.method:  (string, default to `post`) The form method.
