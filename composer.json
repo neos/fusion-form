@@ -30,7 +30,7 @@
     },
     "scripts": {
         "test:functional": ["vendor/bin/phpunit Tests/Functional"],
-        "test:stan": ["vendor/bin/phpstan analyse -l 7 Classes"],
+        "test:stan": ["vendor/bin/phpstan analyse -l 8 Classes"],
         "test": ["composer install", "composer test:functional", "composer  test:stan"]
     }
 }
