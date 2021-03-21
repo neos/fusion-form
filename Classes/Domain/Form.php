@@ -90,7 +90,7 @@ class Form extends AbstractFormObject
      * @param string|null $method
      * @param string|null $encoding
      */
-    public function __construct(?ActionRequest $request = null, $data = null, ?string $fieldNamePrefix = null, ?string $target = null, ?string $method = 'get', ?string $encoding = null)
+    public function __construct(?ActionRequest $request = null, $data = null, ?string $fieldNamePrefix = null, ?string $target = null, ?string $method = null, ?string $encoding = null)
     {
         $this->request = $request;
         $this->data = $data;
