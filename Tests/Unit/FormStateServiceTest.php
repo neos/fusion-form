@@ -45,7 +45,7 @@ class FormStateServiceTest extends TestCase
     /**
      * @test
      */
-    public function formStatesCanBeSerializedAndUnserialized()
+    public function formStateCanBeSerializedAndUnserialized()
     {
         $stateParts = [
             'first' => ['value1' => 'foo', 'value2' => 'bar'],

@@ -30,7 +30,7 @@ abstract class AbstractCollectionFusionObject extends AbstractArrayFusionObject
     protected $itemInterface = null;
 
     /**
-     * The fusion protype name for beeing used on untyped keys
+     * The fusion prototype name for being used on untyped keys
      * @var string|null
      */
     protected $itemPrototype = null;
@@ -46,7 +46,7 @@ abstract class AbstractCollectionFusionObject extends AbstractArrayFusionObject
     /**
      * Evaluate the subitems without caching and return the items of the collection.
      * If a $itemPrototype is defined this prototype is used to evaluate untyped items.
-     * If a $itemInterface is define the children are checked for this interface and otherwise an
+     * If an $itemInterface is defined the children are checked for this interface and otherwise an
      * exception is thrown.
      *
      * @return mixed[]

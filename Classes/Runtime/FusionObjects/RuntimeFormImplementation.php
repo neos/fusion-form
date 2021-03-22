@@ -45,7 +45,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
     }
 
     /**
-     * @return mixed[]
+     * @return mixed[]|null
      */
     protected function getData(): ?array
     {

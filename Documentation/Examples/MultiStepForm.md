@@ -37,8 +37,8 @@ prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Fusion.Form:Runtime.R
                     </Neos.Fusion.Form:FieldContainer>
                 `
                 schema {
-                    street = ${Schema.string().isRequird()}
-                    city = ${Schema.string().isRequird()}
+                    street = ${Schema.string().isRequired()}
+                    city = ${Schema.string().isRequired()}
                 }
             }
 

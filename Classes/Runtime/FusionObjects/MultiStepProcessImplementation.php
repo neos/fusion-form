@@ -76,7 +76,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             $this->state = $this->formStateService->unserializeState($internalArguments['__state']);
         }
 
-        // evaluate the subprocesses this has to be done after tge state was restored
+        // evaluate the subprocesses this has to be done after the state was restored
         // as the current data may affect @if conditions
         $subProcesses = $this->getCurrentSubProcesses();
 

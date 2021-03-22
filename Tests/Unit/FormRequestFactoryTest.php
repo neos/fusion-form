@@ -170,10 +170,10 @@ class FormRequestFactoryTest extends TestCase
     /**
      * @test
      */
-    public function invalidHashExceptionsAreNotCatched()
+    public function invalidHashExceptionsAreNotCaught()
     {
         $identifier = 'example';
-        $trustedProperties = '__truested_properties__';
+        $trustedProperties = '__trusted_properties__';
 
         $actionRequest = ActionRequest::fromHttpRequest($this->mockHttpRequest);
         $actionRequest->setArguments(

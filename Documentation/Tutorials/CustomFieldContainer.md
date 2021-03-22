@@ -12,7 +12,7 @@ prototype(Vendor.Site:Form.FieldContainer)  < prototype(Neos.Fusion.Form:FieldCo
     # disable the inherited rendering
     renderer > 
     
-    # define custom rendering with lanbel translations
+    # define custom rendering with label translations
     renderer = afx`
         <div class={field.errors ? "error"}>
             <label for={field.name} @if.has={props.label}>

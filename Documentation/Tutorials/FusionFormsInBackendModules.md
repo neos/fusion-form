@@ -6,7 +6,7 @@ can be used to render fields with translated labels and error messages
 using the default markup of the Neos backend.
 
 HINT: To render a backend module with fusion you have to set the 
-`defaultViwObjectName` to the `Neos\Fusion\View\FusionView::class` in the
+`defaultViewObjectName` to the `Neos\Fusion\View\FusionView::class` in the
 controller class and be aware that you have to include all required fusion
 explicitly.
 
@@ -20,7 +20,7 @@ include: resource://Neos.Fusion/Private/Fusion/Root.fusion
 include: resource://Neos.Fusion.Form/Private/Fusion/Root.fusion
 
 #
-# By default the fusion view creates the render pathes from the
+# By default the fusion view creates the render paths from the
 # current package controller and action. 
 #
 Form.Test.FusionController.index = Form.Test:Backend.UserForm

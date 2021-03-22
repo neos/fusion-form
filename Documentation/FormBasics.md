@@ -45,7 +45,7 @@ While html inputs can be used they provide no magic like data-binding and
 automatic namespaces. 
 
 To render controls that access the data bound to the form prototypes like 
-`Neos.Fusion.Form:Input` are used. Those prototyoes are derived from 
+`Neos.Fusion.Form:Input` are used. Those prototypes are derived from 
 `Neos.Fusion.Form:Component.Field` which is responsible for establishing 
 the relation between form and field. 
 
@@ -67,7 +67,7 @@ renderer = afx`
 It is possible to create field components with translated label and error 
 rendering. The prototype `Neos.Fusion.Form:Neos.BackendModule.FieldContainer` 
 is an example for that which implements the required markup for Neos backend modules.
-Label are added and translated using the translations from `Neos.Neos:Main` 
+Labels are added and translated using the translations from `Neos.Neos:Main` 
 and validation errors are translated using the source `Neos.Flow:ValidationErrors` 
 as translation source. 
 

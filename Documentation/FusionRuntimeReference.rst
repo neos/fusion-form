@@ -17,7 +17,7 @@ The algorithm is as follows:
 
 1. Create a subRequest in form namespace and pass all submitted values that have trustedProperties.
 2. Let the `proccess` handle the created subrequest.
-3. If the `process` is not finished render form tag and delegates the body rendering to the `process`.
+3. If the `process` is not finished render form tag and delegate the body rendering to the `process`.
 4. If the `process` is finished execute the `action` and pass the data.
 
 :identifier: (`string`), Form argument namespace. If no identifier is defined the hash of the current fusion path is used as namespace.
@@ -29,7 +29,7 @@ The algorithm is as follows:
 
 Example::
 
-    <renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
+    renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
         # the form argument namespace
         identifier = 'example'
 
@@ -38,11 +38,11 @@ Example::
 
         # the form process that is responsible for rendering the form and
         # collecting the data
-        process = Neos.Fusion.Form:Runtime.SingleStepForm
+        process = Neos.Fusion.Form:Runtime.SingleStepProcess
 
         # action that is processed after the form process is finished
         action =  Neos.Fusion.Form:Runtime.Actions
-    }>
+    }
 
 Neos.Fusion.Form:Runtime.SingleStepProcess
 ------------------------------------------
@@ -108,9 +108,9 @@ Example::
 Neos.Fusion.Form:Runtime.MultiStepProcess
 -----------------------------------------
 
-The multistep process allows to use multiple `steps` that will are of type `SingleStepProcess`. The multistep process
+The multistep process allows to use multiple `steps` that are of type `SingleStepProcess`. The multistep process
 persists the current form state as hidden field and otherwise passes the rendering of the form-body to the currently active
-sub procces. A multistep process is considered to be finished once all steps were successfully submitted.
+sub process. A multistep process is considered to be finished once all steps were successfully submitted.
 
 :steps: (`ProcessCollectionInterface`, defaults to `Neos.Fusion.Form:Runtime.ProcessCollection`_)
 :header: (`string`) The form header is rendered before the body. By default this is empty, create derived prototypes to change this.
@@ -239,7 +239,7 @@ Example::
         message = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
     }
 
-:type: (`string`) To to be used by the Action resolver to determine the implementation class. Can be an Identifier or a ClassName.
+:type: (`string`) Type to be used by the Action resolver to determine the implementation class. Can be an Identifier or a ClassName.
 :options: (`array` defaults to `Neos.Fusion:DataStructure`) The options that are set on ConfigurableActions
 
 Neos.Fusion.Form:Runtime.SchemaCollection
@@ -247,7 +247,7 @@ Neos.Fusion.Form:Runtime.SchemaCollection
 
 The `SchemaCollection` implements the `SchemaInterface` for an array of multiple named properties.
 It will execute all subschemas that are defined for each subkey and merge the results into one.
-The subschemas can be created with the Eeel `Schema.forType(...)` helper or the `Neos.Fusion.Form:Runtime.Schema`
+The subschemas can be created with the Eel `Schema.forType(...)` helper or the `Neos.Fusion.Form:Runtime.Schema`
 prototype.
 
 Example::
@@ -315,7 +315,7 @@ Neos.Fusion.Form:Runtime.ValidatorCollection
 --------------------------------------------
 
 The `ValidatorCollection` implements the `validatorInterface` for an array of multiple named properties.
-It will execute all validator that are defined and merge the results into one.
+It will execute all validators that are defined and merge the results into one.
 
 :[key]: (`ValidatorInterface`, defaults to `Neos.Fusion.Form:Runtime.Validator`_)
 

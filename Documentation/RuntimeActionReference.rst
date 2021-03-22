@@ -26,8 +26,8 @@ Example::
 Neos.Fusion.Form.Runtime:Redirect
 ---------------------------------
 
-The redirect action will add a redirection to another page to the response. This helps to prevent multiple submits and makes it easier for editors to customize the document. The drawnack is
-that the submitted data can only be used to determine the redirect target. The content of the page that is is redirected to cannot be modified by the form.
+The redirect action will add a redirection to another page to the response. This helps to prevent multiple submits and makes it easier for editors to customize the document. The drawback is
+that the submitted data can only be used to determine the redirect target. The content of the page that is redirected to cannot be modified by the form.
 
 Options:
 
@@ -51,7 +51,7 @@ The email action uses swiftmailer to create and send an email. It supports
 multipart emails and file attachments that can even be created on the fly from
 form data.
 
-.. note:: The neos/swiftmailer package is required.
+.. note:: The neos/swiftmailer package must be installed separately.
 
 Options:
 
@@ -64,11 +64,11 @@ Options:
 :blindCarbonCopyAddress: (`string`|`array`)
 :subject: (`string`) The email subject
 :text: (`string`) The plaintext content
-:html: (`string`) The html content (if `text` and `html` are defined the a multipart email is created)
-:attachments.[key]: (string) The string is treated as a path where the attachment is read form.
+:html: (`string`) The html content (if `text` and `html` are defined a multipart email is created)
+:attachments.[key]: (string) The string is treated as a path where the attachment is read from.
 :attachments.[key]: (`UploadedFile`|`FlowResource`) The uploaded file or resource is added to the mail
 :attachments.[key]: (`array`) Create a file on the fly from `name` and `content`
-:testMode: (`boolean`) Show debug informations instead of actually sending the email.
+:testMode: (`boolean`) Show debug information instead of actually sending the email.
 
 Example::
 
@@ -100,7 +100,7 @@ Neos.Fusion.Form.Runtime:Log
 
 The log action allows to write an entry to log.
 
-.. note:: It is recommendet to use a custom log since form submits and especially form data should not end in system logs.
+.. note:: It is recommended to use a custom log since form submits and especially form data should not end up in system logs.
 
 Options:
 
@@ -122,4 +122,3 @@ Example::
             }
         }
     }
-

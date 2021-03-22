@@ -35,4 +35,4 @@ The action class can afterwards be used in a form-action:
 ```    
 
 The type identifier is resolved to a classname like `[namespace]\\Action\\[name]`. If the created action uses 
-a different namespace you can use the full classname as `type` aswell.  
+a different namespace you can use the full classname as `type` as well.  

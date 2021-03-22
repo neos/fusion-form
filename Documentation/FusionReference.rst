@@ -147,18 +147,18 @@ the rendering of checkboxes and radio inputs to the needs of the Neos backend.
 
 .. note:
 Do not use this container in frontend projects. It will be modified in the future as the Neos backend evolves.
-Instead use this prototype as template to create project specific field-containers.
+Instead use this prototype as template to create project-specific field containers.
 
 :field: (`Neos.Fusion.Form:Definition.Field`_) used to populate the `field` context
 :field.form: (Form, defaults to `form` from fusion-context) The form the field is rendered for. Usually defined by a `Neos.Fusion.Form:Definition.Form`_.
-:field.field: (Field, defaults to `field`) An possible field that may have been predefined in a container. If no name is given the outer field will be reused.
+:field.field: (Field, defaults to `field`) A possible field that may have been predefined in a container. If no name is given the outer field will be reused.
 :field.name: (string) The fieldname, use square bracket syntax for nested properties.
 :field.multiple: (boolean, default = false) Determine wether the field can contain multiple values like checkboxes or selects.
 :field.value: (any, default = null) The target value of fields (for checkbox, radio and button)
 :label: (string) The label for the field, is translated using `translation.label.package` and `translation.label.source`
 :attributes: (DataStructure) attributes for the container tag
 :class: (string, default null) class for the container
-:errorClass: (string, default null) class that is added to the container and the error list once erors occur
+:errorClass: (string, default null) class that is added to the container and the error list once errors occur
 :content: (string) afx content
 
 Example::

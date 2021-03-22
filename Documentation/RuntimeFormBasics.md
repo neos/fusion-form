@@ -17,7 +17,7 @@ The core of the form runtime is the `Neos.Fusion.Form:Runtime.RuntimeForm` proto
 renderer = Neos.Fusion.Form:Runtime.RuntimeForm {   
     # the form process that is responsible for rendering the form and
     # collecting the data
-    process = Neos.Fusion.Form:Runtime.SingleStepForm
+    process = Neos.Fusion.Form:Runtime.SingleStepProcess
 
     # action that is processed after the form process is finished
     action =  Neos.Fusion.Form:Runtime.Actions    
@@ -25,20 +25,20 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
 ```
 
 The Runtime form also allows to specify an `identifier` that will be used as namespace for all form values and 
-the initial `data` for cases where the process will not start empty.  
+the initial `data` for cases in which the process doesn't start empty.  
 
 ## Process - `Neos.Fusion.Form:Runtime.SingleStepProcess`
 
 The form process is responsible to aggregate the submitted data and render the form until all requirements are matched.  
 
-To do this The single step process requires `content` and `schema`. The `content` is the form body that will be rendered. 
-It can be defined inline as via afx or can be a separate Fusion prototype. It will internally use the Field Prototypes 
+To do this the single step process requires `content` and `schema`. The `content` is the form body that will be rendered. 
+It can be defined inline via afx or as a separate Fusion prototype. It will internally use the Field Prototypes 
 of Neos.Fusion.Form and probably a FieldContainer that renderes labels and error messages.    
 
-The `schema` controls the type-conversion and validation of the submitted data. Only properties that have a schema will 
+The `schema` controls the type conversion and validation of the submitted data. Only properties that have a schema will 
 be added to the data of the process so all fields have to be added here.
 
-The separation of `content` and `schema` makes implementing custom rendering easy and as hassle free as possible.
+The separation of `content` and `schema` makes implementing custom rendering easy and as hassle-free as possible.
 
 ```
 renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
@@ -63,11 +63,11 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
 ## Action - `Neos.Fusion.Form:Runtime.Action`
 
 Actions define what has to be done once the process is finished. Multiple actions can be configured as usually multiple
-things have to occur once the process is finished. The `type` of each action is declared a className or as identifier that 
-converts to className via Convention. Each action is configured with the defined `options` which allows to access    
-form-data, settings and even node-properties in unified way.  
+things have to occur once the process is finished. The `type` of each action is declared a className or as an identifier that 
+converts to a class name via convention. Each action is configured with the defined `options` which allows to access    
+form data, settings and even node properties in a unified way.  
 
-The actions types `Message`, `Redirect`, `Email` and `Log` are already implemented in Neos.Fusion.Form package.
+The action types `Message`, `Redirect`, `Email` and `Log` are already implemented in Neos.Fusion.Form package.
   
 ```
 renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
@@ -90,4 +90,3 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
     }
 }
 ```
-

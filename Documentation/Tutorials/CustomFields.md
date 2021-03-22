@@ -8,7 +8,7 @@ For the rendering you have access to the `field` in the fusion context gives
 you access to the current value from data binding and the target value.
 
 HINT: By default all field components support setting `attributes` which
-are expected to override all autmatically assigned attributes and whenever 
+are expected to override all automatically assigned attributes and whenever 
 it makes sense also `content` which is usually defined via afx.  
 
 ```
@@ -36,7 +36,7 @@ for DateTime and integer values.
 prototype(Vendor.Site:Form.DatetimeLocal) < prototype(Neos.Fusion.Form:Component.Field) {
 
     # 
-    # Since we want calculate the value via fusion but want to avoid 
+    # Since we want to calculate the value via fusion but also want to avoid 
     # making value an api a wrapper component is used  
     #
     renderer = Neos.Fusion:Component {

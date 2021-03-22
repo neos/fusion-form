@@ -141,7 +141,7 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
 
     /**
      * @param mixed $data
-     * @return mixed|\Neos\Error\Messages\Error|null
+     * @return mixed|null
      * @throws \Neos\Flow\Property\Exception
      * @throws \Neos\Flow\Security\Exception
      */
