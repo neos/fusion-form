@@ -44,11 +44,21 @@ prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Fusion.Form:Runtime.R
 
             third {
                 content = afx`
+                    <Neos.Fusion.Form:FieldContainer field.name="sports" field.multiple label="Sports">
+                        <Neos.Fusion.Form:Select>
+                            <Neos.Fusion.Form:Select.Option option.value="climbing" />
+                            <Neos.Fusion.Form:Select.Option option.value="biking" />
+                            <Neos.Fusion.Form:Select.Option option.value="hiking" />
+                            <Neos.Fusion.Form:Select.Option option.value="swimming" />
+                            <Neos.Fusion.Form:Select.Option option.value="running" />
+                        </Neos.Fusion.Form:Select>
+                    </Neos.Fusion.Form:FieldContainer>
                     <Neos.Fusion.Form:FieldContainer field.name="file" label="File">
                         <Neos.Fusion.Form:Upload />
                     </Neos.Fusion.Form:FieldContainer>
                 `
                 schema {
+                    sports = ${Schema.arrayOf( Schema.string() ).validator('Count', {minimum: 1, maximum: 2})}
                     file = ${Schema.resource().isRequired.validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
                 }
             }

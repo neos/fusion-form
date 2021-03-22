@@ -3,7 +3,7 @@
 Fusion Form Helper Reference
 ============================
 
-This reference was automatically generated from code on 2021-03-11
+This reference was automatically generated from code on 2021-03-22
 
 
 .. _`Fusion Form Helper Reference: Neos\Fusion\Form\Domain\Field`:
@@ -115,15 +115,15 @@ Neos\Fusion\Form\Domain\Form.getEncoding()
 
 **Return** (string|null) The encoding for the form
 
-Neos\Fusion\Form\Domain\Form.getFieldNamePrefix()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-**Return** (string|null) The fieldname prefix that was assigned or determined from the request
-
 Neos\Fusion\Form\Domain\Form.getMethod()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (string|null) The http method for submitting the form
+
+Neos\Fusion\Form\Domain\Form.getNamespace()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Return** (string|null) The namespace prefix that was assigned or determined from the request
 
 Neos\Fusion\Form\Domain\Form.getRequest()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

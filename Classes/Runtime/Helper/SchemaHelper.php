@@ -3,6 +3,16 @@ declare(strict_types=1);
 
 namespace Neos\Fusion\Form\Runtime\Helper;
 
+/*
+ * This file is part of the Neos.Fusion.Form package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+
 use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Flow\Property\TypeConverter\DateTimeConverter;
 use Neos\Flow\ResourceManagement\PersistentResource;
@@ -94,6 +104,27 @@ class SchemaHelper implements ProtectedContextAwareInterface
             DateTimeConverter::CONFIGURATION_DATE_FORMAT,
             $format
         );
+        return $helper;
+    }
+
+    /**
+     * Create an array schema.
+     * @return SchemaInterface
+     */
+    public function array(): SchemaInterface
+    {
+        $helper = new SchemaDefinition('array');
+        return $helper;
+    }
+
+    /**
+     * Create a date schema for an array by providing a schema for all items
+     * @param SchemaInterface $schema The schema for the items of the array
+     * @return SchemaInterface
+     */
+    public function arrayOf(SchemaInterface $schema): SchemaInterface
+    {
+        $helper = new ArrayOfSchemaDefinition($schema);
         return $helper;
     }
 

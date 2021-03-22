@@ -1,9 +1,51 @@
-.. _`Fusion Form Runtime Helper Reference`:
+.. _`Fusion Form Helper Reference`:
 
-Fusion Form Runtime Helper Reference
+Fusion Form Helper Reference
 ============================
 
-This reference was automatically generated from code on 2021-03-11
+This reference was automatically generated from code on 2021-03-22
+
+
+.. _`Fusion Form Helper Reference: Neos\Fusion\Form\Runtime\Helper\ArrayOfSchemaDefinition`:
+
+Neos\Fusion\Form\Runtime\Helper\ArrayOfSchemaDefinition
+-------------------------------------------------------
+
+
+
+Implemented in: ``Neos\Fusion\Form\Runtime\Helper\ArrayOfSchemaDefinition``
+
+Neos\Fusion\Form\Runtime\Helper\ArrayOfSchemaDefinition.isRequired()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Add a NotEmpty Validator
+
+**Return** ($this)
+
+Neos\Fusion\Form\Runtime\Helper\ArrayOfSchemaDefinition.typeConverterOption(className, optionName, optionValue)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Add a typeConverter option to the schema
+
+* ``className`` (string) The typeConverter className to set options for
+* ``optionName`` (string) The option name
+* ``optionValue`` (mixed) The value to set
+
+**Return** ($this)
+
+Neos\Fusion\Form\Runtime\Helper\ArrayOfSchemaDefinition.validator(type, options)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Add a validator to the schema
+
+* ``type`` (string) The validaor indentifier or className
+* ``options`` (mixed[]|null, *optional*) The options to set for the validator
+
+**Return** ($this)
+
+
+
+
 
 
 .. _`Fusion Form Helper Reference: Neos\Fusion\Form\Runtime\Helper\SchemaDefinition`:
@@ -56,6 +98,22 @@ Schema
 
 
 Implemented in: ``Neos\Fusion\Form\Runtime\Helper\SchemaHelper``
+
+Schema.array()
+^^^^^^^^^^^^^^
+
+Create an array schema.
+
+**Return** (SchemaInterface)
+
+Schema.arrayOf(schema)
+^^^^^^^^^^^^^^^^^^^^^^
+
+Create a date schema for an array by providing a schema for all items
+
+* ``schema`` (SchemaInterface) The schema for the items of the array
+
+**Return** (SchemaInterface)
 
 Schema.bool()
 ^^^^^^^^^^^^^
