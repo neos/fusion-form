@@ -42,7 +42,11 @@ class FormRequestFactoryTest extends TestCase
         $this->formRequestFactory = new FormRequestFactory();
         $this->mockHashService = $this->createMock(HashService::class);
         $this->mockHttpRequest = $this->createMock(ServerRequestInterface::class);
-        $this->formRequestFactory->injectHashService($this->mockHashService);
+
+        $reflection = new \ReflectionClass($this->formRequestFactory);
+        $reflection_property = $reflection->getProperty('hashService');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->formRequestFactory, $this->mockHashService);
     }
 
     /**

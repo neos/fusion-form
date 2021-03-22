@@ -35,7 +35,11 @@ class FormStateServiceTest extends TestCase
     {
         $this->formStateService = new FormStateService();
         $this->mockHashService = $this->createMock(HashService::class);
-        $this->formStateService->injectHashService($this->mockHashService);
+
+        $reflection = new \ReflectionClass($this->formStateService);
+        $reflection_property = $reflection->getProperty('hashService');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->formStateService, $this->mockHashService);
     }
 
     /**

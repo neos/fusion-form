@@ -20,16 +20,9 @@ class FormStateService
 {
     /**
      * @var HashService
+     * @Flow\Inject
      */
     protected $hashService;
-
-    /**
-     * @param HashService $hashService
-     */
-    public function injectHashService(HashService $hashService): void
-    {
-        $this->hashService = $hashService;
-    }
 
     /**
      * @param string $string

@@ -21,16 +21,9 @@ class FormRequestFactory
 {
     /**
      * @var HashService
+     * @Flow\Inject
      */
     protected $hashService;
-
-    /**
-     * @param HashService $hashService
-     */
-    public function injectHashService(HashService $hashService): void
-    {
-        $this->hashService = $hashService;
-    }
 
     /**
      * Prepare subrequest for the identifier namespace and transfer the arguments
