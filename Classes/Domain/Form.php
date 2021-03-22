@@ -42,7 +42,7 @@ class Form extends AbstractFormObject
     protected $hashService;
 
     /**
-     * @var ActionRequest
+     * @var ActionRequest|null
      */
     protected $request;
 
@@ -52,22 +52,22 @@ class Form extends AbstractFormObject
     protected $data;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $target;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $method;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $encoding;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $fieldNamePrefix;
 
@@ -87,10 +87,10 @@ class Form extends AbstractFormObject
      * @param null $data
      * @param string|null $fieldNamePrefix
      * @param string|null $target
-     * @param string $method
+     * @param string|null $method
      * @param string|null $encoding
      */
-    public function __construct(ActionRequest $request = null, $data = null, string $fieldNamePrefix = null, string $target = null, string $method = "get", string $encoding = null)
+    public function __construct(?ActionRequest $request = null, $data = null, ?string $fieldNamePrefix = null, ?string $target = null, ?string $method = null, ?string $encoding = null)
     {
         $this->request = $request;
         $this->data = $data;

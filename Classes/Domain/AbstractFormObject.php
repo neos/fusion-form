@@ -91,8 +91,8 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
      */
     protected function fieldNameToPath($name): string
     {
-        $path = preg_replace('/(\]\[|\[|\])/', '.', $name);
-        return trim($path, '.');
+        $path = preg_replace('/(\]\[|\[|\])/', '.', $name ?? '');
+        return trim($path ?? '', '.');
     }
 
     /**
