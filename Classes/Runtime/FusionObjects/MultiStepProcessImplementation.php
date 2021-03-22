@@ -60,10 +60,10 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
     }
 
     /**
-     * @param mixed[] $data
      * @param ActionRequest $request
+     * @param mixed[] $data
      */
-    public function handle(array $data = [], ActionRequest $request): void
+    public function handle(ActionRequest $request, array $data = []): void
     {
         $this->data = $data;
 
@@ -101,7 +101,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
 
         // find current and handle
         $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
-        $currentSubProcess->handle($this->data, $request);
+        $currentSubProcess->handle($request, $this->data);
 
         if ($currentSubProcess->isFinished()) {
             if (!$this->state) {
