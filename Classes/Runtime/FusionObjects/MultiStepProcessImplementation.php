@@ -60,10 +60,10 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
     }
 
     /**
-     * @param mixed[]|null $data
+     * @param mixed[] $data
      * @param ActionRequest $request
      */
-    public function handle($data = null, ActionRequest $request): void
+    public function handle(array $data = [], ActionRequest $request): void
     {
         $this->data = $data;
 

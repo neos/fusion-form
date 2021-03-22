@@ -43,14 +43,14 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
     }
 
     /**
-     * @param mixed[]|null $data
+     * @param mixed[] $data
      * @param ActionRequest $request
      * @throws \Neos\Flow\Mvc\Exception\InvalidActionNameException
      * @throws \Neos\Flow\Mvc\Exception\InvalidArgumentNameException
      * @throws \Neos\Flow\Mvc\Exception\InvalidArgumentTypeException
      * @throws \Neos\Flow\Mvc\Exception\InvalidControllerNameException
      */
-    public function handle($data = null, ActionRequest $request): void
+    public function handle(array $data = [], ActionRequest $request): void
     {
         $this->data = $data;
 

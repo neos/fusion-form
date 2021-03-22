@@ -82,7 +82,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
     public function evaluate(): string
     {
         $identifier = $this->getIdentifier();
-        $data = $this->getData();
+        $data = $this->getData() ?? [];
         $process = $this->getProcess();
 
         $formRequest = $this->formRequestFactory->createFormRequest($this->getCurrentActionRequest(), $identifier);

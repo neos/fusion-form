@@ -16,7 +16,7 @@ namespace Neos\Fusion\Form\Runtime\Domain;
 class FormState
 {
     /**
-     * @var mixed[][]|null
+     * @var mixed[][]
      */
     protected $parts = [];
 
@@ -45,9 +45,9 @@ class FormState
 
     /**
      * @param string $partName
-     * @param mixed[]|null $partData
+     * @param mixed[] $partData
      */
-    public function commitPart(string $partName, ?array $partData): void
+    public function commitPart(string $partName, array $partData = []): void
     {
         $this->parts[$partName] = $partData;
     }
