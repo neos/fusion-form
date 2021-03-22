@@ -76,9 +76,9 @@ Example::
                 </Neos.Fusion.Form:FieldContainer>
             `
             schema {
-                firstName = ${Schema.string().isRequired()}
-                lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
-                file = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+                firstName = ${Form.Schema.string().isRequired()}
+                lastName = ${Form.Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
+                file = ${Form.Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
             }
         }
 
@@ -147,8 +147,8 @@ Example::
                         </Neos.Fusion.Form:FieldContainer>
                     `
                     schema {
-                        firstName = ${Schema.string().isRequired()}
-                        lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
+                        firstName = ${Form.Schema.string().isRequired()}
+                        lastName = ${Form.Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
                     }
                 }
 
@@ -162,8 +162,8 @@ Example::
                         </Neos.Fusion.Form:FieldContainer>
                     `
                     schema {
-                        street = ${Schema.string().isRequired()}
-                        city = ${Schema.string().isRequired()}
+                        street = ${Form.Schema.string().isRequired()}
+                        city = ${Form.Schema.string().isRequired()}
                     }
                 }
 
@@ -174,7 +174,7 @@ Example::
                         </Neos.Fusion.Form:FieldContainer>
                     `
                     schema {
-                        file = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+                        file = ${Form.Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
                     }
                 }
 
@@ -253,8 +253,8 @@ prototype.
 Example::
 
     schema = Neos.Fusion.Form:Runtime.SchemaCollection {
-        firstName = ${Schema.forType("string").validator('NotEmpty')}
-        lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 10, maximum: 40})}
+        firstName = ${Form.Schema.forType("string").validator('NotEmpty')}
+        lastName = ${Form.Schema.string().isRequired().validator('StringLength', {minimum: 10, maximum: 40})}
     }
 
 :[key]: (`SchemaInterface`, defaults to `Neos.Fusion.Form:Runtime.Schema`_)
@@ -296,7 +296,7 @@ Example::
         validator.notEmpty.type = 'NotEmpty'
     }
 
-:type: (`string`) A type that is used by the property mapper to
+:type: (`string`) A type that is used by the property mapper for converting the submitted date.
 :validator: (`ValidatorInterface`, defaults to `Neos.Fusion.Form:Runtime.ValidatorCollection`_)
 :typeConverterOptions: (array, defaults to `Neos.Fusion:DataStructure`) array of {class, option, value} objects
 
@@ -325,8 +325,8 @@ If untyped items are found they are evaluated as `Neos.Fusion.Form:Runtime.Valid
 Neos.Fusion.Form:Runtime.Validator
 ----------------------------------
 
-The `Validator` implements the `ValidatorInterface` and to secify the valdator `type`
-and configure via `options`.
+The `Validator` implements the `ValidatorInterface` the given `type` is used to resolve the implementation
+class and the `options` are used to configure the validation.
 
 Example::
 

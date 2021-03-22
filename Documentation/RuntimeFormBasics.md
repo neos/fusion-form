@@ -54,8 +54,8 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
         `
         
         schema {
-            firstName = ${Schema.string().isRequired()}
-            lastName = ${Schema.string().isRequired()}
+            firstName = ${Form.Schema.string().isRequired()}
+            lastName = ${Form.Schema.string().isRequired()}
         }
     }    
 ```

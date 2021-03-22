@@ -77,6 +77,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
     }
 
     /**
+     * Render the form or the action result depending on wether the process is finished
      * @return string
      */
     public function evaluate(): string

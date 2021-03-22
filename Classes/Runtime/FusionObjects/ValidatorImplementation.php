@@ -27,6 +27,10 @@ class ValidatorImplementation extends AbstractFusionObject implements ValidatorI
      */
     protected $validatorResolver;
 
+    /**
+     * Return reference to self during fusion evaluation
+     * @return $this
+     */
     public function evaluate()
     {
         return $this;

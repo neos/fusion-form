@@ -41,14 +41,28 @@ class FileTypeValidator extends AbstractValidator
     protected function isValid($resource)
     {
         if (!$resource instanceof PersistentResource) {
-            $this->addError('The given value was not a UploadedFileInterface instance.', 1582656471);
+            $this->addError('The given value was not a PersistentResource instance.', 1616425674);
             return;
         }
         if ($this->options['allowedExtensions'] && !in_array($resource->getFileExtension(), $this->options['allowedExtensions'])) {
-            $this->addError('The file extension "%s" is not allowed.', 1582656472, [$resource->getFileExtension()]);
+            $this->addError(
+                'The file extension has to be one of "%s", "%s" is not allowed.',
+                1616425683,
+                [
+                    implode(', ', $this->options['allowedExtensions']),
+                    $resource->getFileExtension()
+                ]
+            );
         }
         if ($this->options['allowedMediaTypes'] && !in_array($resource->getMediaType(), $this->options['allowedMediaTypes'])) {
-            $this->addError('The file media type "%s" is not allowed.', 1582656473, [$resource->getFileExtension()]);
+            $this->addError(
+                'The media type has to be one of "%s", "%s" is not allowed.',
+                1616425912,
+                [
+                    implode(', ', $this->options['allowedMediaTypes']),
+                    $resource->getMediaType()
+                ]
+            );
         }
     }
 }

@@ -26,10 +26,6 @@ class ProcessCollectionImplementation extends AbstractCollectionFusionObject imp
 
     /**
      * @return ProcessInterface[]
-     * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationException
-     * @throws \Neos\Flow\Mvc\Exception\StopActionException
-     * @throws \Neos\Flow\Security\Exception
-     * @throws \Neos\Fusion\Exception
      */
     public function getItems(): array
     {

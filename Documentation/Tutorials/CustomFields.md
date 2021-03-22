@@ -4,8 +4,9 @@ The most obvious extension point is the definition of custom fieldtypes.
 To do so you have to extend the `Neos.Fusion.Form:Component.Field` prototype
 and implement the renderer you need. 
 
-For the rendering you have access to the `field` in the fusion context gives
-you access to the current value from data binding and the target value.
+For the rendering the `field` value in the fusion context provides access 
+to informations like `field.name` and `field.currentValue` based on the data 
+bound to the form or the previously submitted values.
 
 HINT: By default all field components support setting `attributes` which
 are expected to override all automatically assigned attributes and whenever 
@@ -25,9 +26,6 @@ prototypeVendor.Site:Form.Textarea)  < prototype(Neos.Fusion.Form:Component.Fiel
 ```
 
 ### Implementing a custom DatetimeLocal field
-
-Sometimes custom fieldtypes are needed or to implement a different value conversion
-to the html form than the default field offer.
 
 This example shows a datetime-local field that implements a custom stringification 
 for DateTime and integer values.  

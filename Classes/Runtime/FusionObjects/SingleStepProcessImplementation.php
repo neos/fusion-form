@@ -35,6 +35,7 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
     protected $isFinished = false;
 
     /**
+     * Return reference to self during fusion evaluation
      * @return $this
      */
     public function evaluate(): self

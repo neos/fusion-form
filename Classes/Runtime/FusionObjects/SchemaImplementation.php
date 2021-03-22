@@ -35,6 +35,10 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
      */
     protected $propertyMappingConfiguration;
 
+    /**
+     * Return reference to self during fusion evaluation
+     * @return $this
+     */
     public function evaluate()
     {
         return $this;

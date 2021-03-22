@@ -6,7 +6,7 @@ Neos:
 
   Fusion:
     defaultContext:
-      Schema: 'Neos\Fusion\Form\Runtime\Helper\SchemaHelper'
+      Form.Schema: 'Neos\Fusion\Form\Runtime\Helper\SchemaHelper'
 
   DocTools:
     collections:

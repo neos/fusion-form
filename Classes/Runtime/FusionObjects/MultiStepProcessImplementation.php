@@ -52,6 +52,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
     protected $targetSubProcessKey;
 
     /**
+     * Return reference to self during fusion evaluation
      * @return $this
      */
     public function evaluate()
@@ -78,7 +79,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
 
         // evaluate the subprocesses this has to be done after the state was restored
         // as the current data may affect @if conditions
-        $subProcesses = $this->getCurrentSubProcesses();
+        $subProcesses = $this->getSubProcesses();
 
         // select current subprocess
         if (array_key_exists('__current', $internalArguments)
@@ -129,7 +130,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             return false;
         }
 
-        $subProcesses = $this->getCurrentSubProcesses();
+        $subProcesses = $this->getSubProcesses();
 
         foreach ($subProcesses as $subProcessKey => $subProcess) {
             if ($this->state->hasPart($subProcessKey) == false) {
@@ -144,7 +145,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
      */
     public function render(): string
     {
-        $subProcesses = $this->getCurrentSubProcesses();
+        $subProcesses = $this->getSubProcesses();
         if ($this->targetSubProcessKey) {
             $renderSubProcessKey = $this->targetSubProcessKey;
         } else {
@@ -157,7 +158,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         }
 
         if (isset($renderSubProcessKey) && $renderSubProcessKey && array_key_exists($renderSubProcessKey, $subProcesses)) {
-            $this->getRuntime()->pushContext('process', $this->prepareProcessInformations($renderSubProcessKey, $subProcesses));
+            $this->getRuntime()->pushContext('process', $this->prepareProcessInformation($renderSubProcessKey, $subProcesses));
             $hiddenFields = $this->runtime->evaluate($this->path . '/hiddenFields') ?? '';
             $header = $this->runtime->evaluate($this->path . '/header') ?? '';
             $body = $subProcesses[$renderSubProcessKey]->render();
@@ -195,7 +196,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
      * @param ProcessInterface[] $subProcesses
      * @return mixed[]
      */
-    protected function prepareProcessInformations($subProcessKey, array $subProcesses): array
+    protected function prepareProcessInformation($subProcessKey, array $subProcesses): array
     {
         $subProcessKeys = array_keys($subProcesses);
         $currentIndex = array_search($subProcessKey, $subProcessKeys);
@@ -216,7 +217,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
     /**
      * @return ProcessInterface[]
      */
-    protected function getCurrentSubProcesses(): array
+    protected function getSubProcesses(): array
     {
         $this->runtime->pushContext('data', $this->getData());
         $collection = $this->getProcessCollection();

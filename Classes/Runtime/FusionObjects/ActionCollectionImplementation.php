@@ -42,8 +42,8 @@ class ActionCollectionImplementation extends AbstractCollectionFusionObject impl
          */
         $subActions = $this->getItems();
 
-        foreach ($subActions as $subactions) {
-            $subActionResponse = $subactions->perform();
+        foreach ($subActions as $subAction) {
+            $subActionResponse = $subAction->perform();
             if ($subActionResponse) {
                 // content of multiple responses is concatenated
                 if ($subActionResponse->getContent()) {

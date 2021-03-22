@@ -36,7 +36,8 @@ abstract class AbstractCollectionFusionObject extends AbstractArrayFusionObject
     protected $itemPrototype = null;
 
     /**
-     * @return $this|mixed
+     * Return reference to self during fusion evaluation
+     * @return $this
      */
     public function evaluate()
     {

@@ -30,6 +30,7 @@ class ActionImplementation extends AbstractFusionObject implements ActionInterfa
     protected $actionResolver;
 
     /**
+     * Return reference to self during fusion evaluation
      * @return $this
      */
     public function evaluate(): self

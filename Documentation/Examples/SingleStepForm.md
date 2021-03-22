@@ -32,11 +32,11 @@ prototype(Form.Test:Content.ExampleForm) < prototype(Neos.Fusion.Form:Runtime.Ru
         `
 
         schema {
-            firstName = ${Schema.string().isRequired()}
-            lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
-            picture = ${Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
-            birthDate =  ${Schema.date().isRequired()}
-            sports = ${Schema.arrayOf( Schema.string() ).validator('Count', {minimum: 1, maximum: 2})}
+            firstName = ${Form.Schema.string().isRequired()}
+            lastName = ${Form.Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
+            picture = ${Form.Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+            birthDate =  ${Form.Schema.date().isRequired()}
+            sports = ${Form.Schema.arrayOf( Form.Schema.string() ).validator('Count', {minimum: 1, maximum: 2})}
         }
     }
 

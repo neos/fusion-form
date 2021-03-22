@@ -22,8 +22,8 @@ prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Fusion.Form:Runtime.R
                     </Neos.Fusion.Form:FieldContainer>
                 `
                 schema {
-                    firstName = ${Schema.string().isRequired()}
-                    lastName = ${Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
+                    firstName = ${Form.Schema.string().isRequired()}
+                    lastName = ${Form.Schema.string().isRequired().validator('StringLength', {minimum: 6, maximum: 12})}
                 }
             }
 
@@ -37,8 +37,8 @@ prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Fusion.Form:Runtime.R
                     </Neos.Fusion.Form:FieldContainer>
                 `
                 schema {
-                    street = ${Schema.string().isRequired()}
-                    city = ${Schema.string().isRequired()}
+                    street = ${Form.Schema.string().isRequired()}
+                    city = ${Form.Schema.string().isRequired()}
                 }
             }
 
@@ -58,8 +58,8 @@ prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Fusion.Form:Runtime.R
                     </Neos.Fusion.Form:FieldContainer>
                 `
                 schema {
-                    sports = ${Schema.arrayOf( Schema.string() ).validator('Count', {minimum: 1, maximum: 2})}
-                    file = ${Schema.resource().isRequired.validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+                    sports = ${Form.Schema.arrayOf( Form.Schema.string() ).validator('Count', {minimum: 1, maximum: 2})}
+                    file = ${Form.Schema.resource().isRequired.validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
                 }
             }
             confirmation {
