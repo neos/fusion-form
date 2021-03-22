@@ -6,7 +6,7 @@ Pure fusion form rendering with afx support!
 
 ### *Neos.Fusion.Form* - Form Rendering and Data Binding
 
-This part covers the rendering of forms that a bound to objects or data and 
+This part covers the rendering of forms that are bound to objects or data and 
 will be submitted to a custom Controller Action.
 
 - [Fusion Form Basics](Documentation/FormBasics.md)
@@ -21,8 +21,8 @@ will be submitted to a custom Controller Action.
 
 ### *Form.Fusion.Form:Runtime* - Runtime Single/Multistep Forms with Actions
 
-This part covers the definition of Forms with Validation and finishing Actions
-via Fusion. Use cases like Contact Forms, Newsletter subscriptions should 
+This part covers the definition of forms with validation and finishing actions
+via Fusion. Use cases like contact forms and newsletter subscriptions should 
 be implemented like this.   
 
 - [Runtime Fusion Form Basics](Documentation/RuntimeFormBasics.md)
@@ -68,12 +68,11 @@ concept changes you should be aware of.
 
 ### Important deviations from the concepts of the Neos.Form package 
 
-- The definitions for form rendering and validation are seperated into `content` and `schema` of the process.
-- Settings, form-data and node-properties can be used in unified way via fusion to define action and controll the process.
+- The definitions for form rendering and validation are separated into `content` and `schema` of the process.
+- Settings, form data and node properties can be used in a unified way via Fusion to define actions and control the process.
 - The concept of finishers is replaced with `actions`
 - Confirmations no special feature but can be created as "step" in a MultiStepProcess   
-- Actions can not decide to send the user back into a finished the process. 
-
+- Actions can not decide to send the user back into a finished step. 
 
 
 
