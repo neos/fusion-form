@@ -66,7 +66,7 @@ class Field extends AbstractFormObject
     public function __construct(Form $form = null, string $name = null, $targetValue = null, $multiple = false)
     {
         $this->form = $form;
-        $this->name = $name;
+        $this->name = $name ?? '';
         $this->targetValue = $targetValue;
         $this->multiple = $multiple;
 
@@ -122,8 +122,11 @@ class Field extends AbstractFormObject
     {
         // determine ValidationResult for the single property
         $fieldResult = null;
-        if ($this->form && $this->form->getResult() && $this->form->getResult()->hasErrors()) {
-            $fieldResult = $this->form->getResult()->forProperty($path);
+        if ($this->form) {
+            $formResult = $this->form->getResult();
+            if ($formResult && $formResult->hasErrors()) {
+                $fieldResult = $formResult->forProperty($path);
+            }
         }
         return $fieldResult;
     }

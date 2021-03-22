@@ -18,6 +18,8 @@ jobs:
                 include:
                     - php-versions: '7.2'
                       flow-versions: '6.0'
+                    - php-versions: '8.0'
+                      flow-versions: '7.0'
 
         runs-on: ubuntu-latest
 
