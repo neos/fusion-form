@@ -43,7 +43,7 @@ class FormStateTest extends TestCase
     /**
      * @test
      */
-    public function committedPartsCanBeAcessedAfterwards()
+    public function partsCanBeAcessedAfterBeingComitted()
     {
         $state = new FormState();
         $state->commitPart('example', ['value' => 'exampleValue']);
@@ -56,7 +56,7 @@ class FormStateTest extends TestCase
     /**
      * @test
      */
-    public function initialPartsCanBeAcessedAfterwards()
+    public function initialPartsCanBeAcessed()
     {
         $state = new FormState(['example' => ['value' => 'exampleValue']]);
         $this->assertTrue($state->hasPart('example'));
