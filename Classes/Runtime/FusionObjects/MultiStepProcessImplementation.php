@@ -179,7 +179,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
 
         // add subprocess data from state
         if ($this->state) {
-            foreach ($this->state->getAll() as $subProcessKey => $subProcessData) {
+            foreach ($this->state->getAllParts() as $subProcessKey => $subProcessData) {
                 $data = Arrays::arrayMergeRecursiveOverrule(
                     $data,
                     $subProcessData

@@ -79,7 +79,7 @@ class FormState
     /**
      * @return mixed[][]
      */
-    public function getAll(): array
+    public function getAllParts(): array
     {
         return $this->parts;
     }

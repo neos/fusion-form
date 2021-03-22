@@ -68,7 +68,7 @@ class FormStateServiceTest extends TestCase
         $serializedState = $this->formStateService->serializeState($state);
         $unserializedState = $this->formStateService->unserializeState($serializedState);
 
-        $this->assertEquals($stateParts, $unserializedState->getAll());
+        $this->assertEquals($stateParts, $unserializedState->getAllParts());
     }
 
     /**

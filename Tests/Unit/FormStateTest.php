@@ -34,7 +34,7 @@ class FormStateTest extends TestCase
     public function emptyStateHasNoParts()
     {
         $state = new FormState();
-        $this->assertEmpty($state->getAll());
+        $this->assertEmpty($state->getAllParts());
         $this->assertFalse($state->hasPart('example'));
         $this->assertNull($state->getPart('example'));
         $this->assertEquals([], $state->getCommittedPartNames());
@@ -49,7 +49,7 @@ class FormStateTest extends TestCase
         $state->commitPart('example', ['value' => 'exampleValue']);
         $this->assertTrue($state->hasPart('example'));
         $this->assertEquals(['value' => 'exampleValue'], $state->getPart('example'));
-        $this->assertEquals(['example' => ['value' => 'exampleValue']], $state->getAll());
+        $this->assertEquals(['example' => ['value' => 'exampleValue']], $state->getAllParts());
         $this->assertEquals(['example'], $state->getCommittedPartNames());
     }
 
@@ -61,7 +61,7 @@ class FormStateTest extends TestCase
         $state = new FormState(['example' => ['value' => 'exampleValue']]);
         $this->assertTrue($state->hasPart('example'));
         $this->assertEquals(['value' => 'exampleValue'], $state->getPart('example'));
-        $this->assertEquals(['example' => ['value' => 'exampleValue']], $state->getAll());
+        $this->assertEquals(['example' => ['value' => 'exampleValue']], $state->getAllParts());
         $this->assertEquals(['example'], $state->getCommittedPartNames());
     }
 
@@ -74,7 +74,7 @@ class FormStateTest extends TestCase
         $state->commitPart('example', ['another' => 'exampleValue']);
         $this->assertTrue($state->hasPart('example'));
         $this->assertEquals(['another' => 'exampleValue'], $state->getPart('example'));
-        $this->assertEquals(['example' => ['another' => 'exampleValue']], $state->getAll());
+        $this->assertEquals(['example' => ['another' => 'exampleValue']], $state->getAllParts());
         $this->assertEquals(['example'], $state->getCommittedPartNames());
     }
 
