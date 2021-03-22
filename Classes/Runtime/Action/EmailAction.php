@@ -63,13 +63,13 @@ class EmailAction extends AbstractAction
         $mail = new SwiftMailerMessage();
 
         $mail
-            ->setFrom($senderName ? array($senderAddress => $senderName) : $senderAddress)
+            ->setFrom($senderName ? [$senderAddress => $senderName] : $senderAddress)
             ->setSubject($subject);
 
         if (is_array($recipientAddress)) {
             $mail->setTo($recipientAddress);
         } else {
-            $mail->setTo($recipientName ? array($recipientAddress => $recipientName) : $recipientAddress);
+            $mail->setTo($recipientName ? [$recipientAddress => $recipientName] : $recipientAddress);
         }
 
         if ($replyToAddress !== null) {
@@ -102,15 +102,15 @@ class EmailAction extends AbstractAction
                  * @phpstan-ignore-next-line
                  */
                 \Neos\Flow\var_dump(
-                    array(
-                        'sender' => array($senderAddress => $senderName),
-                        'recipients' => is_array($recipientAddress) ? $recipientAddress : array($recipientAddress => $recipientName),
+                    [
+                        'sender' => [$senderAddress => $senderName],
+                        'recipients' => is_array($recipientAddress) ? $recipientAddress : [$recipientAddress => $recipientName],
                         'replyToAddress' => $replyToAddress,
                         'carbonCopyAddress' => $carbonCopyAddress,
                         'blindCarbonCopyAddress' => $blindCarbonCopyAddress,
                         'text' => $text,
                         'html' => $html
-                    ),
+                    ],
                     'E-Mail "' . $subject . '"',
                     true
                 )
