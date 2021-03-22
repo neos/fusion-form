@@ -4,4 +4,3 @@ parameters:
 		- Classes
 	ignoreErrors:
 		 - '#Unsafe usage of new static\(\).#'
-		 - '#Function Neos\\Flow\\var_dump not found.#'

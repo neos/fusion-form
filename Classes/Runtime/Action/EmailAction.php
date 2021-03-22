@@ -98,6 +98,9 @@ class EmailAction extends AbstractAction
         if ($testMode === true) {
             $response = new ActionResponse();
             $response->setContent(
+                /**
+                 * @phpstan-ignore-next-line
+                 */
                 \Neos\Flow\var_dump(
                     array(
                         'sender' => array($senderAddress => $senderName),
