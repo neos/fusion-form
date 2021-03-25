@@ -68,11 +68,12 @@ concept changes you should be aware of.
 
 ### Important deviations from the concepts of the Neos.Form package 
 
-- The definitions for form rendering and validation are separated into `content` and `schema` of the process.
+- The definitions for form rendering and validation are separated into `content` and `schema` of the `process`.
+- By default the `SingleStepProcess` is used as this is the most common case. If you need multiple steps the `process` has to be altered to `MultiStepProcess` 
 - Settings, form data and node properties can be used in a unified way via Fusion to define actions and control the process.
-- The concept of finishers is replaced with `actions`
-- Confirmations no special feature but can be created as "step" in a MultiStepProcess   
-- Actions can not decide to send the user back into a finished step. 
+- Confirmations are no special feature but can be defined as "step" in a MultiStepProcess   
+- The concept of finishers is replaced with `actions`. 
+- Actions cannot decide to send the user back into the form process. 
 
 
 
