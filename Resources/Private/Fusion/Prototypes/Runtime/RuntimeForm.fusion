@@ -15,9 +15,6 @@ prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
         </Neos.Fusion.Form:Form>
     `
 
-    #
-    # @todo this should become a dynamic segment to allow caching of the first page
-    #
     @cache {
         mode = 'uncached'
         context {
