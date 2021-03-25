@@ -24,7 +24,7 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
 }
 ```
 
-The Runtime form also allows to specify an `identifier` that will be used as namespace for all form values and 
+The Runtime form also allows to specify an `namespace` that will be used as namespace for all form values and 
 the initial `data` for cases in which the process doesn't start empty.  
 
 ## Process - `Neos.Fusion.Form:Runtime.SingleStepProcess`

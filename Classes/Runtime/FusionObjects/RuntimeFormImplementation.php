@@ -34,11 +34,11 @@ class RuntimeFormImplementation extends AbstractFusionObject
     /**
      * @return string
      */
-    protected function getIdentifier(): string
+    protected function getNamespace(): string
     {
-        $identifier = $this->fusionValue('identifier');
-        if ($identifier) {
-            return $identifier;
+        $namespace = $this->fusionValue('namespace');
+        if ($namespace) {
+            return $namespace;
         } else {
             return md5($this->path);
         }
@@ -82,11 +82,11 @@ class RuntimeFormImplementation extends AbstractFusionObject
      */
     public function evaluate(): string
     {
-        $identifier = $this->getIdentifier();
+        $namespace = $this->getNamespace();
         $data = $this->getData() ?? [];
         $process = $this->getProcess();
 
-        $formRequest = $this->formRequestFactory->createFormRequest($this->getCurrentActionRequest(), $identifier);
+        $formRequest = $this->formRequestFactory->createFormRequest($this->getCurrentActionRequest(), $namespace);
         $process->handle($formRequest, $data);
         if ($process->isFinished() === false) {
             return $this->renderForm($process, $formRequest);

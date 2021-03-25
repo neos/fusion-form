@@ -1,9 +1,9 @@
 # A single step runtime form with actions  
 
 ```
-prototype(Form.Test:Content.ExampleForm) < prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
+prototype(Vendor.Site:Content.SingleStepFormExample) < prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
-    identifier = "testform"
+    namespace = "single_step_form_example"
 
     process {
 

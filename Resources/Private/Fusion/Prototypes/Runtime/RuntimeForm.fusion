@@ -1,7 +1,7 @@
 prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
     @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\RuntimeFormImplementation'
 
-    identifier = null
+    namespace = null
 
     data = Neos.Fusion:DataStructure
 

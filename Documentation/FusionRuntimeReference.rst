@@ -10,7 +10,7 @@ with validation and actions that handle the submitted data without implementing 
 Neos.Fusion.Form:Runtime.RuntimeForm
 ------------------------------------
 
-The runtime form prototype will pass the submitted data from namespace `identifier` to the `process` until
+The runtime form prototype will pass the submitted data from `namespace` to the `process` until
 this is finished. Afterwards the resulting `data` is passed to the `action`.
 
 The algorithm is as follows:
@@ -20,7 +20,7 @@ The algorithm is as follows:
 3. If the `process` is not finished render form tag and delegate the body rendering to the `process`.
 4. If the `process` is finished execute the `action` and pass the data.
 
-:identifier: (`string`), Form argument namespace. If no identifier is defined the hash of the current fusion path is used as namespace.
+:namespace: (`string`), Form argument namespace. If no namespace is defined the hash of the current fusion path is used.
 :data: (`mixed`, defaults to `Neos.Fusion:DataStructure`_) The initial data that is given to the form process as input value.
 :process: (`ProcessInterface`, defaults to `Neos.Fusion.Form:Runtime.SingleStepProcess`_) The process will handle each request until it declares itself finished.
 :action: (`ActionInterface`, defaults to `Neos.Fusion.Form:Runtime.ActionCollection`_) The action that is executed after the process is finished.
@@ -31,7 +31,7 @@ Example::
 
     renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
         # the form argument namespace
-        identifier = 'example'
+        namespace = 'example'
 
         # initial form data to prefill the fields
         data = Neos.Fusion:DataStructure
@@ -61,7 +61,7 @@ Example::
 
     prototype(Form.Test:Content.ExampleForm) < prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
-        identifier = "singleStepExample"
+        namespace = "singleStepExample"
 
         process {
             content = afx`
@@ -133,7 +133,7 @@ Example::
 
     prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
-        identifier = "multiStepExample"
+        namespace = "multiStepExample"
 
         process = Neos.Fusion.Form:Runtime.MultiStepProcess {
             steps {

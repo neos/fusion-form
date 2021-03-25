@@ -1,9 +1,9 @@
 # A multi step runtime form with actions  
 
 ```
-prototype(Form.Test:Content.ExampleForm2) < prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
+prototype(Vendor.Site:Content.MultiStepFormExample) < prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
-    identifier = "testform2"
+    namespace = "multi_step_form_example"
 
     data = Neos.Fusion:DataStructure {
         firstName = "foo"
