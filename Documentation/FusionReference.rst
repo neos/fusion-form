@@ -159,6 +159,8 @@ Instead use this prototype as template to create project-specific field containe
 :attributes: (DataStructure) attributes for the container tag
 :class: (string, default null) class for the container
 :errorClass: (string, default null) class that is added to the container and the error list once errors occur
+:labelRenderer: (string, default `"Neos.Fusion.Form:LabelRenderer"`) Name of the prototype that will render field labels
+:errorRenderer: (string, default `"Neos.Fusion.Form:ErrorMessageRenderer"`) Name of the prototype that will render validation errors
 :content: (string) afx content
 
 Example::
@@ -190,6 +192,27 @@ For adding translations or customizing the rendering the renderer can be overwri
             </div>
         `
     }
+
+Neos.Fusion.Form:LabelRenderer
+------------------------------
+
+The LabelRenderer renderer renders a `label` tag with.
+
+:for: (string, defaults to null) The `for` attribute of the label
+:label: (string, defaults to null) The content of the label, will be translated via `translationPackage` and `translationSource`
+:class: (string, defaults to null) The `class` attribute of the label
+:translationPackage: (string, defaults to null) Translation package for the label
+:translationSource: (string, defaults to null) Translation source for the label
+
+Neos.Fusion.Form:ErrorRenderer
+------------------------------
+
+The ErrorRenderer will render validation errors of form fields.
+
+:result: (`\Neos\Error\Messages\Result`, defaults to null) The validation result that shall be rendered
+:class: (string, defaults to 'errors') The `class` attribute
+:translationPackage: (string, defaults to 'Neos.Flow') Translation package for the errors
+:translationSource: (string, defaults to 'ValidationErrors') Translation source for the errors
 
 
 Neos.Fusion.Form:Neos.BackendModule.FieldContainer

@@ -23,22 +23,20 @@ prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion.Form:Compone
     # className of the container
     class = null
 
-    # classname for errors
+    # additional className of the container if errors are present
     errorClass = 'error'
+
+    # prototype name responsible for lanel rendering
+    labelRenderer = 'Neos.Fusion.Form:LabelRenderer'
+
+    # prototype name responsible for error rendering
+    errorRenderer = 'Neos.Fusion.Form:ErrorRenderer'
 
     renderer = afx`
         <div class={props.class + field.hasErrors() ? ' ' + props.errorClass : ''} {...props.attributes} >
-            <label for={field.getName()} @if.has={props.label}>
-                {props.label}
-            </label>
+            <Neos.Fusion:Renderer @if.hasErrors={props.label} type={props.labelRenderer} element.for={field.getName()} element.label={props.label} />
             {props.content}
-            <ul @if.hasErrors={field.hasErrors()} class={props.errorClass}>
-                <Neos.Fusion:Loop items={field.getResult().flattenedErrors} itemName="errors" >
-                    <Neos.Fusion:Loop items={errors} itemName="error" >
-                        <li>{error}</li>
-                    </Neos.Fusion:Loop>
-                </Neos.Fusion:Loop>
-            </ul>
+            <Neos.Fusion:Renderer @if.hasErrors={field.hasErrors()} type={props.errorRenderer} element.result={field.getResult()} />
         </div>
     `
 
