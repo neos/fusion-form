@@ -11,14 +11,17 @@ Neos.Fusion.Form:Runtime.RuntimeForm
 ------------------------------------
 
 The runtime form prototype will pass the submitted data from `namespace` to the `process` until
-this is finished. Afterwards the resulting `data` is passed to the `action`.
+this is finished. Afterwards the resulting `data` is passed to the `action`. Inside the runtime form
+the fusion `request` is replaced by a subrequest for the form `namespace`.
 
 The algorithm is as follows:
 
 1. Create a subRequest in form namespace and pass all submitted values that have trustedProperties.
-2. Let the `proccess` handle the created subrequest.
-3. If the `process` is not finished render form tag and delegate the body rendering to the `process`.
-4. If the `process` is finished execute the `action` and pass the data.
+2. Push the formRequest as `request` to the fusion context.
+3. Let the `proccess` handle the created subrequest.
+4. If the `process` is not finished render form tag and delegate the body rendering to the `process`.
+5. If the `process` is finished execute the `action` and pass the data.
+6. Restore `request` to global request again
 
 :namespace: (`string`), Form argument namespace. If no namespace is defined the hash of the current fusion path is used.
 :data: (`mixed`, defaults to `Neos.Fusion:DataStructure`_) The initial data that is given to the form process as input value.
