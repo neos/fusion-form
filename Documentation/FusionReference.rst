@@ -160,7 +160,7 @@ Instead use this prototype as template to create project-specific field containe
 :class: (string, default null) class for the container
 :errorClass: (string, default null) class that is added to the container and the error list once errors occur
 :labelRenderer: (string, default `"Neos.Fusion.Form:LabelRenderer"`) Name of the prototype that will render field labels
-:errorRenderer: (string, default `"Neos.Fusion.Form:ErrorMessageRenderer"`) Name of the prototype that will render validation errors
+:errorRenderer: (string, default `"Neos.Fusion.Form:ErrorRenderer"`) Name of the prototype that will render validation errors
 :content: (string) afx content
 
 Example::

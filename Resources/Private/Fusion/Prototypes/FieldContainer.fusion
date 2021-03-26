@@ -1,10 +1,5 @@
 prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion.Form:Component.Field) {
 
-    @propTypes {
-        label = ${PropTypes.string}
-        content = ${PropTypes.string}
-    }
-
     #
     # label and afx content
     #
@@ -26,7 +21,7 @@ prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion.Form:Compone
     # additional className of the container if errors are present
     errorClass = 'error'
 
-    # prototype name responsible for lanel rendering
+    # prototype name responsible for label rendering
     labelRenderer = 'Neos.Fusion.Form:LabelRenderer'
 
     # prototype name responsible for error rendering
