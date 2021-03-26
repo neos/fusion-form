@@ -129,28 +129,6 @@ class SchemaHelper implements ProtectedContextAwareInterface
     }
 
     #
-    # Common abbreviated names for boolean and integer
-    #
-
-    /**
-     * Alias for integer
-     * @return SchemaInterface
-     */
-    public function int(): SchemaInterface
-    {
-        return $this->integer();
-    }
-
-    /**
-     * Alias for boolean
-     * @return SchemaInterface
-     */
-    public function bool(): SchemaInterface
-    {
-        return $this->boolean();
-    }
-
-    #
     # Method required by the ProtectedContextAwareInterface
     #
 

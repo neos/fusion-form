@@ -115,13 +115,6 @@ Create a date schema for an array by providing a schema for all items
 
 **Return** (SchemaInterface)
 
-Schema.bool()
-^^^^^^^^^^^^^
-
-Alias for boolean
-
-**Return** (SchemaInterface)
-
 Schema.boolean()
 ^^^^^^^^^^^^^^^^
 
@@ -151,13 +144,6 @@ Schema.forType(type)
 Create a schema for the given type
 
 * ``type`` (string) The type or className that is expected
-
-**Return** (SchemaInterface)
-
-Schema.int()
-^^^^^^^^^^^^
-
-Alias for integer
 
 **Return** (SchemaInterface)
 
