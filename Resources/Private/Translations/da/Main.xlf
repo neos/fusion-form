@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="" product-name="Neos.Fusion.Form" source-language="en" datatype="plaintext" target-language="da">
+    <body>
+      <trans-unit id="forms.navigation.previousPage" xml:space="preserve" approved="yes">
+                <source>Previous page</source>
+            <target state="final">Forrige side</target></trans-unit>
+      <trans-unit id="forms.navigation.nextPage" xml:space="preserve" approved="yes">
+                <source>Next page</source>
+            <target state="final">Næste side</target></trans-unit>
+      <trans-unit id="forms.navigation.submit" xml:space="preserve" approved="yes">
+                <source>Submit</source>
+            <target state="final">Indsend</target></trans-unit>
+      <trans-unit id="forms.pages.labelTitle" xml:space="preserve" approved="yes">
+                <source>Label</source>
+            <target state="final">Etiket</target></trans-unit>
+      <trans-unit id="forms.pages.valueTitle" xml:space="preserve">
+                <source>Value</source>
+            <target state="translated">Værdi</target></trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,15 @@
+prototype(Neos.Fusion.Form:LabelRenderer)  < prototype(Neos.Fusion:Component) {
+
+    for = null
+    label = null
+    class = null
+
+    translationPackage = null
+    translationSource = null
+
+    renderer = afx`
+        <label @if.hasLabel={props.label} for={props.for} class={props.class}>
+            {I18n.id(props.label).package(props.translationPackage).source(props.translationSource).value(props.label).translate()}
+        </label>
+    `
+}

@@ -1,0 +1,13 @@
+prototype(Neos.Fusion.Form:Runtime.SingleStepProcess) {
+    @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\SingleStepProcessImplementation'
+
+    schema = Neos.Fusion.Form:Runtime.SchemaCollection
+
+    content = null
+
+    header = null
+
+    footer = afx`
+        <Neos.Fusion.Form:Button>{Translation.id('forms.navigation.submit').package('Neos.Fusion.Form').translate()}</Neos.Fusion.Form:Button>
+    `
+}

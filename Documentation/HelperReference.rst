@@ -3,7 +3,7 @@
 Fusion Form Helper Reference
 ============================
 
-This reference was automatically generated from code on 2019-11-06
+This reference was automatically generated from code on 2021-03-22
 
 
 .. _`Fusion Form Helper Reference: Neos\Fusion\Form\Domain\Field`:
@@ -20,7 +20,7 @@ Implemented in: ``Neos\Fusion\Form\Domain\Field``
 Neos\Fusion\Form\Domain\Field.getCurrentMultivalueStringified()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Return** (array) The current value of the field converted to an array of strings. Only used in multifields.
+**Return** (string[]) The current value of the field converted to an array of strings. Only used in multifields.
 
 Neos\Fusion\Form\Domain\Field.getCurrentValue()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -94,11 +94,16 @@ Implemented in: ``Neos\Fusion\Form\Domain\Form``
 Neos\Fusion\Form\Domain\Form.calculateHiddenFields(content)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Calculate the hidden fields for the given form content as key-value array
+Calculate the hidden fields for the given form content as key-value array.
+
+This works by parsing the given `content` and detecting all html fields.
+This allow to support fields that are rendered withoput using the Neos.Fusion.Form
+prototypes and to calculate hidden identify and trusted properties for those
+fields aswell.
 
 * ``content`` (string, *optional*) The form html body, usually renderd via afx
 
-**Return** (array) hiddenFields as key value pairs
+**Return** (string[]) hiddenFields as key value pairs
 
 Neos\Fusion\Form\Domain\Form.getData()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -110,15 +115,15 @@ Neos\Fusion\Form\Domain\Form.getEncoding()
 
 **Return** (string|null) The encoding for the form
 
-Neos\Fusion\Form\Domain\Form.getFieldNamePrefix()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-**Return** (string|null) The fieldname prefix that was assigned or determined from the request
-
 Neos\Fusion\Form\Domain\Form.getMethod()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Return** (string|null) The http method for submitting the form
+
+Neos\Fusion\Form\Domain\Form.getNamespace()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Return** (string|null) The namespace prefix that was assigned or determined from the request
 
 Neos\Fusion\Form\Domain\Form.getRequest()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -133,7 +138,7 @@ Neos\Fusion\Form\Domain\Form.getResult()
 Neos\Fusion\Form\Domain\Form.getSubmittedValues()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Return** (array|null) The previously submitted values when validation errors prevented processing the data
+**Return** (mixed[]|null) The previously submitted values when validation errors prevented processing the data
 
 Neos\Fusion\Form\Domain\Form.getTarget()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

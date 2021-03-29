@@ -1,0 +1,26 @@
+prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
+    @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\RuntimeFormImplementation'
+
+    namespace = null
+
+    data = Neos.Fusion:DataStructure
+
+    process = Neos.Fusion.Form:Runtime.SingleStepProcess
+
+    action = Neos.Fusion.Form:Runtime.ActionCollection
+
+    form = afx`
+        <Neos.Fusion.Form:Form form={form}>
+            {content}
+        </Neos.Fusion.Form:Form>
+    `
+
+    @cache {
+        mode = 'uncached'
+        context {
+            1 = 'node'
+            2 = 'documentNode'
+            3 = 'site'
+        }
+    }
+}

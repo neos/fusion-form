@@ -1,0 +1,3 @@
+prototype(Neos.Fusion.Form:Runtime.SchemaCollection) {
+    @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\SchemaCollectionImplementation'
+}

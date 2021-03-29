@@ -1,0 +1,24 @@
+prototype(Neos.Fusion.Form:Runtime.MultiStepProcess) {
+    @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\MultiStepProcessImplementation'
+
+    steps = Neos.Fusion.Form:Runtime.ProcessCollection
+
+    header = null
+
+    footer = afx`
+        <Neos.Fusion.Form:Button field.name="__target" attributes.value={process.prev} @if.hasPrev={process.prev} formnovalidate="formnovalidate">{Translation.id('forms.navigation.previousPage').package('Neos.Fusion.Form').translate()}</Neos.Fusion.Form:Button>
+        <Neos.Fusion.Form:Button field.name="__target" attributes.value={process.next} @if.hasNext={process.next}>{Translation.id('forms.navigation.nextPage').package('Neos.Fusion.Form').translate()}</Neos.Fusion.Form:Button>
+        <Neos.Fusion.Form:Button field.name="__target" @if.hasNoNext={process.isLast}>{Translation.id('forms.navigation.submit').package('Neos.Fusion.Form').translate()}</Neos.Fusion.Form:Button>
+    `
+
+    hiddenFields = afx`
+        <Neos.Fusion.Form:Hidden field.name="__state" attributes.value={process.state} @if.has={process.state} />
+        <Neos.Fusion.Form:Hidden field.name="__current" attributes.value={process.current} @if.has={process.current} />
+    `
+
+    prototype(Neos.Fusion.Form:Runtime.SingleStepProcess) {
+        header = null
+        footer = null
+    }
+
+}

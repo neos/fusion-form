@@ -1,0 +1,6 @@
+
+prototype(Neos.Fusion.Form:Runtime.Action) {
+    @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\ActionImplementation'
+    type = null
+    options = Neos.Fusion:DataStructure
+}

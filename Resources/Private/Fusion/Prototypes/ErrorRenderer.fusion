@@ -1,0 +1,19 @@
+prototype(Neos.Fusion.Form:ErrorRenderer)  < prototype(Neos.Fusion:Component) {
+
+    # \Neos\Error\Messages\Result'
+    result = null
+    class = 'errors'
+
+    translationPackage = 'Neos.Flow'
+    translationSource = 'ValidationErrors'
+
+    renderer = afx`
+        <ul @if.hasResult={props.result} class={props.class}>
+            <Neos.Fusion:Loop items={props.result.flattenedErrors} itemName="errors">
+                <Neos.Fusion:Loop items={errors} itemName="error">
+                    <li>{I18n.id(error.code).package(props.translationPackage).source(props.translationSource).value(error).translate()}</li>
+´               </Neos.Fusion:Loop>
+            </Neos.Fusion:Loop>
+        </ul>
+    `
+}

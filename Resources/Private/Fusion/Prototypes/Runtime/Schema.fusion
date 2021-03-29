@@ -1,0 +1,6 @@
+prototype(Neos.Fusion.Form:Runtime.Schema) {
+    @class = 'Neos\\Fusion\\Form\\Runtime\\FusionObjects\\SchemaImplementation'
+    type = 'string'
+    validator = Neos.Fusion.Form:Runtime.ValidatorCollection
+    typeConverterOptions = Neos.Fusion:DataStructure
+}

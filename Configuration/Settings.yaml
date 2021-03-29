@@ -3,11 +3,17 @@ Neos:
     fusion:
       autoInclude:
         Neos.Fusion.Form: true
+
+  Fusion:
+    defaultContext:
+      Form.Schema: 'Neos\Fusion\Form\Runtime\Helper\SchemaHelper'
+
   DocTools:
     collections:
       FusionForm:
         references:
           - 'FusionForm:Helpers'
+          - 'FusionForm:RuntimeHelpers'
     references:
       'FusionForm:Helpers':
         title: 'Fusion Form Helper Reference'
@@ -15,5 +21,13 @@ Neos:
         affectedClasses:
           interface: Neos\Eel\ProtectedContextAwareInterface
           classNamePattern: '/^Neos\\Fusion\\Form\\Domain\\.*$/i'
+        parser:
+          implementationClassName: Neos\DocTools\Domain\Service\EelHelperClassParser
+      'FusionForm:RuntimeHelpers':
+        title: 'Fusion Form Helper Reference'
+        savePathAndFilename: '%FLOW_PATH_PACKAGES%Application/Neos.Fusion.Form/Documentation/RuntimeHelperReference.rst'
+        affectedClasses:
+          interface: Neos\Eel\ProtectedContextAwareInterface
+          classNamePattern: '/^Neos\\Fusion\\Form\\Runtime\\Helper\\.*$/i'
         parser:
           implementationClassName: Neos\DocTools\Domain\Service\EelHelperClassParser

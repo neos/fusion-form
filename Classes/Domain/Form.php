@@ -69,7 +69,7 @@ class Form extends AbstractFormObject
     /**
      * @var string|null
      */
-    protected $fieldNamePrefix;
+    protected $namespace;
 
     /**
      * @var mixed[]|null
@@ -84,17 +84,17 @@ class Form extends AbstractFormObject
     /**
      * Form constructor.
      * @param ActionRequest|null $request
-     * @param null $data
-     * @param string|null $fieldNamePrefix
+     * @param mixed $data
+     * @param string|null $namespace
      * @param string|null $target
      * @param string|null $method
      * @param string|null $encoding
      */
-    public function __construct(?ActionRequest $request = null, $data = null, ?string $fieldNamePrefix = null, ?string $target = null, ?string $method = null, ?string $encoding = null)
+    public function __construct(ActionRequest $request = null, $data = null, ?string $namespace = null, ?string $target = null, ?string $method = "get", ?string $encoding = null)
     {
         $this->request = $request;
         $this->data = $data;
-        $this->fieldNamePrefix = $fieldNamePrefix;
+        $this->namespace = $namespace;
         $this->target = $target;
         $this->method = $method;
         $this->encoding = $encoding;
@@ -106,8 +106,8 @@ class Form extends AbstractFormObject
         $this->result = $request ? $request->getInternalArgument('__submittedArgumentValidationResults') : null;
 
         // determine fieldNamePrefix if none was given from request
-        if (is_null($this->fieldNamePrefix) && $request) {
-            $this->fieldNamePrefix = $request->getArgumentNamespace();
+        if (is_null($this->namespace) && $request) {
+            $this->namespace = $request->getArgumentNamespace();
         }
     }
 
@@ -128,11 +128,11 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return string|null The fieldname prefix that was assigned or determined from the request
+     * @return string|null The namespace prefix that was assigned or determined from the request
      */
-    public function getFieldNamePrefix(): ?string
+    public function getNamespace(): ?string
     {
-        return $this->fieldNamePrefix;
+        return $this->namespace;
     }
 
     /**
@@ -202,7 +202,7 @@ class Form extends AbstractFormObject
         $hiddenFields = [];
 
         $request = $this->getRequest();
-        $fieldNamePrefix = $this->getFieldNamePrefix() ?: '' ;
+        $fieldNamePrefix = $this->getNamespace() ?: '' ;
         $data = $this->getData();
 
         // parse given content to render hidden fields for
@@ -294,6 +294,8 @@ class Form extends AbstractFormObject
                                     $formFieldNames[] = $name;
                                 }
                             }
+                        } elseif (substr($name, -18)  == '[__collectionName]' || substr($name, -41) === '[originallySubmittedResource][__identity]') {
+                            // ignore special fields for file uploads
                         } else {
                             $formFieldNames[] = $name;
                         }
