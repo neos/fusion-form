@@ -79,7 +79,7 @@ abstract class AbstractCollectionFusionObject extends AbstractArrayFusionObject
                 continue;
             }
             if ($this->itemInterface && is_a($value, $this->itemInterface) == false) {
-                throw new \InvalidArgumentException(sprintf('Children of %s have to implement interface %s, %s contained %s', static::class, $this->itemInterface, $key, get_class($value)));
+                throw new \InvalidArgumentException(sprintf('Children of %s have to implement interface %s, %s contained %s', static::class, $this->itemInterface, $key, is_object($value) ? get_class($value) : gettype($value)));
             }
             $children[$key] = $value;
         }
