@@ -30,7 +30,7 @@ class EmailAction extends AbstractAction
     public function perform(): ?ActionResponse
     {
         if (!class_exists(SwiftMailerMessage::class)) {
-            throw new ActionException('The "neos/swiftmailer" doesn\'t seem to be installed, but is required for the EmailFinisher to work!', 1503392532);
+            throw new ActionException('The "neos/swiftmailer" doesn\'t seem to be installed, but is required for the EmailAction to work!', 1503392532);
         }
 
         $subject = $this->options['subject'] ?? null;
@@ -48,16 +48,16 @@ class EmailAction extends AbstractAction
         $testMode = $this->options['testMode'] ?? false;
 
         if ($subject === null) {
-            throw new ActionException('The option "subject" must be set for the EmailFinisher.', 1327060320);
+            throw new ActionException('The option "subject" must be set for the EmailAction.', 1327060320);
         }
         if ($recipientAddress === null) {
-            throw new ActionException('The option "recipientAddress" must be set for the EmailFinisher.', 1327060200);
+            throw new ActionException('The option "recipientAddress" must be set for the EmailAction.', 1327060200);
         }
         if (is_array($recipientAddress) && !empty($recipientName)) {
-            throw new ActionException('The option "recipientName" cannot be used with multiple recipients in the EmailFinisher.', 1483365977);
+            throw new ActionException('The option "recipientName" cannot be used with multiple recipients in the EmailAction.', 1483365977);
         }
         if ($senderAddress === null) {
-            throw new ActionException('The option "senderAddress" must be set for the EmailFinisher.', 1327060210);
+            throw new ActionException('The option "senderAddress" must be set for the EmailAction.', 1327060210);
         }
 
         $mail = new SwiftMailerMessage();
