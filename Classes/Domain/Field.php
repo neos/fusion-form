@@ -100,14 +100,16 @@ class Field extends AbstractFormObject
     protected function findCurrentValueByPath(string $path)
     {
         // determine value, according to the following algorithm:
-        if ($this->form && $this->form->getResult() !== null && $this->form->getResult()->hasErrors()) {
-            // 1) if a validation error has occurred, pull the value from the submitted form values.
-            $fieldValue = ObjectAccess::getPropertyPath($this->form->getSubmittedValues(), $path);
-        } elseif ($path && $this->form && $this->form->getData()) {
-            // 2) else, if "property" is specified, take the value from the bound object.
-            $fieldValue = ObjectAccess::getPropertyPath($this->form->getData(), $path);
-        } else {
-            $fieldValue = null;
+        $fieldValue = null;
+        if ($path && $this->form) {
+            if ($this->form->getResult() !== null && $this->form->getResult()->hasErrors()) {
+                // 1) if a validation error has occurred, pull the value from the submitted form values.
+                $fieldValue = ObjectAccess::getPropertyPath($this->form->getSubmittedValues(), $path);
+            }
+            if (is_null($fieldValue) && $this->form->getData()) {
+                // 2) else, if "property" is specified, take the value from the bound object.
+                $fieldValue = ObjectAccess::getPropertyPath($this->form->getData(), $path);
+            }
         }
         return $fieldValue;
     }
