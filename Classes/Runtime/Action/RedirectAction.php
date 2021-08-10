@@ -13,12 +13,19 @@ namespace Neos\Fusion\Form\Runtime\Action;
  * source code.
  */
 
-use GuzzleHttp\Psr7\Uri;
+use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
+use Psr\Http\Message\UriFactoryInterface;
 
 class RedirectAction extends AbstractAction
 {
+    /**
+     * @Flow\Inject
+     * @var UriFactoryInterface
+     */
+    protected $uriFactory;
+
     /**
      * @return ActionResponse|null
      * @throws ActionException
@@ -34,7 +41,7 @@ class RedirectAction extends AbstractAction
         $status = $this->options['status'] ?? 303;
 
         $response = new ActionResponse();
-        $response->setRedirectUri(new Uri($uri), $status);
+        $response->setRedirectUri($this->uriFactory->createUri($uri), $status);
         return $response;
     }
 }
