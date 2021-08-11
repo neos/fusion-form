@@ -12,7 +12,7 @@
         "neos/fusion-afx": "^1.2 || ^7.0 || dev-master",
         "neos/utility-arrays": "*",
         "neos/utility-objecthandling": "*",
-        "guzzlehttp/psr7": "*"
+        "psr/http-factory": "*"
     },
     "require-dev": {
         "neos/swiftmailer": "*",
