@@ -27,6 +27,7 @@ The algorithm is as follows:
 :data: (`mixed`, defaults to `Neos.Fusion:DataStructure`_) The initial data that is given to the form process as input value.
 :process: (`ProcessInterface`, defaults to `Neos.Fusion.Form:Runtime.SingleStepProcess`_) The process will handle each request until it declares itself finished.
 :action: (`ActionInterface`, defaults to `Neos.Fusion.Form:Runtime.ActionCollection`_) The action that is executed after the process is finished.
+:attributes: (`Neos.Fusion:DataStructure`_) form attributes, will override all automatically rendered ones
 
 .. note:: While the `process` renders and the `action` is executed the current `data` is always in the Fusion context and can be used by Fusion.
 
