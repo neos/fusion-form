@@ -79,8 +79,16 @@ class FormRequestFactoryTest extends TestCase
         $actionRequest = ActionRequest::fromHttpRequest($this->mockHttpRequest);
         $actionRequest->setArguments([
             $identifier => [
-                'trusted' => 'trustedValue',
-                'notTrusted' => 'notTrustedValue',
+                'trusted' => 'trustedValue_0',
+                'notTrusted' => 'notTrustedValue_0',
+                'nested_1' => [
+                    'trusted' => 'trustedValue_1',
+                    'notTrusted' => 'notTrustedValue_1',
+                    'nested_2' => [
+                        'trusted' => 'trustedValue_2',
+                        'notTrusted' => 'notTrusted_2'
+                    ]
+                ],
                 '__trustedProperties' => $trustedProperties
             ]
         ]);
@@ -88,7 +96,17 @@ class FormRequestFactoryTest extends TestCase
         $this->mockHashService->expects(self::once())
             ->method('validateAndStripHmac')
             ->with($trustedProperties)
-            ->willReturn(serialize(['trusted' => 1]));
+            ->willReturn(serialize(
+                [
+                    'trusted' => 1,
+                    'nested_1' => [
+                        'trusted' => 1,
+                        'nested_2' => [
+                            'trusted' => 1
+                        ]
+                    ]
+                ]
+            ));
 
         $formRequest = $this->formRequestFactory->createFormRequest($actionRequest, $identifier);
 
@@ -96,9 +114,17 @@ class FormRequestFactoryTest extends TestCase
         $this->assertEquals($identifier, $formRequest->getArgumentNamespace());
         $this->assertEquals($actionRequest, $formRequest->getParentRequest());
         $this->assertEquals($this->mockHttpRequest, $formRequest->getHttpRequest());
-        $this->assertArrayHasKey('trusted', $formRequest->getArguments());
-        $this->assertArrayNotHasKey('notTrusted', $formRequest->getArguments());
-        $this->assertEquals(['trusted' => 'trustedValue'], $formRequest->getArguments());
+
+        $arguments = $formRequest->getArguments();
+
+        $this->assertSame('trustedValue_0', $arguments['trusted']);
+        $this->assertSame('trustedValue_1', $arguments['nested_1']['trusted']);
+        $this->assertSame('trustedValue_2', $arguments['nested_1']['nested_2']['trusted']);
+
+        $this->assertNull($arguments['notTrusted'] ?? null);
+        $this->assertNull($arguments['nested_1']['notTrusted'] ?? null);
+        $this->assertNull($arguments['nested_1']['nested_2']['notTrusted'] ?? null);
+
         $this->assertEmpty($formRequest->getInternalArguments());
     }
 
