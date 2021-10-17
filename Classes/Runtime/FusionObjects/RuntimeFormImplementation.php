@@ -50,7 +50,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
     protected function getAttributes(): array
     {
         $attributes = $this->fusionValue('attributes');
-        if ($attributes) {
+        if (is_array($attributes)) {
             return $attributes;
         } else {
             return [];
