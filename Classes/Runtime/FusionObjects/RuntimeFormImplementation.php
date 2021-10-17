@@ -45,6 +45,19 @@ class RuntimeFormImplementation extends AbstractFusionObject
     }
 
     /**
+     * @return mixed[]
+     */
+    protected function getAttributes(): array
+    {
+        $attributes = $this->fusionValue('attributes');
+        if (is_array($attributes)) {
+            return $attributes;
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * @return mixed[]|null
      */
     protected function getData(): ?array
@@ -90,7 +103,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
         $this->runtime->pushContext('request', $formRequest);
         $process->handle($formRequest, $data);
         if ($process->isFinished() === false) {
-            $result = $this->renderForm($process, $formRequest);
+            $result = $this->renderForm($process, $formRequest, $this->getAttributes());
         } else {
             $result = $this->performAction($process->getData());
         }
@@ -101,6 +114,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
     /**
      * @param ProcessInterface $process
      * @param ActionRequest $formRequest
+     * @param mixed[] $attributes
      * @return mixed|string|null
      * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationException
      * @throws \Neos\Flow\Mvc\Exception\StopActionException
@@ -108,7 +122,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
      * @throws \Neos\Fusion\Exception
      * @throws \Neos\Fusion\Exception\RuntimeException
      */
-    protected function renderForm(ProcessInterface $process, ActionRequest $formRequest)
+    protected function renderForm(ProcessInterface $process, ActionRequest $formRequest, array $attributes)
     {
         $data = $process->getData();
         $form = new Form(
@@ -122,6 +136,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
 
         $context = $this->runtime->getCurrentContext();
         $context['form'] = $form;
+        $context['attributes'] = $attributes;
         $context['data'] = $data;
         $this->runtime->pushContextArray($context);
         $context['content'] = $process->render();

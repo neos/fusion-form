@@ -3,14 +3,17 @@ prototype(Neos.Fusion.Form:Runtime.RuntimeForm) {
 
     namespace = null
 
+    attributes = Neos.Fusion:DataStructure
+
     data = Neos.Fusion:DataStructure
 
     process = Neos.Fusion.Form:Runtime.SingleStepProcess
 
     action = Neos.Fusion.Form:Runtime.ActionCollection
 
+
     form = afx`
-        <Neos.Fusion.Form:Form form={form}>
+        <Neos.Fusion.Form:Form form={form} attributes={attributes}>
             {content}
         </Neos.Fusion.Form:Form>
     `
