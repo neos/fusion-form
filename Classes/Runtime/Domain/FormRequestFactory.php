@@ -59,9 +59,12 @@ class FormRequestFactory
      * @return mixed[]
      * @throws \Exception
      */
-    protected function filterSubmittedDataWithTrustedProperties(array $submittedData, array $trustedProperties): array
+    protected function filterSubmittedDataWithTrustedProperties($submittedData, array $trustedProperties): array
     {
         $filteredData = [];
+        if (!is_array($submittedData)) {
+            return $filteredData;
+        }
         foreach ($trustedProperties as $fieldName => $trustedProperty) {
             if (array_key_exists($fieldName, $submittedData)) {
                 if ($trustedProperty === 1) {
