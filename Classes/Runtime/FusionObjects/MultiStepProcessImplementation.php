@@ -130,6 +130,10 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             return false;
         }
 
+        if ($this->targetSubProcessKey) {
+            return false;
+        }
+
         $subProcesses = $this->getSubProcesses();
 
         foreach ($subProcesses as $subProcessKey => $subProcess) {
