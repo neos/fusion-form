@@ -39,17 +39,40 @@ class FormRequestFactory
         $formRequest->setArgumentNamespace($identifier);
         if ($parentRequest->hasArgument($identifier) === true && is_array($parentRequest->getArgument($identifier))) {
             $submittedData = $parentRequest->getArgument($identifier);
-            $subrequestArguments = [];
             if ($submittedData['__trustedProperties']) {
                 $trustedProperties = unserialize($this->hashService->validateAndStripHmac($submittedData['__trustedProperties']), ['allowed_classes' => false]);
-                foreach ($trustedProperties as $field => $number) {
-                    if (array_key_exists($field, $submittedData)) {
-                        $subrequestArguments[$field] = $submittedData[$field];
-                    }
-                }
+                $subrequestArguments = $this->filterSubmittedDataWithTrustedProperties($submittedData, $trustedProperties);
+            } else {
+                $subrequestArguments = [];
             }
             $formRequest->setArguments($subrequestArguments);
         }
         return $formRequest;
+    }
+
+    /**
+     * Filter incoming data with the trusted properties data-structure recursively this ensures only values that
+     * where actually rendered by the form are passed as result to the form process
+     *
+     * @param mixed[] $submittedData
+     * @param mixed[] $trustedProperties
+     * @return mixed[]
+     * @throws \Exception
+     */
+    protected function filterSubmittedDataWithTrustedProperties(array $submittedData, array $trustedProperties): array
+    {
+        $filteredData = [];
+        foreach ($trustedProperties as $fieldName => $trustedProperty) {
+            if (array_key_exists($fieldName, $submittedData)) {
+                if ($trustedProperty === 1) {
+                    $filteredData[$fieldName] = $submittedData[$fieldName];
+                } elseif (is_array($trustedProperty)) {
+                    $filteredData[$fieldName] = $this->filterSubmittedDataWithTrustedProperties($submittedData[$fieldName], $trustedProperty);
+                } else {
+                    throw new \Exception('This exception should never be thrown as trusted properties are either arrays or 1');
+                }
+            }
+        }
+        return $filteredData;
     }
 }
