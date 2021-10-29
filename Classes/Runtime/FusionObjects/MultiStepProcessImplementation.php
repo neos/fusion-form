@@ -104,7 +104,10 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
         $currentSubProcess->handle($request, $this->data);
 
-        if ($currentSubProcess->isFinished()) {
+        if ($this->targetSubProcessKey) {
+            $request->setArgument('__submittedArguments', []);
+            $request->setArgument('__submittedArgumentValidationResults', new Result());
+        } elseif ($currentSubProcess->isFinished() ) {
             if (!$this->state) {
                 $this->state = new FormState();
             }
@@ -113,11 +116,6 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
                 $this->currentSubProcessKey,
                 $currentSubProcess->getData()
             );
-        } else {
-            if ($this->targetSubProcessKey) {
-                $request->setArgument('__submittedArguments', []);
-                $request->setArgument('__submittedArgumentValidationResults', new Result());
-            }
         }
     }
 
