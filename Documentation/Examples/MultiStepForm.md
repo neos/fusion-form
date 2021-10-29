@@ -59,7 +59,7 @@ prototype(Vendor.Site:Content.MultiStepFormExample) < prototype(Neos.Fusion.Form
                 `
                 schema {
                     sports = ${Form.Schema.arrayOf( Form.Schema.string() ).validator('Count', {minimum: 1, maximum: 2})}
-                    file = ${Form.Schema.resource().isRequired.validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
+                    file = ${Form.Schema.resource().isRequired().validator('Neos\Fusion\Form\Runtime\Validation\Validator\FileTypeValidator', {allowedExtensions:['txt', 'jpg']})}
                 }
             }
             confirmation {
