@@ -139,10 +139,10 @@ CONTENT;
             <select name="prefix[foo][]" multiple>
                 <optgroup label="foo">
                     <option>foo</option>
-                    <option>bar</option>                
+                    <option>bar</option>
                 </optgroup>
-                <option>baz</option>                
-                <option>bam</option>                
+                <option>baz</option>
+                <option>bam</option>
             </select>
 CONTENT;
 
@@ -168,10 +168,10 @@ CONTENT;
             <select name="prefix[foo]">
                 <optgroup label="foo">
                     <option>foo</option>
-                    <option>bar</option>                
+                    <option>bar</option>
                 </optgroup>
-                <option>baz</option>                
-                <option>bam</option>                
+                <option>baz</option>
+                <option>bam</option>
             </select>
 CONTENT;
 
@@ -328,7 +328,7 @@ CONTENT;
             <select name="select[multiple][]" multiple></select>
             <input name="input[checkbox]" type="checkbox" value="foo" />
             <input name="input[checkbox]" type="checkbox" value="bar" />
-            <input name="input[checkbox]" type="checkbox" value="baz" />   
+            <input name="input[checkbox]" type="checkbox" value="baz" />
             <input name="input[checkboxMultiple][]" type="checkbox" value="foo" />
             <input name="input[checkboxMultiple][]" type="checkbox" value="bar" />
             <input name="input[checkboxMultiple][]" type="checkbox" value="baz" />
@@ -349,10 +349,10 @@ CONTENT;
     {
         $content = <<<CONTENT
             <select name="select[single]"></select>
-            <input name="input[text]" type="text" />            
+            <input name="input[text]" type="text" />
             <input name="input[radio]" type="radio" value="foo" />
             <input name="input[radio]" type="radio" value="bar" />
-            <input name="input[radio]" type="radio" value="baz" /> 
+            <input name="input[radio]" type="radio" value="baz" />
 CONTENT;
 
         $form = $this->createForm();
@@ -457,5 +457,33 @@ CONTENT;
 
         $this->assertArrayNotHasKey('item1[__identity]', $hiddenFields);
         $this->assertArrayNotHasKey('item2[__identity]', $hiddenFields);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsQueryArgumentsForMethodGet()
+    {
+        $form = $this->createForm(null, null, null, 'example.com?argument1=Example+%F0%9F%A6%86&nested[argument2]=%3A%2F%3F%23%5B%5D%40%20&nested[argument3]=%21%24%26%27%22%28%29%2A%2B%2C%3B%3D', 'get');
+
+        $hiddenFields = $form->calculateHiddenFields(null);
+
+        $this->assertEquals("Example 🦆", $hiddenFields['argument1']);
+        $this->assertEquals(":/?#[]@ ", $hiddenFields['nested[argument2]']);
+        $this->assertEquals("!$&'\"()*+,;=", $hiddenFields['nested[argument3]']);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsDoesNotAddQueryArgumentsForMethodPost()
+    {
+        $form = $this->createForm(null, null, null, 'example.com?argument1=Example+%F0%9F%A6%86&nested[argument2]=%3A%2F%3F%23%5B%5D%40%20&nested[argument3]=%21%24%26%27%22%28%29%2A%2B%2C%3B%3D', 'post');
+
+        $hiddenFields = $form->calculateHiddenFields(null);
+
+        $this->assertArrayNotHasKey("argument1", $hiddenFields);
+        $this->assertArrayNotHasKey("nested[argument2]", $hiddenFields);
+        $this->assertArrayNotHasKey("nested[argument3]", $hiddenFields);
     }
 }
