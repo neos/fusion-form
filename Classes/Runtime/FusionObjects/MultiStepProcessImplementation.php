@@ -52,6 +52,11 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
     protected $targetSubProcessKey;
 
     /**
+     * @var string
+     */
+    protected $prevSubProcessKey;
+
+    /**
      * Return reference to self during fusion evaluation
      * @return $this
      */
@@ -91,6 +96,13 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             $this->currentSubProcessKey = (string)reset($subProcessKeys);
         }
 
+        // select previous subprocess key
+        if (array_key_exists('__prev', $internalArguments)
+            && $internalArguments['__prev']
+        ) {
+            $this->prevSubProcessKey = (string)$internalArguments['__prev'];
+        }
+
         // store target subprocess, but only if it already was submitted
         if (array_key_exists('__target', $internalArguments)
             && $internalArguments['__target']
@@ -113,11 +125,12 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
                 $this->currentSubProcessKey,
                 $currentSubProcess->getData()
             );
-        } else {
-            if ($this->targetSubProcessKey) {
-                $request->setArgument('__submittedArguments', []);
-                $request->setArgument('__submittedArgumentValidationResults', new Result());
-            }
+        } elseif (
+            $this->state
+            && $this->targetSubProcessKey !== $this->prevSubProcessKey
+        ) {
+            $this->state->removePart($this->currentSubProcessKey);
+            $this->targetSubProcessKey = (string)$internalArguments['__current'];
         }
     }
 
