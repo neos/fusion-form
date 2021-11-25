@@ -1,8 +1,8 @@
 # Honeypot fields
 
 Honeypot fields are invisible but may be filled by bots and help to identify spam.
-In fusion forms they can be implemented by combining an invisible field with an validator 
-that verifies that the field honey was not filled.
+In Fusion Form, they can be implemented by combining an invisible field with a validator 
+that verifies that the field `honey` was not filled.
 
 ```
 renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
@@ -26,8 +26,8 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
 }
 ```
 
-If you want to handle the spam detection silently you may choose to still show the success message
-but not trigger the email action. In this case instead of the validator a condition for actions may be used.
+If you want to handle the spam detection silently, you may still show the success message 
+but not trigger the email action. In this case, instead of the validator, a condition for actions may be used.
 
 ```
 renderer = Neos.Fusion.Form:Runtime.RuntimeForm {

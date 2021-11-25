@@ -18,7 +18,7 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
 }
 ```
 
-If a field shall be always present but be required once other fields are filled the schema can be adjusted via @process and @if. 
+If a field shall always be present but required once other fields are filled, the schema can be adjusted via `@process` and `@if`.
 
 ```
 renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
@@ -33,4 +33,4 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
 ```
 
 The condition checks the submitted data from the current request `request.arguments.otherField` and the 
-successfully submitted data from previus requests `data.otherField`. 
+successfully submitted data from previous requests `data.otherField`. 
