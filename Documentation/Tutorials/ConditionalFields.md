@@ -1,6 +1,6 @@
 # Conditional fields
 
-The data from previous steps can be used to only show field in certain conditions.
+The data from previous steps can be used to only show fields in certain conditions.
 
 ```
 renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
