@@ -18,6 +18,24 @@ renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
 }
 ```
 
+This also allows to make whole form steps conditional:
+
+```
+renderer = Neos.Fusion.Form:Runtime.RuntimeForm {
+    process = Neos.Fusion.Form:Runtime.MultiStepProcess {
+        steps {
+            address {
+                ...
+            }
+            visa {
+                @if.fromForeignGalaxy = ${data.galaxy != 'milkyway'}
+                ...
+            }
+        }
+    }
+}
+```
+
 If a field shall always be present but required once other fields are filled, the schema can be adjusted via `@process` and `@if`.
 
 ```
