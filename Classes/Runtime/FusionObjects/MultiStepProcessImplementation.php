@@ -77,6 +77,10 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             $this->state = $this->formStateService->unserializeState($internalArguments['__state']);
         }
 
+        // make the current `data` available to the context before sub processes are evaluated
+        // as those may have conditions that rely on previous data
+        $this->runtime->pushContext('data', $this->getData());
+
         // evaluate the subprocesses this has to be done after the state was restored
         // as the current data may affect @if conditions
         $subProcesses = $this->getSubProcesses();
@@ -119,6 +123,9 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
                 $request->setArgument('__submittedArgumentValidationResults', new Result());
             }
         }
+
+        // restore fusion context to the state before data was pushed
+        $this->runtime->popContext();
     }
 
     /**
