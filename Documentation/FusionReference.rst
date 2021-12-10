@@ -31,11 +31,11 @@ Example::
 
     afx`
         <Neos.Fusion.Form:Form form.data.customer={customer} form.data.deliveryAddress={deliveryAddress} form.target.action="submit">
-            <Neos.Fusion.Form:Component.Field field.name="user[firstName]" label="First Name">
+            <Neos.Fusion.Form:Component.Field field.name="customer[firstName]" label="First Name">
                 <Neos.Fusion.Form:Input />
             </Neos.Fusion.Form:Component.Field>
 
-            <Neos.Fusion.Form:Component.Field field.name="user[lastName]" label="Last Name">
+            <Neos.Fusion.Form:Component.Field field.name="customer[lastName]" label="Last Name">
                 <Neos.Fusion.Form:Input />
             </Neos.Fusion.Form:Component.Field>
 
