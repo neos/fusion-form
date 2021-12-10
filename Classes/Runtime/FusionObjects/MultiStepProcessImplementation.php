@@ -84,6 +84,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         // evaluate the subprocesses this has to be done after the state was restored
         // as the current data may affect @if conditions
         $subProcesses = $this->getSubProcesses();
+        $resultCommittingIsAllowed = true;
 
         // select current subprocess
         if (array_key_exists('__current', $internalArguments)
@@ -99,16 +100,26 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         if (array_key_exists('__target', $internalArguments)
             && $internalArguments['__target']
             && $this->state
-            && $this->state->hasPart($internalArguments['__target'])
         ) {
-            $this->targetSubProcessKey = (string)$internalArguments['__target'];
+            $target = (string)$internalArguments['__target'];
+            if (substr($target, 0, 1) === '!') {
+                $target = substr($target, 1);
+                if ($this->state->hasPart($target)) {
+                    $this->targetSubProcessKey = $target;
+                    $resultCommittingIsAllowed = false;
+                }
+            } else {
+                if ($this->state->hasPart($target)) {
+                    $this->targetSubProcessKey = $target;
+                }
+            }
         }
 
         // find current and handle
         $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
         $currentSubProcess->handle($request, $this->data);
 
-        if ($currentSubProcess->isFinished()) {
+        if ($currentSubProcess->isFinished() && $resultCommittingIsAllowed) {
             if (!$this->state) {
                 $this->state = new FormState();
             }
