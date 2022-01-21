@@ -13,43 +13,38 @@ namespace Neos\Fusion\Form\Runtime\Domain;
  * source code.
  */
 
-class FormState
+use Neos\Utility\Arrays;
+
+class FormState implements \JsonSerializable
 {
     /**
-     * @var mixed[][]
+     * @var FormStatePart[]
      */
     protected $parts = [];
 
     /**
-     * FormState constructor.
-     * @param mixed[][] $parts
+     * @param string $partName
+     * @param null|bool $finished
+     * @return bool
      */
-    public function __construct(array $parts = [])
+    public function hasPart(string $partName, ?bool $finished = null): bool
     {
-        foreach ($parts as $key => $value) {
-            // ensure only strings are used as partNames
-            if (is_string($key)) {
-                $this->parts[$key] = $value;
-            }
+        if (is_null($finished)) {
+            return array_key_exists($partName, $this->parts);
+        } else {
+            return array_key_exists($partName, $this->parts) && ($this->parts[$partName]->isFinished() === $finished);
         }
     }
 
     /**
      * @param string $partName
-     * @return bool
-     */
-    public function hasPart(string $partName): bool
-    {
-        return array_key_exists($partName, $this->parts);
-    }
-
-    /**
-     * @param string $partName
      * @param mixed[] $partData
+     * @param bool $finished
      */
-    public function commitPart(string $partName, array $partData = []): void
+    public function commitPart(string $partName, array $partData = [], bool $finished = false): void
     {
-        $this->parts[$partName] = $partData;
+        $part = new FormStatePart($partData, $finished);
+        $this->parts[$partName] = $part;
     }
 
     /**
@@ -58,16 +53,10 @@ class FormState
      */
     public function getPart(string $partName): ?array
     {
-        return $this->parts[$partName] ?? null;
-    }
-
-    /**
-     * @param string $partName
-     * @return void
-     */
-    public function removePart(string $partName): void
-    {
-        unset($this->parts[$partName]);
+        if (array_key_exists($partName, $this->parts)) {
+            return $this->parts[$partName]->getData();
+        }
+        return null;
     }
 
     /**
@@ -86,10 +75,38 @@ class FormState
     }
 
     /**
-     * @return mixed[][]
+     * @param boolean $finished
+     * @return FormStatePart[]
      */
-    public function getAllParts(): array
+    public function getParts(): array
     {
         return $this->parts;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getData(): array
+    {
+        $data = [];
+        foreach ($this->parts as $part) {
+            $data = Arrays::arrayMergeRecursiveOverrule(
+                $data,
+                $part->getData()
+            );
+        }
+        return $data;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = [];
+        foreach ($this->parts as $name => $part) {
+            $json[$name] = [
+                'data' => $part->getData(),
+                'finished' => $part->isFinished()
+            ];
+        }
+        return $json;
     }
 }
