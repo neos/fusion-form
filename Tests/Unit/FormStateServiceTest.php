@@ -47,11 +47,9 @@ class FormStateServiceTest extends TestCase
      */
     public function formStateCanBeSerializedAndUnserialized()
     {
-        $stateParts = [
-            'first' => ['value1' => 'foo', 'value2' => 'bar'],
-            'second' => ['value2' => 'foo', 'value4' => 'bar']
-        ];
-        $state = new FormState($stateParts);
+        $state = new FormState();
+        $state->commitPart('first', ['value1' => 'foo', 'value2' => 'bar'], true);
+        $state->commitPart('second', ['value2' => 'foo', 'value4' => 'bar'], false);
 
         $statePartsSerialized = base64_encode(serialize($state));
 
@@ -68,7 +66,11 @@ class FormStateServiceTest extends TestCase
         $serializedState = $this->formStateService->serializeState($state);
         $unserializedState = $this->formStateService->unserializeState($serializedState);
 
-        $this->assertEquals($stateParts, $unserializedState->getAllParts());
+        $this->assertEquals(['first', 'second'], $unserializedState->getCommittedPartNames());
+        $this->assertTrue($unserializedState->isPartFinished('first'));
+        $this->assertFalse($unserializedState->isPartFinished('second'));
+        $this->assertEquals(['value1' => 'foo', 'value2' => 'bar'], $unserializedState->getPartData('first'));
+        $this->assertEquals(['value2' => 'foo', 'value4' => 'bar'], $unserializedState->getPartData('second'));
     }
 
     /**

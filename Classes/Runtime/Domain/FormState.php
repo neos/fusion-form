@@ -29,11 +29,16 @@ class FormState implements \JsonSerializable
      */
     public function hasPart(string $partName, ?bool $finished = null): bool
     {
-        if (is_null($finished)) {
-            return array_key_exists($partName, $this->parts);
-        } else {
-            return array_key_exists($partName, $this->parts) && ($this->parts[$partName]->isFinished() === $finished);
-        }
+        return array_key_exists($partName, $this->parts);
+    }
+
+    /**
+     * @param string $partName
+     * @return bool
+     */
+    public function isPartFinished(string $partName): bool
+    {
+        return array_key_exists($partName, $this->parts) && ($this->parts[$partName]->isFinished());
     }
 
     /**
@@ -52,6 +57,15 @@ class FormState implements \JsonSerializable
      * @return mixed[]|null
      */
     public function getPart(string $partName): ?array
+    {
+        return $this->getPartData($partName);
+    }
+
+    /**
+     * @param string $partName
+     * @return mixed[]|null
+     */
+    public function getPartData(string $partName): ?array
     {
         if (array_key_exists($partName, $this->parts)) {
             return $this->parts[$partName]->getData();
@@ -72,15 +86,6 @@ class FormState implements \JsonSerializable
                 return is_string($item);
             }
         );
-    }
-
-    /**
-     * @param boolean $finished
-     * @return FormStatePart[]
-     */
-    public function getParts(): array
-    {
-        return $this->parts;
     }
 
     /**

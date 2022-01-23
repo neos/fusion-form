@@ -114,7 +114,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             $this->currentSubProcessKey = $currentStepArgument;
             $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
             $currentSubProcess->handle($request, $this->data);
-            if ($currentStepArgument && $resultCommittingIsAllowed) {
+            if ($resultCommittingIsAllowed) {
                 if (!$this->state) {
                     $this->state = new FormState();
                 }
@@ -126,6 +126,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             }
         } else {
             $this->currentSubProcessKey = $firstSubProcessKey;
+            $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
         }
 
         // find target subprocess, but only if it already was submitted
@@ -150,7 +151,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
                 if ($subProcessKey === $this->targetSubProcessKey) {
                     break;
                 }
-                if ($this->state->hasPart($subProcessKey, false)) {
+                if (!$this->state->isPartFinished($subProcessKey)) {
                     $this->targetSubProcessKey = $subProcessKey;
                 }
                 if ($subProcessKey === $this->currentSubProcessKey) {
@@ -165,7 +166,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
                 $this->targetSubProcessKey = $firstSubProcessKey;
             } else {
                 foreach ($subProcesses as $subProcessKey => $subProcess) {
-                    if ($this->state->hasPart($subProcessKey, false)) {
+                    if (!$this->state->isPartFinished($subProcessKey)) {
                         $this->targetSubProcessKey = $subProcessKey;
                         break;
                     }
@@ -197,7 +198,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
 
         $subProcesses = $this->getSubProcesses();
         foreach ($subProcesses as $subProcessKey => $subProcess) {
-            if ($this->state->hasPart($subProcessKey, true) == false) {
+            if ($this->state->isPartFinished($subProcessKey) == false) {
                 return false;
             }
         }
