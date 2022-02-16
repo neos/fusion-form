@@ -95,6 +95,11 @@ Neos.Fusion.Form:Submit
 
 Extends `Neos.Fusion.Form:Input`_ and uses the default type `submit`.
 
+Neos.Fusion.Form:Date
+----------------------
+
+Extends `Neos.Fusion.Form:Input`_ and uses the default type `date` and converts the date to string.
+
 Neos.Fusion.Form:Checkbox
 -------------------------
 
