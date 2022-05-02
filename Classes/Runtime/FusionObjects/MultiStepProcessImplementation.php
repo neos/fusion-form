@@ -22,7 +22,6 @@ use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
 use Neos\Fusion\Form\Runtime\Domain\ProcessCollectionInterface;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 use Neos\Utility\Arrays;
-use Psr\Log\LoggerInterface;
 
 class MultiStepProcessImplementation extends AbstractFusionObject implements ProcessInterface
 {
@@ -56,13 +55,6 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
      * @var bool
      */
     protected $attemptFinishing = false;
-
-    /**
-     * @Flow\Inject
-     * @var LoggerInterface
-     */
-    protected $logger;
-
 
     /**
      * Return reference to self during fusion evaluation
