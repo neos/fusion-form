@@ -7,9 +7,9 @@
     ],
     "require": {
         "php" : ">7.2",
-        "neos/flow": "^6.0 || ^7.0 || dev-master",
-        "neos/fusion": "^5.0 || ^7.0 || dev-master",
-        "neos/fusion-afx": "^1.2 || ^7.0 || dev-master",
+        "neos/flow": "^6.0 || ^7.0 || ^8.0 || dev-master",
+        "neos/fusion": "^5.0 || ^7.0 || ^8.0 || dev-master",
+        "neos/fusion-afx": "^1.2 || ^7.0 || ^8.0 || dev-master",
         "neos/utility-arrays": "*",
         "neos/utility-objecthandling": "*",
         "psr/http-factory": "*"

@@ -54,7 +54,7 @@ prototype(Vendor.Site:Content.SingleStepFormExample) < prototype(Neos.Fusion.For
                 text = afx`Thank you {data.firstName} {data.lastName}`
                 html = afx`<h1>Thank you {data.firstName} {data.lastName}</h1>`
                 attachments {
-                    upload = ${data.file}
+                    upload = ${data.picture}
                 }
             }
         }

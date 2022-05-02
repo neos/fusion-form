@@ -50,7 +50,7 @@ To render controls that access the data bound to the form prototypes like
 the relation between form and field. 
 
 There are plenty of different fieldTypes already that can be found in the 
-[Neos.Neos.Form Fusion Documentation](Documentation/FusionReference.rst) but 
+[Neos.Neos.Form Fusion Documentation](FusionReference.rst) but 
 it is also easily possible to create new input types for project-specific
 purposes.
 
