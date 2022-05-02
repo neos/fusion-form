@@ -75,9 +75,9 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
 
         $internalArguments = $request->getInternalArguments();
         $stateArgument = $internalArguments['__state'] ?? null;
-        $currentStepArgument = $internalArguments['__current'] ?? null;
-        $targetStepArgument = $internalArguments['__target'] ?? null;
-        $finishProcessArgument = $internalArguments['__finish'] ?? null;
+        $currentStep = $internalArguments['__current'] ?? null;
+        $targetStep = $internalArguments['__target'] ?? null;
+        $finishProcess = $internalArguments['__finish'] ?? null;
 
         // restore state
         if ($stateArgument) {
@@ -94,45 +94,32 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         $subProcessKeys = array_keys($subProcesses);
         $firstSubProcessKey = (string)reset($subProcessKeys);
 
-        // do not commit when the target was prepended with exclamation mark
-        if ($targetStepArgument && (substr($targetStepArgument, 0, 1) === '!')) {
-            $resultCommittingIsAllowed = false;
-        } else {
-            $resultCommittingIsAllowed = true;
-        }
 
         // find current subprocess and handle the request
-        if ($currentStepArgument) {
-            $this->currentSubProcessKey = $currentStepArgument;
+        if ($currentStep) {
+            $this->currentSubProcessKey = $currentStep;
             $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
             $currentSubProcess->handle($request, $this->data);
-            if ($resultCommittingIsAllowed) {
-                if (!$this->state) {
-                    $this->state = new FormState();
-                }
-                $this->state->commitPart(
-                    $this->currentSubProcessKey,
-                    $currentSubProcess->getData(),
-                    $currentSubProcess->isFinished()
-                );
+            if (!$this->state) {
+                $this->state = new FormState();
             }
+            $this->state->commitPart(
+                $this->currentSubProcessKey,
+                $currentSubProcess->getData(),
+                $currentSubProcess->isFinished()
+            );
         } else {
             $this->currentSubProcessKey = $firstSubProcessKey;
             $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
         }
 
         // find target subprocess, but only if it already was submitted
-        if ($targetStepArgument && $this->state) {
-            if (substr($targetStepArgument, 0, 1) === '!') {
-                $target = substr($targetStepArgument, 1);
-            } else {
-                $target = $targetStepArgument;
-            }
+        if ($targetStep && $this->state) {
             if ($currentSubProcess->isFinished()) {
-                $this->targetSubProcessKey = $target;
+                $this->targetSubProcessKey = $targetStep;
             } else {
-                if ($this->state->hasPart($target)) {
-                    $this->targetSubProcessKey = $target;
+                if ($this->state->hasPart($targetStep)) {
+                    $this->targetSubProcessKey = $targetStep;
                 }
             }
         }
@@ -167,7 +154,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         }
 
         // is this an attempt to finish the process
-        if ($finishProcessArgument) {
+        if ($finishProcess) {
             $this->attemptFinishing = true;
         }
 
