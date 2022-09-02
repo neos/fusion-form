@@ -12,8 +12,8 @@ Neos:
     collections:
       FusionForm:
         references:
-          - 'FusionForm:Helpers'
-          - 'FusionForm:RuntimeHelpers'
+          'FusionForm:Helpers': true
+          'FusionForm:RuntimeHelpers': true
     references:
       'FusionForm:Helpers':
         title: 'Fusion Form Helper Reference'
