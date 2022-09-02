@@ -7,7 +7,7 @@ Neos:
     collections:
       FusionForm:
         references:
-          - 'FusionForm:Helpers'
+          'FusionForm:Helpers': true
     references:
       'FusionForm:Helpers':
         title: 'Fusion Form Helper Reference'
