@@ -93,7 +93,12 @@ class EmailAction extends AbstractAction
             $mail->setBody($html, 'text/html');
         }
 
-        $this->addAttachments($mail);
+        $attachments = $this->options['attachments'] ?? null;
+        if (is_array($attachments)) {
+            foreach ($attachments as $attachment) {
+                $this->addAttachment($attachment, $mail);
+            }
+        }
 
         if ($testMode === true) {
             $response = new ActionResponse();
@@ -124,32 +129,30 @@ class EmailAction extends AbstractAction
     }
 
     /**
+     * @param mixed $attachment
      * @param SwiftMailerMessage $mail
      */
-    protected function addAttachments(SwiftMailerMessage $mail): void
+    protected function addAttachment($attachment, SwiftMailerMessage $mail): void
     {
-        $attachments = $this->options['attachments'] ?? null;
-        if (is_array($attachments)) {
-            foreach ($attachments as $attachment) {
-                if (is_string($attachment)) {
-                    $mail->attach(\Swift_Attachment::fromPath($attachment));
-                } elseif (is_object($attachment) && ($attachment instanceof UploadedFileInterface)) {
-                    $mail->attach(new \Swift_Attachment($attachment->getStream()->getContents(), $attachment->getClientFilename(), $attachment->getClientMediaType()));
-                } elseif (is_object($attachment) && ($attachment instanceof PersistentResource)) {
-                    $stream = $attachment->getStream();
-                    if (!is_bool($stream)) {
-                        $content = stream_get_contents($stream);
-                        if (!is_bool($content)) {
-                            $mail->attach(new \Swift_Attachment($content, $attachment->getFilename(), $attachment->getMediaType()));
-                        }
-                    }
-                } elseif (is_array($attachment) && isset($attachment['content']) && isset($attachment['name'])) {
-                    $content = $attachment['content'];
-                    $name = $attachment['name'];
-                    $type =  $attachment['type'] ?? MediaTypes::getMediaTypeFromFilename($name);
-                    $mail->attach(new \Swift_Attachment($content, $name, $type));
+        if (is_string($attachment)) {
+            $mail->attach(\Swift_Attachment::fromPath($attachment));
+        } elseif (is_object($attachment) && ($attachment instanceof UploadedFileInterface)) {
+            $mail->attach(new \Swift_Attachment($attachment->getStream()->getContents(), $attachment->getClientFilename(), $attachment->getClientMediaType()));
+        } elseif (is_object($attachment) && ($attachment instanceof PersistentResource)) {
+            $stream = $attachment->getStream();
+            if (!is_bool($stream)) {
+                $content = stream_get_contents($stream);
+                if (!is_bool($content)) {
+                    $mail->attach(new \Swift_Attachment($content, $attachment->getFilename(), $attachment->getMediaType()));
                 }
             }
+        } elseif (is_array($attachment) && isset($attachment['content']) && isset($attachment['name'])) {
+            $content = $attachment['content'];
+            $name = $attachment['name'];
+            $type =  $attachment['type'] ?? MediaTypes::getMediaTypeFromFilename($name);
+            $mail->attach(new \Swift_Attachment($content, $name, $type));
+        } elseif (is_array($attachment)) {
+            $this->addAttachment($attachment, $mail);
         }
     }
 }
