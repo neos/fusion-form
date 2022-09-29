@@ -15,6 +15,7 @@ namespace Neos\Fusion\Form\Runtime\Action;
 
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\ResourceManagement\PersistentResource;
+use Neos\Fusion\Form\Exception\InvalidArgumentException;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
 use Neos\SwiftMailer\Message as SwiftMailerMessage;
 use Neos\Utility\MediaTypes;
@@ -93,12 +94,7 @@ class EmailAction extends AbstractAction
             $mail->setBody($html, 'text/html');
         }
 
-        $attachments = $this->options['attachments'] ?? null;
-        if (is_array($attachments)) {
-            foreach ($attachments as $attachment) {
-                $this->addAttachment($attachment, $mail);
-            }
-        }
+        $this->addAttachments($mail);
 
         if ($testMode === true) {
             $response = new ActionResponse();
@@ -129,8 +125,36 @@ class EmailAction extends AbstractAction
     }
 
     /**
+     * @param SwiftMailerMessage $mail
+     * @return void
+     */
+    protected function addAttachments(SwiftMailerMessage $mail)
+    {
+        $attachments = $this->options['attachments'] ?? null;
+        if (is_array($attachments)) {
+            try {
+                foreach ($attachments as $attachment) {
+                    try {
+                        $this->addAttachment($attachment, $mail);
+                    } catch (InvalidArgumentException $e) {
+                        // handle files of multiple file upload element
+                        if (is_array($attachment)) {
+                            foreach ($attachment as $uploadItem) {
+                                $this->addAttachment($uploadItem, $mail);
+                            }
+                        }
+                    }
+                }
+            } catch (InvalidArgumentException $e) {
+
+            }
+        }
+    }
+
+    /**
      * @param mixed $attachment
      * @param SwiftMailerMessage $mail
+     * @throws InvalidArgumentException
      */
     protected function addAttachment($attachment, SwiftMailerMessage $mail): void
     {
@@ -151,8 +175,8 @@ class EmailAction extends AbstractAction
             $name = $attachment['name'];
             $type =  $attachment['type'] ?? MediaTypes::getMediaTypeFromFilename($name);
             $mail->attach(new \Swift_Attachment($content, $name, $type));
-        } elseif (is_array($attachment)) {
-            $this->addAttachment($attachment, $mail);
+        } else {
+            throw new InvalidArgumentException('Can not handle $attachment.', 1664442569);
         }
     }
 }
