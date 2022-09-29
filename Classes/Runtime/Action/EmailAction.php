@@ -126,7 +126,6 @@ class EmailAction extends AbstractAction
 
     /**
      * @param SwiftMailerMessage $mail
-     * @return void
      */
     protected function addAttachments(SwiftMailerMessage $mail): void
     {
