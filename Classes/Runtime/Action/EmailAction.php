@@ -128,7 +128,7 @@ class EmailAction extends AbstractAction
      * @param SwiftMailerMessage $mail
      * @return void
      */
-    protected function addAttachments(SwiftMailerMessage $mail)
+    protected function addAttachments(SwiftMailerMessage $mail): void
     {
         $attachments = $this->options['attachments'] ?? null;
         if (is_array($attachments)) {
