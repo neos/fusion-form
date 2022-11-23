@@ -179,7 +179,7 @@ Example::
 In some cases multiple inputs are combined in a single FieldContainer::
 
     renderer = afx
-        <Neos.Fusion.Form:FieldContainer field.name="user[roles]" label="user.role" multiple>
+        <Neos.Fusion.Form:FieldContainer field.name="user[roles]" label="user.role" field.multiple>
             <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:RestrictedEditor" >Restricted Editor</Neos.Fusion.Form:Checkbox>
             <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Editor" >Editor</Neos.Fusion.Form:Checkbox>
             <Neos.Fusion.Form:Checkbox field.value="Neos.Neos:Administrator" >Administrator</Neos.Fusion.Form:Checkbox>
