@@ -217,7 +217,28 @@ class Form extends AbstractFormObject
         $xpath = new \DOMXPath($domDocument);
 
         //
-        // 1. Request Referrer parameters
+        // 1. Query arguments for the target url
+        //
+        // Render hidden form fields for query parameters from action URI.
+        // This is only needed if the form method is GET.
+        //
+        $target = $this->getTarget();
+        $method = $this->getMethod();
+        if ($target && $method && strtolower($method) === 'get') {
+            $query = parse_url($target, PHP_URL_QUERY);
+            if (is_string($query)) {
+                $queryParts = explode('&', $query);
+                foreach ($queryParts as $queryPart) {
+                    if (strpos($queryPart, '=') !== false) {
+                        list($parameterName, $parameterValue) = explode('=', $queryPart, 2);
+                        $hiddenFields[urldecode($parameterName)] = urldecode($parameterValue);
+                    }
+                }
+            }
+        }
+
+        //
+        // 2. Request Referrer parameters
         //
         // The referrer parameters allow flow framework to send the user back to the previous request
         // if the validation of submitted data was not successfull. In such a case the request will be
@@ -249,7 +270,7 @@ class Form extends AbstractFormObject
         }
 
         //
-        // 2. Empty hidden values for checkbox and multi-select values
+        // 3. Empty hidden values for checkbox and multi-select values
         //
         // those empty values allow to unset previously set properties since browsers would not
         // send a value for an unchecked checkbox or a select without any value
@@ -305,7 +326,7 @@ class Form extends AbstractFormObject
         }
 
         //
-        // 3. Hidden identity fields
+        // 4. Hidden identity fields
         //
         // When properties of persisted objects are modified the object __identity has to stored as an additional field
         //
@@ -331,7 +352,7 @@ class Form extends AbstractFormObject
         }
 
         //
-        // 4. Trusted properties token
+        // 5. Trusted properties token
         //
         // A signed array of all properties the property mapper is allowed to convert from string to the target type
         // so no property mapping configuration is needed on the target controller
