@@ -32,7 +32,7 @@ prototype(Form.Test:Component.ShipmentForm) < prototype(Neos.Fusion:Component) {
             <Neos.Fusion.Form:Input attributes.id="city" field.name="customer[city]"/>
     
             <label for="country">Country</label>
-            <Neos.Fusion.Form:Select attributes.id=country field.name="shipment[country]">
+            <Neos.Fusion.Form:Select attributes.id="country" field.name="shipment[country]">
                 <Neos.Fusion.Form:Select.Option option.value="de">Germany</Neos.Fusion.Form:Select.Option>
                 <Neos.Fusion.Form:Select.Option option.value="at">Austria</Neos.Fusion.Form:Select.Option>
                 <Neos.Fusion.Form:Select.Option option.value="ch">Switzerland</Neos.Fusion.Form:Select.Option>
