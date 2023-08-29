@@ -28,8 +28,8 @@ prototype(Neos.Fusion.Form:FieldContainer)  < prototype(Neos.Fusion.Form:Compone
     errorRenderer = 'Neos.Fusion.Form:ErrorRenderer'
 
     renderer = afx`
-        <div class={props.class + (field.hasErrors() ? ' ' + props.errorClass : '')} {...props.attributes} >
-            <Neos.Fusion:Renderer @if.hasErrors={props.label} type={props.labelRenderer} element.for={field.getName()} element.label={props.label} />
+        <div class={[props.class, field.hasErrors() ? props.errorClass : null]} {...props.attributes} >
+            <Neos.Fusion:Renderer @if.hasLabel={props.label} type={props.labelRenderer} element.for={field.getName()} element.label={props.label} />
             {props.content}
             <Neos.Fusion:Renderer @if.hasErrors={field.hasErrors()} type={props.errorRenderer} element.result={field.getResult()} />
         </div>
