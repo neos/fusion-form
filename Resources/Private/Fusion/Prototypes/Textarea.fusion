@@ -2,6 +2,7 @@ prototype(Neos.Fusion.Form:Textarea)  < prototype(Neos.Fusion.Form:Component.Fie
 
     renderer = afx`
         <textarea
+            id={field.getName()}
             name={field.getName()}
             {...props.attributes}
         >

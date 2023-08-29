@@ -16,6 +16,7 @@ prototype(Neos.Fusion.Form:Radio)  < prototype(Neos.Fusion.Form:Component.Field)
 
         renderer = afx`
             <input
+                id={field.getName() + '-' + field.getTargetValueStringified()}
                 type="radio"
                 name={field.getName()}
                 value={field.getTargetValueStringified()}
