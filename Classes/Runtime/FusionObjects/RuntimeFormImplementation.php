@@ -100,6 +100,12 @@ class RuntimeFormImplementation extends AbstractFusionObject
 
         $formRequest = $this->formRequestFactory->createFormRequest($this->getCurrentActionRequest(), $namespace);
         $context = $this->runtime->getCurrentContext();
+        /**
+          * The internal method "pushContextArray" allows some creative use,
+          * as that we can override the "request" context.
+          * This is not permitted via public / official api and probably an unwise idea to do.
+          * {@see \Neos\Fusion\Core\FusionGlobals}
+          */
         $context['request'] = $formRequest;
         $this->runtime->pushContextArray($context);
         $process->handle($formRequest, $data);
