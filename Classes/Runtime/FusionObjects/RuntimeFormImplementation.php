@@ -100,7 +100,9 @@ class RuntimeFormImplementation extends AbstractFusionObject
         $process = $this->getProcess();
 
         $formRequest = $this->formRequestFactory->createFormRequest($this->getCurrentActionRequest(), $namespace);
-        $this->runtime->pushContext('request', $formRequest);
+        $context = $this->runtime->getCurrentContext();
+        $context['request'] = $formRequest;
+        $this->runtime->pushContextArray($context);
         $process->handle($formRequest, $data);
         if ($process->isFinished() === false) {
             $result = $this->renderForm($process, $formRequest, $this->getAttributes());
