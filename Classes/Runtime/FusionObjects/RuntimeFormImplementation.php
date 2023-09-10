@@ -24,7 +24,6 @@ use Neos\Fusion\Form\Runtime\Domain\FormRequestFactory;
 
 class RuntimeFormImplementation extends AbstractFusionObject
 {
-
     /**
      * @var FormRequestFactory
      * @Flow\Inject
@@ -100,7 +99,15 @@ class RuntimeFormImplementation extends AbstractFusionObject
         $process = $this->getProcess();
 
         $formRequest = $this->formRequestFactory->createFormRequest($this->getCurrentActionRequest(), $namespace);
-        $this->runtime->pushContext('request', $formRequest);
+        $context = $this->runtime->getCurrentContext();
+        /**
+          * The internal method "pushContextArray" allows some creative use,
+          * as that we can override the "request" context.
+          * This is not permitted via public / official api and probably an unwise idea to do.
+          * {@see \Neos\Fusion\Core\FusionGlobals}
+          */
+        $context['request'] = $formRequest;
+        $this->runtime->pushContextArray($context);
         $process->handle($formRequest, $data);
         if ($process->isFinished() === false) {
             $result = $this->renderForm($process, $formRequest, $this->getAttributes());

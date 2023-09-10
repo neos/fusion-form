@@ -19,7 +19,6 @@ use Neos\Flow\Persistence\PersistenceManagerInterface;
 
 abstract class AbstractFormObject implements ProtectedContextAwareInterface
 {
-
     /**
      * @var PersistenceManagerInterface
      * @Flow\Inject

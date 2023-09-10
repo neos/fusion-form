@@ -25,7 +25,6 @@ use Neos\Utility\ObjectAccess;
  */
 class Field extends AbstractFormObject
 {
-
     /**
      * @var Form|null
      */
