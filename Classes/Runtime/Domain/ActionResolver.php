@@ -21,7 +21,6 @@ use Neos\Fusion\Form\Runtime\Domain\Exception\NoSuchActionException;
 
 class ActionResolver
 {
-
     /**
      * @Flow\Inject
      * @var ObjectManagerInterface

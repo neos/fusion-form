@@ -22,7 +22,6 @@ use Neos\Fusion\FusionObjects\AbstractFusionObject;
 
 class ActionImplementation extends AbstractFusionObject implements ActionInterface
 {
-
     /**
      * @var ActionResolver
      * @Flow\Inject

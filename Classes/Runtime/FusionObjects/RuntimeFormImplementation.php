@@ -24,7 +24,6 @@ use Neos\Fusion\Form\Runtime\Domain\FormRequestFactory;
 
 class RuntimeFormImplementation extends AbstractFusionObject
 {
-
     /**
      * @var FormRequestFactory
      * @Flow\Inject

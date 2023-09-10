@@ -20,7 +20,6 @@ use Neos\Error\Messages\Result;
 
 class FormDefinitionImplementation extends AbstractFusionObject
 {
-
     /**
      * @return ActionRequest|null
      */

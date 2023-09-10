@@ -19,7 +19,6 @@ use Neos\Fusion\Form\Domain\Field;
 
 class FieldDefinitionImplementation extends AbstractFusionObject
 {
-
     /**
      * @return Form|null
      */

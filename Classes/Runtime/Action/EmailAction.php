@@ -22,7 +22,6 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class EmailAction extends AbstractAction
 {
-
     /**
      * @return ActionResponse|null
      * @throws ActionException

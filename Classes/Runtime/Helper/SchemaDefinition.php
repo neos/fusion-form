@@ -24,7 +24,6 @@ use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
 
 class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterface
 {
-
     /**
      * @var PropertyMapper
      * @Flow\Inject

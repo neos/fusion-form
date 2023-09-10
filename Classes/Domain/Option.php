@@ -22,7 +22,6 @@ namespace Neos\Fusion\Form\Domain;
  */
 class Option extends AbstractFormObject
 {
-
     /**
      * @var mixed
      */
