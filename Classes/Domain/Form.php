@@ -67,6 +67,16 @@ class Form extends AbstractFormObject
     protected $encoding;
 
     /**
+     * @var bool
+     */
+    protected $disableReferrer;
+
+    /**
+     * @var bool
+     */
+    protected $disableTrustedProperties;
+
+    /**
      * @var string|null
      */
     protected $namespace;
@@ -89,8 +99,10 @@ class Form extends AbstractFormObject
      * @param string|null $target
      * @param string|null $method
      * @param string|null $encoding
+     * @param bool $disableReferrer
+     * @param bool $disableTrustedProperties
      */
-    public function __construct(ActionRequest $request = null, $data = null, ?string $namespace = null, ?string $target = null, ?string $method = "get", ?string $encoding = null)
+    public function __construct(ActionRequest $request = null, $data = null, ?string $namespace = null, ?string $target = null, ?string $method = "get", ?string $encoding = null, bool $disableReferrer = false, bool $disableTrustedProperties = false)
     {
         $this->request = $request;
         $this->data = $data;
@@ -98,6 +110,8 @@ class Form extends AbstractFormObject
         $this->target = $target;
         $this->method = $method;
         $this->encoding = $encoding;
+        $this->disableReferrer = $disableReferrer;
+        $this->disableTrustedProperties = $disableTrustedProperties;
 
         // determine submitted values and result from request
         /** @phpstan-ignore-next-line the return type of $request->getInternalArgument is misleading */
@@ -245,7 +259,7 @@ class Form extends AbstractFormObject
         // forwarded to the previous request where the __submittedArguments and
         // __submittedArgumentValidationResults can be handled from Form.createField or custom logic.
         //
-        if ($request) {
+        if ($request && ($this->disableReferrer !== true)) {
             $childRequestArgumentNamespace = null;
             while ($request instanceof ActionRequest) {
                 $requestArgumentNamespace = $request->getArgumentNamespace();
@@ -335,7 +349,8 @@ class Form extends AbstractFormObject
             foreach ($formFieldNames as $name) {
                 $path = $this->fieldNameToPath(substr($name, strlen($fieldNamePrefix)));
                 $pathSegments = explode('.', $path);
-                for ($i = 1; $i < count($pathSegments); $i++) {
+                $pathSegmentCount = count($pathSegments);
+                for ($i = 1; $i < $pathSegmentCount; $i++) {
                     $possiblePathes[] = implode('.', array_slice($pathSegments, 0, $i));
                 }
             }
@@ -357,7 +372,9 @@ class Form extends AbstractFormObject
         // A signed array of all properties the property mapper is allowed to convert from string to the target type
         // so no property mapping configuration is needed on the target controller
         //
-        $hiddenFields[ $this->prefixFieldName('__trustedProperties', $fieldNamePrefix) ] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
+        if ($this->disableTrustedProperties !== true) {
+            $hiddenFields[$this->prefixFieldName('__trustedProperties', $fieldNamePrefix)] = $this->mvcPropertyMappingConfigurationService->generateTrustedPropertiesToken($formFieldNames, $fieldNamePrefix);
+        }
 
         return $hiddenFields;
     }

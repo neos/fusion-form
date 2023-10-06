@@ -24,6 +24,8 @@ In addition the form component will also:
 :form.target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
 :form.method:  (string, default to `post`) The form method.
 :form.encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.:attributes: (string), all props are rendered as attributes to the form tag
+:form.disableReferrer: (bool, defaults to false) Disable generation of hidden `__referrer` fields. Can be used when the `method` is `get` or no flow validation is used
+:form.disableTrustedProperties: (bool, defaults to false) Disable generation of hidden `__trustedProperties` fields. Can be used when flow property mapping is not in use
 :attributes: (`Neos.Fusion:DataStructure`_) form attributes, will override all automatically rendered ones
 :content: (string, defaults to '') afx content with the form controls
 
@@ -281,6 +283,8 @@ The Form component is a base prototype for rendering forms in afx. The prototype
 :form.target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
 :form.method:  (string, default to `post`) The form method.
 :form.encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.
+:form.disableReferrer: (bool, defaults to false) Disable generation of hidden `__referrer` fields. Can be used when the `method` is `get` or no flow validation is used
+:form.disableTrustedProperties: (bool, defaults to false) Disable generation of hidden `__trustedProperties` fields. Can be used when flow property mapping is not in use
 :attributes: (`Neos.Fusion:DataStructure`_) form attributes, will override all automatically rendered ones
 :content: (string) form content, supported where needed
 
@@ -330,6 +334,8 @@ by the `Neos.Fusion.Form:Component.Form`_ prototype.
 :target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
 :method:  (string, default to `post`) The form method.
 :encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.
+:disableReferrer: (bool, defaults to false) Disable generation of hidden `__referrer` fields. Can be used when the `method` is `get` or no flow validation is used
+:disableTrustedProperties: (bool, defaults to false) Disable generation of hidden `__trustedProperties` fields. Can be used when flow property mapping is not in use
 
 Neos.Fusion.Form:Definition.Field
 ---------------------------------
