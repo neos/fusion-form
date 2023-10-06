@@ -5,10 +5,12 @@ prototype(Neos.Fusion.Form:Upload)  < prototype(Neos.Fusion.Form:Component.Field
     renderer = afx`
         <input
             @if.has={Type.instance(field.getCurrentValue(), 'Neos\Flow\ResourceManagement\PersistentResource')}
-            type="hidden" name={field.getName() + '[originallySubmittedResource][__identity]'}
+            type="hidden"
+            name={field.getName() + '[originallySubmittedResource][__identity]'}
             value={field.getCurrentValueStringified()}
         />
         <input
+        id={field.getName()}
             name={field.getName()}
             {...props.attributes}
         />
