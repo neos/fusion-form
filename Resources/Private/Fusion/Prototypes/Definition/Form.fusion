@@ -9,6 +9,8 @@ prototype(Neos.Fusion.Form:Definition.Form) {
         target = ${PropTypes.string}
         method = ${PropTypes.string}
         encoding = ${PropTypes.string}
+        disableReferrer = ${PropTypes.boolean}
+        disableTrustedProperties = ${PropTypes.boolean}
     }
 
     request = ${request}
@@ -17,4 +19,6 @@ prototype(Neos.Fusion.Form:Definition.Form) {
     target = Neos.Fusion:UriBuilder
     method = 'post'
     encoding = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
+    disableReferrer = false
+    disableTrustedProperties = false
 }

@@ -26,7 +26,7 @@ class FormTest extends TestCase
     /**
      * @return Form
      */
-    protected function createForm(): Form
+    protected function createForm(ActionRequest $request = null, $data = null, ?string $namespace = null, ?string $target = null, ?string $method = "get", ?string $encoding = null, bool $disableReferrer = false, bool $disableTrustedProperties = false): Form
     {
         $reflector = new \ReflectionClass(Form::class);
         $form = $reflector->newInstanceArgs(func_get_args());
@@ -79,6 +79,19 @@ class FormTest extends TestCase
 
         $expectation = ['__trustedProperties' => 'bar'];
         $this->assertEquals($expectation, $hiddenFields);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsWillSkipTrustedPropertiesTokenIfDisabled()
+    {
+        // @todo once php 8 is min version adjust to `$this->createForm(disableTrustedProperties: true);`
+        $form = $this->createForm(null, null, null, null, null, null, false, true);
+        $this->mvcPropertyMappingConfigurationService->expects($this->never())->method('generateTrustedPropertiesToken');
+
+        $hiddenFields = $form->calculateHiddenFields(null);
+        $this->assertArrayNotHasKey('__trustedProperties', $hiddenFields);
     }
 
     /**
@@ -238,7 +251,72 @@ CONTENT;
     /**
      * @test
      */
-    public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithNestedActionRequestIsGiven()
+    public function calculateHiddenFieldsDoesNotAddsReferrerFieldsIfFormWithActionRequestWhenDisabled()
+    {
+        $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $request->method('getControllerPackageKey')->willReturn('Vendor.Example');
+        $request->method('getControllerSubpackageKey')->willReturn('Application');
+        $request->method('getControllerName')->willReturn('Main');
+        $request->method('getControllerActionName')->willReturn('List');
+        $request->method('isMainRequest')->willReturn(true);
+        $request->method('getArguments')->willReturn([]);
+        $request->method('getArgumentNamespace')->willReturn('');
+
+        // @todo adjust to $this->createForm(request: $request, disableReferrer: true); once php 8 is min version
+        $form = $this->createForm($request, null, null, null, null, null, true);
+
+        $hiddenFields = $form->calculateHiddenFields(null);
+
+        $this->assertArrayNotHasKey('__referrer[@package]', $hiddenFields);
+        $this->assertArrayNotHasKey('__referrer[@subpackage]', $hiddenFields);
+        $this->assertArrayNotHasKey('__referrer[@controller]', $hiddenFields);
+        $this->assertArrayNotHasKey('__referrer[@action]', $hiddenFields);
+        $this->assertArrayNotHasKey('__referrer[arguments]', $hiddenFields);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsDoesNotAddReferrerFieldsIfFormWithNestedActionRequestWhenDisabled()
+    {
+        $parentRequest = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $parentRequest->method('getControllerPackageKey')->willReturn('Vendor.Foo');
+        $parentRequest->method('getControllerSubpackageKey')->willReturn('Application');
+        $parentRequest->method('getControllerName')->willReturn('Parent');
+        $parentRequest->method('getControllerActionName')->willReturn('Something');
+        $parentRequest->method('isMainRequest')->willReturn(true);
+
+        $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $request->method('getControllerPackageKey')->willReturn('Vendor.Bar');
+        $request->method('getControllerSubpackageKey')->willReturn('');
+        $request->method('getControllerName')->willReturn('Child');
+        $request->method('getControllerActionName')->willReturn('SomethingElse');
+        $request->method('getArgumentNamespace')->willReturn('childNamespace');
+        $request->method('isMainRequest')->willReturn(false);
+        $request->method('getParentRequest')->willReturn($parentRequest);
+
+        $form = $this->createForm($request, null, null, null, null, null, true);
+
+        $hiddenFields = $form->calculateHiddenFields(null);
+
+        $this->assertArrayNotHasKey('__referrer[@package]', $hiddenFields);
+        $this->assertArrayNotHasKey('__referrer[@subpackage]', $hiddenFields);
+        $this->assertArrayNotHasKey('__referrer[@controller]', $hiddenFields);
+        $this->assertArrayNotHasKey('__referrer[@action]', $hiddenFields);
+
+        $this->assertArrayNotHasKey('childNamespace[__referrer][@package]', $hiddenFields);
+        $this->assertArrayNotHasKey('childNamespace[__referrer][@subpackage]', $hiddenFields);
+        $this->assertArrayNotHasKey('childNamespace[__referrer][@controller]', $hiddenFields);
+        $this->assertArrayNotHasKey('childNamespace[__referrer][@action]', $hiddenFields);
+
+        $this->assertArrayNotHasKey('__referrer[arguments]', $hiddenFields);
+        $this->assertArrayNotHasKey('childNamespace[__referrer][arguments]', $hiddenFields);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithNestedActionRequest()
     {
         $parentRequest = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
         $parentRequest->method('getControllerPackageKey')->willReturn('Vendor.Foo');
@@ -317,6 +395,52 @@ CONTENT;
 
         $this->assertEquals('--argumentsWithHmac--', $hiddenFields['__referrer[arguments]']);
         $this->assertEquals('--argumentsWithHmac--', $hiddenFields['childNamespace[__referrer][arguments]']);
+    }
+
+    /**
+     * @test
+     */
+    public function calculateHiddenFieldsDoesNotAddReferrerFieldArgumentsIfFormWithNestedActionRequestWhenDisabled()
+    {
+        $childRequestArguments = ['foo' => 456, 'bar' => 'another string'];
+        $parentRequestArguments = ['foo' => 123, 'bar' => 'string'];
+        $parentWithChildRequestArguments = array_merge($parentRequestArguments, ['childNamespace' => $childRequestArguments]);
+
+        $parentRequest = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $parentRequest->method('getControllerPackageKey')->willReturn('Vendor.Foo');
+        $parentRequest->method('getControllerSubpackageKey')->willReturn('Application');
+        $parentRequest->method('getControllerName')->willReturn('Parent');
+        $parentRequest->method('getControllerActionName')->willReturn('Something');
+        $parentRequest->method('getArguments')->willReturn($parentWithChildRequestArguments);
+        $parentRequest->method('getArgumentNamespace')->willReturn('');
+        $parentRequest->method('isMainRequest')->willReturn(true);
+
+        $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
+        $request->method('getControllerPackageKey')->willReturn('Vendor.Bar');
+        $request->method('getControllerSubpackageKey')->willReturn('');
+        $request->method('getControllerName')->willReturn('Child');
+        $request->method('getControllerActionName')->willReturn('SomethingElse');
+        $request->method('getArguments')->willReturn($childRequestArguments);
+        $request->method('getArgumentNamespace')->willReturn('childNamespace');
+        $request->method('isMainRequest')->willReturn(false);
+        $request->method('getParentRequest')->willReturn($parentRequest);
+
+        // only arguments in each requests namespace are passed to the hashing service
+        // so for the parent request the child request namespace is excluded
+        $this->hashService
+            ->method('appendHmac')
+            ->withConsecutive(
+                [base64_encode(serialize($childRequestArguments))],
+                [base64_encode(serialize($parentRequestArguments))]
+            )
+            ->willReturn('--argumentsWithHmac--');
+
+        // @todo adjust to $this->createForm(request: $request, disableReferrer: true); once php 8 is min version
+        $form = $this->createForm($request, null, null, null, null, null, true);
+        $hiddenFields = $form->calculateHiddenFields(null);
+
+        $this->assertArrayNotHasKey('__referrer[arguments]', $hiddenFields);
+        $this->assertArrayNotHasKey('childNamespace[__referrer][arguments]', $hiddenFields);
     }
 
     /**
