@@ -15,6 +15,7 @@ namespace Neos\Fusion\Form\Runtime\Action;
 
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\ResourceManagement\PersistentResource;
+use Neos\Fusion\Form\Exception\InvalidArgumentException;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
 use Neos\SwiftMailer\Message as SwiftMailerMessage;
 use Neos\Utility\MediaTypes;
@@ -129,26 +130,51 @@ class EmailAction extends AbstractAction
     {
         $attachments = $this->options['attachments'] ?? null;
         if (is_array($attachments)) {
-            foreach ($attachments as $attachment) {
-                if (is_string($attachment)) {
-                    $mail->attach(\Swift_Attachment::fromPath($attachment));
-                } elseif (is_object($attachment) && ($attachment instanceof UploadedFileInterface)) {
-                    $mail->attach(new \Swift_Attachment($attachment->getStream()->getContents(), $attachment->getClientFilename(), $attachment->getClientMediaType()));
-                } elseif (is_object($attachment) && ($attachment instanceof PersistentResource)) {
-                    $stream = $attachment->getStream();
-                    if (!is_bool($stream)) {
-                        $content = stream_get_contents($stream);
-                        if (!is_bool($content)) {
-                            $mail->attach(new \Swift_Attachment($content, $attachment->getFilename(), $attachment->getMediaType()));
+            try {
+                foreach ($attachments as $attachment) {
+                    try {
+                        $this->addAttachment($attachment, $mail);
+                    } catch (InvalidArgumentException $e) {
+                        // handle files of multiple file upload element
+                        if (is_array($attachment)) {
+                            foreach ($attachment as $uploadItem) {
+                                $this->addAttachment($uploadItem, $mail);
+                            }
                         }
                     }
-                } elseif (is_array($attachment) && isset($attachment['content']) && isset($attachment['name'])) {
-                    $content = $attachment['content'];
-                    $name = $attachment['name'];
-                    $type =  $attachment['type'] ?? MediaTypes::getMediaTypeFromFilename($name);
-                    $mail->attach(new \Swift_Attachment($content, $name, $type));
+                }
+            } catch (InvalidArgumentException $e) {
+
+            }
+        }
+    }
+
+    /**
+     * @param mixed $attachment
+     * @param SwiftMailerMessage $mail
+     * @throws InvalidArgumentException
+     */
+    protected function addAttachment($attachment, SwiftMailerMessage $mail): void
+    {
+        if (is_string($attachment)) {
+            $mail->attach(\Swift_Attachment::fromPath($attachment));
+        } elseif (is_object($attachment) && ($attachment instanceof UploadedFileInterface)) {
+            $mail->attach(new \Swift_Attachment($attachment->getStream()->getContents(), $attachment->getClientFilename(), $attachment->getClientMediaType()));
+        } elseif (is_object($attachment) && ($attachment instanceof PersistentResource)) {
+            $stream = $attachment->getStream();
+            if (!is_bool($stream)) {
+                $content = stream_get_contents($stream);
+                if (!is_bool($content)) {
+                    $mail->attach(new \Swift_Attachment($content, $attachment->getFilename(), $attachment->getMediaType()));
                 }
             }
+        } elseif (is_array($attachment) && isset($attachment['content']) && isset($attachment['name'])) {
+            $content = $attachment['content'];
+            $name = $attachment['name'];
+            $type =  $attachment['type'] ?? MediaTypes::getMediaTypeFromFilename($name);
+            $mail->attach(new \Swift_Attachment($content, $name, $type));
+        } else {
+            throw new InvalidArgumentException('Can not handle $attachment.', 1664442569);
         }
     }
 }
