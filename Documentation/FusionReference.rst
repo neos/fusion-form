@@ -80,6 +80,12 @@ Neos.Fusion.Form:Upload
 
 Extends `Neos.Fusion.Form:Input`_ and uses the default type `file`.
 
+:collectionName: (string, default = null) name of the resource collection this file should be uploaded to.
+
+.. note:
+  By default the "persistent" collection defined by flow will be used for all uploads unless a `collectionName` is set.
+  It is strongly recommended to changes that to a different collection that is not publicly available!
+
 Neos.Fusion.Form:Password
 -------------------------
 
