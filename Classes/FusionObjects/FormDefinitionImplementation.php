@@ -67,6 +67,23 @@ class FormDefinitionImplementation extends AbstractFusionObject
     {
         return $this->fusionValue('encoding');
     }
+
+    /**
+     * @return bool
+     */
+    protected function getEnableReferrer(): bool
+    {
+        return (bool)$this->fusionValue('enableReferrer');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function getEnableTrustedProperties(): bool
+    {
+        return (bool)$this->fusionValue('enableTrustedProperties');
+    }
+
     /**
      * @return Form
      */
@@ -78,6 +95,8 @@ class FormDefinitionImplementation extends AbstractFusionObject
         $target = $this->getTarget();
         $method = $this->getMethod();
         $encoding = $this->getEncoding();
+        $enableReferrer = $this->getEnableReferrer();
+        $enableTrustedProperties = $this->getEnableTrustedProperties();
 
         return new Form(
             $request,
@@ -85,7 +104,9 @@ class FormDefinitionImplementation extends AbstractFusionObject
             $namespace,
             $target,
             $method,
-            $encoding
+            $encoding,
+            $enableReferrer,
+            $enableTrustedProperties
         );
     }
 }

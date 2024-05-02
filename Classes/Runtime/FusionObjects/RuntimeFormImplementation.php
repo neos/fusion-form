@@ -132,13 +132,18 @@ class RuntimeFormImplementation extends AbstractFusionObject
     protected function renderForm(ProcessInterface $process, ActionRequest $formRequest, array $attributes)
     {
         $data = $process->getData();
+
+        // @todo adjust after raising min php version to 8+
+        // new Form(request:$formRequest, data: $data, method: 'post', encoding:'multipart/form-data', enableReferrer: false);
         $form = new Form(
             $formRequest,
             $data,
             null,
             null,
             'post',
-            'multipart/form-data'
+            'multipart/form-data',
+            false,
+            true
         );
 
         $context = $this->runtime->getCurrentContext();
