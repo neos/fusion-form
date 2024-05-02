@@ -134,7 +134,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
         $data = $process->getData();
 
         // @todo adjust after raising min php version to 8+
-        // new Form(request:$formRequest, data: $data, method: 'post', encoding:'multipart/form-data', disableReferrer: true);
+        // new Form(request:$formRequest, data: $data, method: 'post', encoding:'multipart/form-data', enableReferrer: false);
         $form = new Form(
             $formRequest,
             $data,
@@ -142,6 +142,7 @@ class RuntimeFormImplementation extends AbstractFusionObject
             null,
             'post',
             'multipart/form-data',
+            false,
             true
         );
 

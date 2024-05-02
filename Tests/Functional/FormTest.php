@@ -26,7 +26,7 @@ class FormTest extends TestCase
     /**
      * @return Form
      */
-    protected function createForm(ActionRequest $request = null, $data = null, ?string $namespace = null, ?string $target = null, ?string $method = "get", ?string $encoding = null, bool $disableReferrer = false, bool $disableTrustedProperties = false): Form
+    protected function createForm(ActionRequest $request = null, $data = null, ?string $namespace = null, ?string $target = null, ?string $method = "get", ?string $encoding = null, bool $enableReferrer = true, bool $enableTrustedProperties = true): Form
     {
         $reflector = new \ReflectionClass(Form::class);
         $form = $reflector->newInstanceArgs(func_get_args());
@@ -87,7 +87,7 @@ class FormTest extends TestCase
     public function calculateHiddenFieldsWillSkipTrustedPropertiesTokenIfDisabled()
     {
         // @todo once php 8 is min version adjust to `$this->createForm(disableTrustedProperties: true);`
-        $form = $this->createForm(null, null, null, null, null, null, false, true);
+        $form = $this->createForm(null, null, null, null, null, null, true, false);
         $this->mvcPropertyMappingConfigurationService->expects($this->never())->method('generateTrustedPropertiesToken');
 
         $hiddenFields = $form->calculateHiddenFields(null);
@@ -263,7 +263,7 @@ CONTENT;
         $request->method('getArgumentNamespace')->willReturn('');
 
         // @todo adjust to $this->createForm(request: $request, disableReferrer: true); once php 8 is min version
-        $form = $this->createForm($request, null, null, null, null, null, true);
+        $form = $this->createForm($request, null, null, null, null, null, false);
 
         $hiddenFields = $form->calculateHiddenFields(null);
 
@@ -295,7 +295,7 @@ CONTENT;
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
 
-        $form = $this->createForm($request, null, null, null, null, null, true);
+        $form = $this->createForm($request, null, null, null, null, null, false);
 
         $hiddenFields = $form->calculateHiddenFields(null);
 
@@ -436,7 +436,7 @@ CONTENT;
             ->willReturn('--argumentsWithHmac--');
 
         // @todo adjust to $this->createForm(request: $request, disableReferrer: true); once php 8 is min version
-        $form = $this->createForm($request, null, null, null, null, null, true);
+        $form = $this->createForm($request, null, null, null, null, null, false);
         $hiddenFields = $form->calculateHiddenFields(null);
 
         $this->assertArrayNotHasKey('__referrer[arguments]', $hiddenFields);

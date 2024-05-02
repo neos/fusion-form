@@ -71,17 +71,17 @@ class FormDefinitionImplementation extends AbstractFusionObject
     /**
      * @return bool
      */
-    protected function getDisableReferrer(): bool
+    protected function getEnableReferrer(): bool
     {
-        return (bool)$this->fusionValue('disableReferrer');
+        return (bool)$this->fusionValue('enableReferrer');
     }
 
     /**
      * @return bool
      */
-    protected function getDisableTrustedProperties(): bool
+    protected function getEnableTrustedProperties(): bool
     {
-        return (bool)$this->fusionValue('disableTrustedProperties');
+        return (bool)$this->fusionValue('enableTrustedProperties');
     }
 
     /**
@@ -95,8 +95,8 @@ class FormDefinitionImplementation extends AbstractFusionObject
         $target = $this->getTarget();
         $method = $this->getMethod();
         $encoding = $this->getEncoding();
-        $disableReferrer = $this->getDisableReferrer();
-        $disableTrustedProperties = $this->getDisableTrustedProperties();
+        $enableReferrer = $this->getEnableReferrer();
+        $enableTrustedProperties = $this->getEnableTrustedProperties();
 
         return new Form(
             $request,
@@ -105,8 +105,8 @@ class FormDefinitionImplementation extends AbstractFusionObject
             $target,
             $method,
             $encoding,
-            $disableReferrer,
-            $disableTrustedProperties
+            $enableReferrer,
+            $enableTrustedProperties
         );
     }
 }
