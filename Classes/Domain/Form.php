@@ -331,6 +331,9 @@ class Form extends AbstractFormObject
                             }
                         } elseif (substr($name, -18)  == '[__collectionName]' || substr($name, -41) === '[originallySubmittedResource][__identity]') {
                             // ignore special fields for file uploads
+                        } elseif (substr($name, -2) == '[]') {
+                            // handle multiple file upload field
+                            $formFieldNames[] = substr($name, 0, strlen($name) - 2);
                         } else {
                             $formFieldNames[] = $name;
                         }
