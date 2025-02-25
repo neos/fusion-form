@@ -39,6 +39,9 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
                 return $identifier;
             }
         }
+        if(is_array($value)) {
+            $value = json_encode($value);
+        }
         return (string)$value;
     }
 
