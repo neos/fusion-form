@@ -33,7 +33,7 @@ class FormStateService
     public function unserializeState(string $string): FormState
     {
         $validatedState = $this->hashService->validateAndStripHmac($string);
-        return unserialize(base64_decode($validatedState), ['allowed_classes' => [FormState::class]]);
+        return unserialize(base64_decode($validatedState), ['allowed_classes' => [FormState::class, FormStatePart::class]]);
     }
 
     /**
