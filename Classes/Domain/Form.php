@@ -102,7 +102,7 @@ class Form extends AbstractFormObject
      * @param bool $enableReferrer
      * @param bool $enableTrustedProperties
      */
-    public function __construct(ActionRequest $request = null, $data = null, ?string $namespace = null, ?string $target = null, ?string $method = "get", ?string $encoding = null, bool $enableReferrer = true, bool $enableTrustedProperties = true)
+    public function __construct(?ActionRequest $request = null, $data = null, ?string $namespace = null, ?string $target = null, ?string $method = "get", ?string $encoding = null, bool $enableReferrer = true, bool $enableTrustedProperties = true)
     {
         $this->request = $request;
         $this->data = $data;
@@ -208,10 +208,10 @@ class Form extends AbstractFormObject
      * prototypes and to calculate hidden identify and trusted properties for those
      * fields aswell.
      *
-     * @param string $content The form html body, usually renderd via afx
+     * @param string|null $content The form html body, usually renderd via afx
      * @return string[] hiddenFields as key value pairs
      */
-    public function calculateHiddenFields(string $content = null): array
+    public function calculateHiddenFields(?string $content = null): array
     {
         $hiddenFields = [];
 

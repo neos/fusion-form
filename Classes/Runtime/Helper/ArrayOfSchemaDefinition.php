@@ -29,7 +29,7 @@ class ArrayOfSchemaDefinition extends SchemaDefinition
      * @param mixed[] $validators
      * @param mixed[] $validatorOptions
      */
-    public function __construct(SchemaInterface $itemSchema = null, array $validators = [], array $validatorOptions = [])
+    public function __construct(?SchemaInterface $itemSchema = null, array $validators = [], array $validatorOptions = [])
     {
         parent::__construct('array', $validators, $validatorOptions);
         $this->itemSchema = $itemSchema;

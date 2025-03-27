@@ -62,7 +62,7 @@ class Field extends AbstractFormObject
      * @param mixed|null $targetValue The target value for the field, only used for check, radio and button
      * @param bool $multiple Shall the field contain multiple or a single value, used for checkboxes and selects
      */
-    public function __construct(Form $form = null, string $name = null, $targetValue = null, $multiple = false)
+    public function __construct(?Form $form = null, ?string $name = null, $targetValue = null, $multiple = false)
     {
         $this->form = $form;
         $this->name = $name ?? '';

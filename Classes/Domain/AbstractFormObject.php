@@ -51,7 +51,7 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
      * @param mixed[] $value
      * @return string[]
      */
-    protected function stringifyMultivalue(iterable $value = null): array
+    protected function stringifyMultivalue(?iterable $value = null): array
     {
         if (is_iterable($value)) {
             $result = [];
@@ -71,7 +71,7 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
      * @param string|null $namespace
      * @return string
      */
-    protected function prefixFieldName(string $fieldName, string $namespace = null): string
+    protected function prefixFieldName(string $fieldName, ?string $namespace = null): string
     {
         if (!$namespace) {
             return $fieldName;
