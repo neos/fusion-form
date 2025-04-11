@@ -17,6 +17,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Result;
 use Neos\Flow\Validation\Validator\ValidatorInterface;
 use Neos\Flow\Validation\ValidatorResolver;
+use Neos\Fusion\Exception\RuntimeException;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 
 class ValidatorImplementation extends AbstractFusionObject implements ValidatorInterface
@@ -28,15 +29,6 @@ class ValidatorImplementation extends AbstractFusionObject implements ValidatorI
     protected $validatorResolver;
 
     /**
-     * Return reference to self during fusion evaluation
-     * @return $this
-     */
-    public function evaluate()
-    {
-        return $this;
-    }
-
-    /**
      * @param mixed $value
      * @return Result
      */
@@ -46,11 +38,23 @@ class ValidatorImplementation extends AbstractFusionObject implements ValidatorI
             $this->fusionValue('type'),
             $this->fusionValue('options')
         );
+        if ($validator === null) {
+            throw new \RuntimeException('Validator could not get created.', 1744410020);
+        }
         return $validator->validate($value);
     }
 
     /**
-     * @return array[]
+     * Return reference to self during fusion evaluation
+     * @return $this
+     */
+    public function evaluate()
+    {
+        return $this;
+    }
+
+    /**
+     * @return mixed[]
      */
     public function getOptions(): array
     {

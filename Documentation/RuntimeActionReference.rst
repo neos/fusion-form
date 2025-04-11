@@ -47,11 +47,11 @@ Example::
 Neos.Fusion.Form.Runtime:Email
 ------------------------------
 
-The email action uses swiftmailer to create and send an email. It supports
+The email action uses symfonymailer to create and send an email. It supports
 multipart emails and file attachments that can even be created on the fly from
 form data.
 
-.. note:: The neos/swiftmailer package must be installed separately.
+.. note:: The neos/symfonymailer package must be installed separately.
 
 Options:
 

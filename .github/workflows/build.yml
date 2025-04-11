@@ -13,13 +13,8 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-versions: [ '7.3', '7.4' ]
-                flow-versions: [ '6.3', '7.0' ]
-                include:
-                    - php-versions: '7.2'
-                      flow-versions: '6.0'
-                    - php-versions: '8.0'
-                      flow-versions: '7.0'
+                php-versions: [ '8.3', '8.4' ]
+                flow-versions: [ '8.3', '9.0' ]
 
         runs-on: ubuntu-latest
 

@@ -261,6 +261,7 @@ class Form extends AbstractFormObject
         //
         if ($request && ($this->enableReferrer === true)) {
             $childRequestArgumentNamespace = null;
+            /** @phpstan-ignore-next-line  */
             while ($request instanceof ActionRequest) {
                 $requestArgumentNamespace = $request->getArgumentNamespace();
                 $hiddenFields[$this->prefixFieldName('__referrer[@package]', $requestArgumentNamespace)] = $request->getControllerPackageKey();
