@@ -13,6 +13,7 @@ namespace Neos\Fusion\Form\Runtime\Action;
  * source code.
  */
 
+use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
@@ -26,6 +27,9 @@ use Symfony\Component\Mime\Part\File;
 
 class EmailAction extends AbstractAction
 {
+    #[Flow\Inject]
+    protected MailerService $mailerService;
+
     /**
      * @return ActionResponse|null
      * @throws ActionException
@@ -69,7 +73,7 @@ class EmailAction extends AbstractAction
             ->subject($subject);
 
         if (is_array($recipientAddress)) {
-            $mail->addTo(...array_map(fn ($entry) => new Address($entry), $recipientAddress));
+            $mail->addTo(...array_map(fn($entry) => new Address($entry), $recipientAddress));
         } else {
             $mail->addTo(new Address($recipientAddress, $recipientName));
         }
@@ -100,9 +104,9 @@ class EmailAction extends AbstractAction
         if ($testMode === true) {
             $response = new ActionResponse();
             $response->setContent(
-                /**
-                 * @phpstan-ignore-next-line
-                 */
+            /**
+             * @phpstan-ignore-next-line
+             */
                 \Neos\Flow\var_dump(
                     [
                         'sender' => [$senderAddress => $senderName],
@@ -119,8 +123,7 @@ class EmailAction extends AbstractAction
             );
             return $response;
         } else {
-            $mailer = new MailerService();
-            $mailer->getMailer()->send($mail);
+            $this->mailer->getMailer()->send($mail);
         }
 
         return null;
