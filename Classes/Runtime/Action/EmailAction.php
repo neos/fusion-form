@@ -73,7 +73,7 @@ class EmailAction extends AbstractAction
             ->subject($subject);
 
         if (is_array($recipientAddress)) {
-            $mail->addTo(...array_map(fn($entry) => new Address($entry), $recipientAddress));
+            $mail->addTo(...array_map(fn ($entry) => new Address($entry), $recipientAddress));
         } else {
             $mail->addTo(new Address($recipientAddress, $recipientName));
         }
@@ -104,9 +104,9 @@ class EmailAction extends AbstractAction
         if ($testMode === true) {
             $response = new ActionResponse();
             $response->setContent(
-            /**
-             * @phpstan-ignore-next-line
-             */
+                /**
+                 * @phpstan-ignore-next-line
+                 */
                 \Neos\Flow\var_dump(
                     [
                         'sender' => [$senderAddress => $senderName],
