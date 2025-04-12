@@ -123,7 +123,7 @@ class EmailAction extends AbstractAction
             );
             return $response;
         } else {
-            $this->mailer->getMailer()->send($mail);
+            $this->mailerService->getMailer()->send($mail);
         }
 
         return null;
