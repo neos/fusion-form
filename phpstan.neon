@@ -2,5 +2,7 @@ parameters:
 	level: 1
 	paths:
 		- Classes
+	treatPhpDocTypesAsCertain: false
+	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
 		 - '#Unsafe usage of new static\(\).#'

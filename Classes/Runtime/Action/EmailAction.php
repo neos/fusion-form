@@ -13,23 +13,31 @@ namespace Neos\Fusion\Form\Runtime\Action;
  * source code.
  */
 
+use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
-use Neos\SwiftMailer\Message as SwiftMailerMessage;
+use Neos\SymfonyMailer\Service\MailerService;
 use Neos\Utility\MediaTypes;
 use Psr\Http\Message\UploadedFileInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
 
 class EmailAction extends AbstractAction
 {
+    #[Flow\Inject]
+    protected MailerService $mailerService;
+
     /**
      * @return ActionResponse|null
      * @throws ActionException
      */
     public function perform(): ?ActionResponse
     {
-        if (!class_exists(SwiftMailerMessage::class)) {
-            throw new ActionException('The "neos/swiftmailer" doesn\'t seem to be installed, but is required for the EmailAction to work!', 1503392532);
+        if (!class_exists(MailerService::class)) {
+            throw new ActionException('The "neos/symfonymailer" doesn\'t seem to be installed, but is required for the EmailAction to work!', 1503392532);
         }
 
         $subject = $this->options['subject'] ?? null;
@@ -59,37 +67,36 @@ class EmailAction extends AbstractAction
             throw new ActionException('The option "senderAddress" must be set for the EmailAction.', 1327060210);
         }
 
-        $mail = new SwiftMailerMessage();
-
+        $mail = new Email();
         $mail
-            ->setFrom($senderName ? [$senderAddress => $senderName] : $senderAddress)
-            ->setSubject($subject);
+            ->addFrom(new Address($senderAddress, $senderName))
+            ->subject($subject);
 
         if (is_array($recipientAddress)) {
-            $mail->setTo($recipientAddress);
+            $mail->addTo(...array_map(fn ($entry) => new Address($entry), $recipientAddress));
         } else {
-            $mail->setTo($recipientName ? [$recipientAddress => $recipientName] : $recipientAddress);
+            $mail->addTo(new Address($recipientAddress, $recipientName));
         }
 
         if ($replyToAddress !== null) {
-            $mail->setReplyTo($replyToAddress);
+            $mail->addReplyTo(new Address($replyToAddress));
         }
 
         if ($carbonCopyAddress !== null) {
-            $mail->setCc($carbonCopyAddress);
+            $mail->addCc(new Address($carbonCopyAddress));
         }
 
         if ($blindCarbonCopyAddress !== null) {
-            $mail->setBcc($blindCarbonCopyAddress);
+            $mail->addBcc(new Address($blindCarbonCopyAddress));
         }
 
         if ($text !== null && $html !== null) {
-            $mail->setBody($html, 'text/html');
-            $mail->addPart($text, 'text/plain');
+            $mail->html($html);
+            $mail->text($text);
         } elseif ($text !== null) {
-            $mail->setBody($text, 'text/plain');
+            $mail->text($text);
         } elseif ($html !== null) {
-            $mail->setBody($html, 'text/html');
+            $mail->html($html);
         }
 
         $this->addAttachments($mail);
@@ -116,37 +123,37 @@ class EmailAction extends AbstractAction
             );
             return $response;
         } else {
-            $mail->send();
+            $this->mailerService->getMailer()->send($mail);
         }
 
         return null;
     }
 
     /**
-     * @param SwiftMailerMessage $mail
+     * @param Email $mail
      */
-    protected function addAttachments(SwiftMailerMessage $mail): void
+    protected function addAttachments(Email $mail): void
     {
         $attachments = $this->options['attachments'] ?? null;
         if (is_array($attachments)) {
             foreach ($attachments as $attachment) {
                 if (is_string($attachment)) {
-                    $mail->attach(\Swift_Attachment::fromPath($attachment));
+                    $mail->addPart(new DataPart(new File($attachment)));
                 } elseif (is_object($attachment) && ($attachment instanceof UploadedFileInterface)) {
-                    $mail->attach(new \Swift_Attachment($attachment->getStream()->getContents(), $attachment->getClientFilename(), $attachment->getClientMediaType()));
+                    $mail->addPart(new DataPart($attachment->getStream()->getContents(), $attachment->getClientFilename(), $attachment->getClientMediaType()));
                 } elseif (is_object($attachment) && ($attachment instanceof PersistentResource)) {
                     $stream = $attachment->getStream();
                     if (!is_bool($stream)) {
                         $content = stream_get_contents($stream);
                         if (!is_bool($content)) {
-                            $mail->attach(new \Swift_Attachment($content, $attachment->getFilename(), $attachment->getMediaType()));
+                            $mail->addPart(new DataPart($content, $attachment->getFilename(), $attachment->getMediaType()));
                         }
                     }
                 } elseif (is_array($attachment) && isset($attachment['content']) && isset($attachment['name'])) {
                     $content = $attachment['content'];
                     $name = $attachment['name'];
-                    $type =  $attachment['type'] ?? MediaTypes::getMediaTypeFromFilename($name);
-                    $mail->attach(new \Swift_Attachment($content, $name, $type));
+                    $type = $attachment['type'] ?? MediaTypes::getMediaTypeFromFilename($name);
+                    $mail->addPart(new DataPart($content, $name, $type));
                 }
             }
         }

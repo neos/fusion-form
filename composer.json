@@ -6,21 +6,21 @@
         "GPL-3.0-or-later"
     ],
     "require": {
-        "php" : ">7.2",
-        "neos/flow": "^6.0 || ^7.0 || ^8.0 || ^9.0 || dev-master",
-        "neos/fusion": "^5.0 || ^7.0 || ^8.0 || ^9.0 || dev-master",
-        "neos/fusion-afx": "^1.2 || ^7.0 || ^8.0 || ^9.0 || dev-master",
+        "php" : ">=8.2",
+        "neos/flow": "^8.0 || ^9.0",
+        "neos/fusion": "^8.0 || ^9.0",
+        "neos/fusion-afx": "^1.2 || ^7.0 || ^8.0 || ^9.0",
+        "neos/symfonymailer": "^0.1.0",
         "neos/utility-arrays": "*",
         "neos/utility-objecthandling": "*",
         "psr/http-factory": "*"
     },
     "require-dev": {
-        "neos/swiftmailer": "*",
         "phpunit/phpunit": "^7.1 || ^8.0 || ^9.0",
-        "phpstan/phpstan": "^0.12.78"
+        "phpstan/phpstan": "^2.1"
     },
     "suggest": {
-        "neos/swiftmailer": "Required for the Neos.Fusion.Form.Runtime:Email action to work"
+        "neos/symfonymailer": "Required for the Neos.Fusion.Form.Runtime:Email action to work"
     },
     "autoload": {
         "psr-4": {
