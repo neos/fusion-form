@@ -36,10 +36,6 @@ class EmailAction extends AbstractAction
      */
     public function perform(): ?ActionResponse
     {
-        if (!class_exists(MailerService::class)) {
-            throw new ActionException('The "neos/symfonymailer" doesn\'t seem to be installed, but is required for the EmailAction to work!', 1503392532);
-        }
-
         $subject = $this->options['subject'] ?? null;
         $text = $this->options['text'] ?? null;
         $html = $this->options['html'] ?? null;
