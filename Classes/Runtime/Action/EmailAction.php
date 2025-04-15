@@ -162,6 +162,8 @@ class EmailAction extends AbstractAction
 
     private function getMailerService(): MailerService
     {
-        return $this->objectManager->get(MailerService::class);
+        /** @var MailerService $mailerService */
+        $mailerService = $this->objectManager->get(MailerService::class);
+        return $mailerService;
     }
 }
