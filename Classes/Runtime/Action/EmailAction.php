@@ -15,6 +15,7 @@ namespace Neos\Fusion\Form\Runtime\Action;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\ActionResponse;
+use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Fusion\Form\Runtime\Domain\Exception\ActionException;
 use Neos\SymfonyMailer\Service\MailerService;
@@ -28,7 +29,7 @@ use Symfony\Component\Mime\Part\File;
 class EmailAction extends AbstractAction
 {
     #[Flow\Inject]
-    protected MailerService $mailerService;
+    protected ObjectManagerInterface $objectManager;
 
     /**
      * @return ActionResponse|null
@@ -36,6 +37,10 @@ class EmailAction extends AbstractAction
      */
     public function perform(): ?ActionResponse
     {
+        if (!class_exists(MailerService::class)) {
+            throw new ActionException('The "neos/symfonymailer" doesn\'t seem to be installed, but is required for the EmailAction to work!', 1503392532);
+        }
+
         $subject = $this->options['subject'] ?? null;
         $text = $this->options['text'] ?? null;
         $html = $this->options['html'] ?? null;
@@ -119,7 +124,7 @@ class EmailAction extends AbstractAction
             );
             return $response;
         } else {
-            $this->mailerService->getMailer()->send($mail);
+            $this->getMailerService()->getMailer()->send($mail);
         }
 
         return null;
@@ -153,5 +158,12 @@ class EmailAction extends AbstractAction
                 }
             }
         }
+    }
+
+    private function getMailerService(): MailerService
+    {
+        /** @var MailerService $mailerService */
+        $mailerService = $this->objectManager->get(MailerService::class);
+        return $mailerService;
     }
 }
