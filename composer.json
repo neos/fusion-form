@@ -10,14 +10,14 @@
         "neos/flow": "^8.0 || ^9.0",
         "neos/fusion": "^8.0 || ^9.0",
         "neos/fusion-afx": "^1.2 || ^7.0 || ^8.0 || ^9.0",
-        "neos/symfonymailer": "^0.1.0",
         "neos/utility-arrays": "*",
         "neos/utility-objecthandling": "*",
         "psr/http-factory": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.1 || ^8.0 || ^9.0",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "neos/symfonymailer": "^0.1.0"
     },
     "suggest": {
         "neos/symfonymailer": "Required for the Neos.Fusion.Form.Runtime:Email action to work"
