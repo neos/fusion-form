@@ -46,9 +46,9 @@ class EmailAction extends AbstractAction
         $html = $this->options['html'] ?? null;
 
         $recipientAddress = $this->options['recipientAddress'] ?? null;
-        $recipientName = $this->options['recipientName'] ?? null;
+        $recipientName = $this->options['recipientName'] ?? '';
         $senderAddress = $this->options['senderAddress'] ?? null;
-        $senderName = $this->options['senderName'] ?? null;
+        $senderName = $this->options['senderName'] ?? '';
         $replyToAddress = $this->options['replyToAddress'] ?? null;
         $carbonCopyAddress = $this->options['carbonCopyAddress'] ?? null;
         $blindCarbonCopyAddress = $this->options['blindCarbonCopyAddress'] ?? null;
