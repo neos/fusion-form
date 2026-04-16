@@ -34,9 +34,13 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
     protected function stringifyValue($value): string
     {
         if (is_object($value)) {
-            $identifier = $this->persistenceManager->getIdentifierByObject($value);
-            if ($identifier !== null) {
-                return $identifier;
+            if ($value instanceof \BackedEnum) {
+                return (string)$value->value;
+            } else {
+                $identifier = $this->persistenceManager->getIdentifierByObject($value);
+                if ($identifier !== null) {
+                    return $identifier;
+                }
             }
         }
         if (is_array($value)) {
