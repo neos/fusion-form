@@ -41,19 +41,19 @@ class EmailAction extends AbstractAction
             throw new ActionException('The "neos/symfonymailer" doesn\'t seem to be installed, but is required for the EmailAction to work!', 1503392532);
         }
 
-        $subject = $this->options['subject'] ?? null;
-        $text = $this->options['text'] ?? null;
-        $html = $this->options['html'] ?? null;
+        $subject = $this->options['subject'] ?? null ?: null;
+        $text = $this->options['text'] ?? null ?: null;
+        $html = $this->options['html'] ?? null ?: null;
 
-        $recipientAddress = $this->options['recipientAddress'] ?? null;
+        $recipientAddress = $this->options['recipientAddress'] ?? null ?: null;
         $recipientName = $this->options['recipientName'] ?? '';
-        $senderAddress = $this->options['senderAddress'] ?? null;
+        $senderAddress = $this->options['senderAddress'] ?? null ?: null;
         $senderName = $this->options['senderName'] ?? '';
-        $replyToAddress = $this->options['replyToAddress'] ?? null;
-        $carbonCopyAddress = $this->options['carbonCopyAddress'] ?? null;
-        $blindCarbonCopyAddress = $this->options['blindCarbonCopyAddress'] ?? null;
+        $replyToAddress = $this->options['replyToAddress'] ?? null ?: null;
+        $carbonCopyAddress = $this->options['carbonCopyAddress'] ?? null ?: null;
+        $blindCarbonCopyAddress = $this->options['blindCarbonCopyAddress'] ?? null ?: null;
 
-        $testMode = $this->options['testMode'] ?? false;
+        $testMode = (bool)($this->options['testMode'] ?? false);
 
         if ($subject === null) {
             throw new ActionException('The option "subject" must be set for the EmailAction.', 1327060320);
