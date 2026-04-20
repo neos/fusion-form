@@ -52,6 +52,11 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
     protected $targetSubProcessKey;
 
     /**
+     * @var bool
+     */
+    protected $attemptFinishing = false;
+
+    /**
      * Return reference to self during fusion evaluation
      * @return $this
      */
@@ -69,12 +74,14 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         $this->data = $data;
 
         $internalArguments = $request->getInternalArguments();
+        $stateArgument = $internalArguments['__state'] ?? null;
+        $currentStep = $internalArguments['__current'] ?? null;
+        $targetStep = $internalArguments['__target'] ?? null;
+        $finishProcess = $internalArguments['__finish'] ?? null;
 
         // restore state
-        if (array_key_exists('__state', $internalArguments)
-            && $internalArguments['__state']
-        ) {
-            $this->state = $this->formStateService->unserializeState($internalArguments['__state']);
+        if ($stateArgument) {
+            $this->state = $this->formStateService->unserializeState($stateArgument);
         }
 
         // make the current `data` available to the context before sub processes are evaluated
@@ -84,44 +91,71 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
         // evaluate the subprocesses this has to be done after the state was restored
         // as the current data may affect @if conditions
         $subProcesses = $this->getSubProcesses();
+        $subProcessKeys = array_keys($subProcesses);
+        $firstSubProcessKey = (string)reset($subProcessKeys);
 
-        // select current subprocess
-        if (array_key_exists('__current', $internalArguments)
-            && $internalArguments['__current']
-        ) {
-            $this->currentSubProcessKey = (string)$internalArguments['__current'];
-        } else {
-            $subProcessKeys = array_keys($subProcesses);
-            $this->currentSubProcessKey = (string)reset($subProcessKeys);
-        }
 
-        // store target subprocess, but only if it already was submitted
-        if (array_key_exists('__target', $internalArguments)
-            && $internalArguments['__target']
-            && $this->state
-            && $this->state->hasPart($internalArguments['__target'])
-        ) {
-            $this->targetSubProcessKey = (string)$internalArguments['__target'];
-        }
-
-        // find current and handle
-        $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
-        $currentSubProcess->handle($request, $this->data);
-
-        if ($currentSubProcess->isFinished()) {
+        // find current subprocess and handle the request
+        if ($currentStep) {
+            $this->currentSubProcessKey = $currentStep;
+            $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
+            $currentSubProcess->handle($request, $this->data);
             if (!$this->state) {
                 $this->state = new FormState();
             }
-
             $this->state->commitPart(
                 $this->currentSubProcessKey,
-                $currentSubProcess->getData()
+                $currentSubProcess->getData(),
+                $currentSubProcess->isFinished()
             );
         } else {
-            if ($this->targetSubProcessKey) {
-                $request->setArgument('__submittedArguments', []);
-                $request->setArgument('__submittedArgumentValidationResults', new Result());
+            $this->currentSubProcessKey = $firstSubProcessKey;
+            $currentSubProcess = $subProcesses[$this->currentSubProcessKey];
+        }
+
+        // find target subprocess, but only if it already was submitted
+        if ($targetStep && $this->state) {
+            if ($currentSubProcess->isFinished()) {
+                $this->targetSubProcessKey = $targetStep;
+            } else {
+                if ($this->state->hasPart($targetStep)) {
+                    $this->targetSubProcessKey = $targetStep;
+                }
             }
+        }
+
+        // ensure no unfinished subprocesses are before the target
+        if ($this->state && $this->targetSubProcessKey) {
+            foreach ($subProcesses as $subProcessKey => $subProcesses) {
+                if ($subProcessKey === $this->targetSubProcessKey) {
+                    break;
+                }
+                if (!$this->state->isPartFinished($subProcessKey)) {
+                    $this->targetSubProcessKey = $subProcessKey;
+                }
+                if ($subProcessKey === $this->currentSubProcessKey) {
+                    break;
+                }
+            }
+        }
+
+        // determine target if none was defined yet
+        if (!$this->targetSubProcessKey) {
+            if (!$this->state) {
+                $this->targetSubProcessKey = $firstSubProcessKey;
+            } else {
+                foreach ($subProcesses as $subProcessKey => $subProcess) {
+                    if (!$this->state->isPartFinished($subProcessKey)) {
+                        $this->targetSubProcessKey = $subProcessKey;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // is this an attempt to finish the process
+        if ($finishProcess) {
+            $this->attemptFinishing = true;
         }
 
         // restore fusion context to the state before data was pushed
@@ -137,14 +171,13 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
             return false;
         }
 
-        if ($this->targetSubProcessKey) {
+        if (!$this->attemptFinishing) {
             return false;
         }
 
         $subProcesses = $this->getSubProcesses();
-
         foreach ($subProcesses as $subProcessKey => $subProcess) {
-            if ($this->state->hasPart($subProcessKey) == false) {
+            if ($this->state->isPartFinished($subProcessKey) == false) {
                 return false;
             }
         }
@@ -157,22 +190,12 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
     public function render(): string
     {
         $subProcesses = $this->getSubProcesses();
-        if ($this->targetSubProcessKey) {
-            $renderSubProcessKey = $this->targetSubProcessKey;
-        } else {
-            foreach ($subProcesses as $subProcessKey => $subProcess) {
-                if (!$this->state || !$this->state->hasPart($subProcessKey)) {
-                    $renderSubProcessKey = $subProcessKey;
-                    break;
-                }
-            }
-        }
 
-        if (isset($renderSubProcessKey) && $renderSubProcessKey && array_key_exists($renderSubProcessKey, $subProcesses)) {
-            $this->getRuntime()->pushContext('process', $this->prepareProcessInformation($renderSubProcessKey, $subProcesses));
+        if (isset($this->targetSubProcessKey) && $this->targetSubProcessKey && array_key_exists($this->targetSubProcessKey, $subProcesses)) {
+            $this->getRuntime()->pushContext('process', $this->prepareProcessInformation($this->targetSubProcessKey, $subProcesses));
             $hiddenFields = $this->runtime->evaluate($this->path . '/hiddenFields') ?? '';
             $header = $this->runtime->evaluate($this->path . '/header') ?? '';
-            $body = $subProcesses[$renderSubProcessKey]->render();
+            $body = $subProcesses[$this->targetSubProcessKey]->render();
             $footer = $this->runtime->evaluate($this->path . '/footer') ?? '';
             $this->getRuntime()->popContext();
             return $hiddenFields . $header . $body . $footer;
@@ -191,12 +214,7 @@ class MultiStepProcessImplementation extends AbstractFusionObject implements Pro
 
         // add subprocess data from state
         if ($this->state) {
-            foreach ($this->state->getAllParts() as $subProcessKey => $subProcessData) {
-                $data = Arrays::arrayMergeRecursiveOverrule(
-                    $data,
-                    $subProcessData
-                );
-            }
+            $data = Arrays::arrayMergeRecursiveOverrule($data, $this->state->getData());
         }
 
         return $data;

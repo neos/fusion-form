@@ -21,6 +21,7 @@ use Neos\Fusion\Form\Domain\Form;
 use Neos\Fusion\Form\Runtime\Domain\ProcessInterface;
 use Neos\Fusion\Form\Runtime\Domain\SchemaInterface;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
+use Neos\Utility\Arrays;
 
 class SingleStepProcessImplementation extends AbstractFusionObject implements ProcessInterface
 {
@@ -62,9 +63,15 @@ class SingleStepProcessImplementation extends AbstractFusionObject implements Pr
         if ($arguments || $internalArguments) {
             $data = $schema->convert($arguments);
             $result = $schema->validate($data);
-            $request->setArgument('__submittedArguments', $data);
+            $request->setArgument('__submittedArguments', $arguments);
             $request->setArgument('__submittedArgumentValidationResults', $result);
-            if (!$result->hasErrors()) {
+            if ($result->hasErrors()) {
+                foreach ($result->getFlattenedErrors() as $path => $error) {
+                    $data = Arrays::unsetValueByPath($data, $path);
+                }
+                $this->data = $data;
+                $this->isFinished = false;
+            } else {
                 $this->data = $data;
                 $this->isFinished = true;
             }

@@ -65,7 +65,13 @@ prototype(Vendor.Site:Content.MultiStepFormExample) < prototype(Neos.Fusion.Form
             confirmation {
                 content = afx`
                     <h1>Confirm to submit {data.firstName} {first.data.lastName} from {data.city}, {data.street}</h1>
+                    <Neos.Fusion.Form:FieldContainer field.name="gdprAgreed">
+                        <Neos.Fusion.Form:Checkbox field.value="1" >Agree to data storage</Neos.Fusion.Form:Checkbox>
+                    </Neos.Fusion.Form:FieldContainer>
                 `
+                schema {
+                    gdprAgreed = ${Form.Schema.boolean().validator('BooleanValue', {expectedValue:true})}
+                }
             }
         }
     }
