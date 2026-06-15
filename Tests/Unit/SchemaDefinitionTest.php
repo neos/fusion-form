@@ -54,7 +54,7 @@ class SchemaDefinitionTest extends TestCase
     /**
      * @test
      */
-    public function getDateFormatReturnsDefaultYmdFormat(): void
+    public function getDateFormatReturnsConfiguredYmdFormat(): void
     {
         $schema = new SchemaDefinition(\DateTime::class);
         $schema->typeConverterOption(

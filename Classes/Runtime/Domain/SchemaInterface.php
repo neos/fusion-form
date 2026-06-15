@@ -28,9 +28,4 @@ interface SchemaInterface
      * @return mixed
      */
     public function convert($data);
-
-    /**
-     * @return string|null
-     */
-    public function getDateFormat(): ?string;
 }
