@@ -83,6 +83,26 @@ class SchemaImplementation extends AbstractFusionObject implements SchemaInterfa
     }
 
     /**
+     * @return string|null
+     */
+    public function getDateFormat(): ?string
+    {
+        $typeConverterOptions = $this->getTypeConverterOptions();
+        if ($typeConverterOptions) {
+            foreach ($typeConverterOptions as $option) {
+                if (
+                    isset($option['class'], $option['option'], $option['value'])
+                    && $option['class'] === \Neos\Flow\Property\TypeConverter\DateTimeConverter::class
+                    && $option['option'] === \Neos\Flow\Property\TypeConverter\DateTimeConverter::CONFIGURATION_DATE_FORMAT
+                ) {
+                    return (string)$option['value'];
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return string
      */
     protected function getType():string

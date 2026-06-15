@@ -24,6 +24,14 @@ class SchemaCollectionImplementation extends AbstractCollectionFusionObject impl
     protected $itemPrototype = 'Neos.Fusion.Form:Runtime.Schema';
 
     /**
+     * @return string|null
+     */
+    public function getDateFormat(): ?string
+    {
+        return null;
+    }
+
+    /**
      * @param mixed $data
      * @return mixed[]
      */

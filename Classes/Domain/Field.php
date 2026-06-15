@@ -56,18 +56,25 @@ class Field extends AbstractFormObject
     protected $result;
 
     /**
+     * @var string|null
+     */
+    protected $dateFormat;
+
+    /**
      * Field constructor.
      * @param Form|null $form The form the field is created for, is used to access bound or submitted data and results
      * @param string|null $name The field name, nesting is defined by using square brackets
      * @param mixed|null $targetValue The target value for the field, only used for check, radio and button
      * @param bool $multiple Shall the field contain multiple or a single value, used for checkboxes and selects
+     * @param string|null $dateFormat The date format to use when stringifying DateTimeInterface values
      */
-    public function __construct(?Form $form = null, ?string $name = null, $targetValue = null, $multiple = false)
+    public function __construct(?Form $form = null, ?string $name = null, $targetValue = null, $multiple = false, ?string $dateFormat = null)
     {
         $this->form = $form;
         $this->name = $name ?? '';
         $this->targetValue = $targetValue;
         $this->multiple = $multiple;
+        $this->dateFormat = $dateFormat;
 
         // determine current value and result
         $path = $this->fieldNameToPath($this->name);
@@ -86,6 +93,19 @@ class Field extends AbstractFormObject
     {
         $new = clone $this;
         $new->targetValue = $targetValue;
+        return $new;
+    }
+
+    /**
+     * Create and return a copy of this field with alternate dateFormat
+     *
+     * @param string|null $dateFormat
+     * @return Field
+     */
+    public function withDateFormat(?string $dateFormat = null): Field
+    {
+        $new = clone $this;
+        $new->dateFormat = $dateFormat;
         return $new;
     }
 
@@ -167,7 +187,7 @@ class Field extends AbstractFormObject
      */
     public function getCurrentValueStringified(): string
     {
-        return $this->stringifyValue($this->currentValue);
+        return $this->stringifyValue($this->currentValue, $this->dateFormat);
     }
 
     /**
@@ -176,7 +196,7 @@ class Field extends AbstractFormObject
     public function getCurrentMultivalueStringified(): array
     {
         if (is_iterable($this->currentValue)) {
-            return $this->stringifyMultivalue($this->currentValue);
+            return $this->stringifyMultivalue($this->currentValue, $this->dateFormat);
         } else {
             return [];
         }
@@ -195,7 +215,7 @@ class Field extends AbstractFormObject
      */
     public function getTargetValueStringified(): string
     {
-        return $this->stringifyValue($this->targetValue);
+        return $this->stringifyValue($this->targetValue, $this->dateFormat);
     }
 
     /**

@@ -113,6 +113,25 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
         return $this->validator(NotEmptyValidator::class);
     }
 
+    /**
+     * Return the date format configured via DateTimeConverter option, or null if none was set.
+     *
+     * @return string|null
+     */
+    public function getDateFormat(): ?string
+    {
+        foreach ($this->typeConverterOptions as $option) {
+            if (
+                isset($option['class'], $option['option'], $option['value'])
+                && $option['class'] === \Neos\Flow\Property\TypeConverter\DateTimeConverter::class
+                && $option['option'] === \Neos\Flow\Property\TypeConverter\DateTimeConverter::CONFIGURATION_DATE_FORMAT
+            ) {
+                return (string)$option['value'];
+            }
+        }
+        return null;
+    }
+
     #
     # Methods required by the SchemaInterface
     #

@@ -60,6 +60,15 @@ class FieldDefinitionImplementation extends AbstractFusionObject
     }
 
     /**
+     * @return string|null
+     */
+    protected function getDateFormat(): ?string
+    {
+        $dateFormat = $this->fusionValue('dateFormat');
+        return is_string($dateFormat) ? $dateFormat : null;
+    }
+
+    /**
      * @return Field
      */
     public function evaluate(): Field
@@ -69,9 +78,13 @@ class FieldDefinitionImplementation extends AbstractFusionObject
         $name = $this->getName();
         $value = $this->getValue();
         $multiple = $this->getMultiple();
+        $dateFormat = $this->getDateFormat();
 
         // reuse outer field if no name is given
         if ($field && !$name) {
+            if (!is_null($dateFormat)) {
+                $field = $field->withDateFormat($dateFormat);
+            }
             if (is_null($value)) {
                 return $field;
             } else {
@@ -83,7 +96,8 @@ class FieldDefinitionImplementation extends AbstractFusionObject
             $form,
             $name,
             $value,
-            $multiple
+            $multiple,
+            $dateFormat
         );
     }
 }

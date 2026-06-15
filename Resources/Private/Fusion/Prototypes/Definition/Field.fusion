@@ -8,6 +8,7 @@ prototype(Neos.Fusion.Form:Definition.Field) {
         name = ${PropTypes.string}
         value = ${PropTypes.any}
         multiple = ${PropTypes.boolean}
+        dateFormat = ${PropTypes.string}
     }
 
     form = ${form}
@@ -15,4 +16,5 @@ prototype(Neos.Fusion.Form:Definition.Field) {
     name = null
     value = null
     multiple = false
+    dateFormat = null
 }

@@ -1,13 +1,15 @@
 prototype(Neos.Fusion.Form:Date)  < prototype(Neos.Fusion.Form:Component.Field) {
 
+    dateFormat = 'Y-m-d'
+
+    field.dateFormat = ${props.dateFormat}
+
     attributes.type = 'date'
 
     renderer = afx`
         <input
             name={field.getName()}
-            value={field.getCurrentValue() || field.getTargetValue()}
-            value.@process.format={Type.instance(value, 'DateTime') ? Date.format(value, 'Y-m-d') : value}
-            value.@process.stringify={String.toString(value)}
+            value={field.getCurrentValueStringified() || field.getTargetValueStringified()}
             {...props.attributes}
         />
     `

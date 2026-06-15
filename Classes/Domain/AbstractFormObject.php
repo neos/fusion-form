@@ -31,8 +31,11 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
      * @param mixed $value
      * @return string
      */
-    protected function stringifyValue($value): string
+    protected function stringifyValue($value, ?string $dateFormat = null): string
     {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format($dateFormat ?? 'Y-m-d');
+        }
         if (is_object($value)) {
             if ($value instanceof \BackedEnum) {
                 return (string)$value->value;
@@ -55,12 +58,12 @@ abstract class AbstractFormObject implements ProtectedContextAwareInterface
      * @param mixed[] $value
      * @return string[]
      */
-    protected function stringifyMultivalue(?iterable $value = null): array
+    protected function stringifyMultivalue(?iterable $value = null, ?string $dateFormat = null): array
     {
         if (is_iterable($value)) {
             $result = [];
             foreach ($value as $key => $item) {
-                $result[$key] = $this->stringifyValue($item);
+                $result[$key] = $this->stringifyValue($item, $dateFormat);
             }
             return $result;
         } else {
