@@ -2,7 +2,7 @@
 
 Forms usually are defined by using the `Neos.Fusion.Form:Form` prototype 
 in afx. The `form.target` can be passed as a string but since it is 
-predefined as a `Neos.Fusion:UriBuilder` so in most cases only the target 
+predefined as a `Neos.Fusion:ActionUri` so in most cases only the target 
 `form.target.action` has to be defined. The current `package` and
 `controller` are assumed automatically. By default the `form.method` is `post` but 
 other methods can be used aswell. 

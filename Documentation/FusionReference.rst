@@ -21,7 +21,7 @@ In addition the form component will also:
 :form.request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.namespace: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
-:form.target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
+:form.target: (string, default to `Neos.Fusion:ActionUri`) The target uri the form will be sent to.
 :form.method:  (string, default to `post`) The form method.
 :form.encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.:attributes: (string), all props are rendered as attributes to the form tag
 :form.enableReferrer: (bool, defaults to true) Enable the generation of hidden `__referrer` fields. Can be disabled when the `method` is `get` or no flow validation is used
@@ -286,7 +286,7 @@ The Form component is a base prototype for rendering forms in afx. The prototype
 :form.request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
 :form.data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
-:form.target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
+:form.target: (string, default to `Neos.Fusion:ActionUri`) The target uri the form will be sent to.
 :form.method:  (string, default to `post`) The form method.
 :form.encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.
 :form.enableReferrer: (bool, defaults to true) Enable the generation of hidden `__referrer` fields. Can be disabled when the `method` is `get` or no flow validation is used
@@ -337,7 +337,7 @@ by the `Neos.Fusion.Form:Component.Form`_ prototype.
 :request: (ActionRequest, defaults to the the current `request`) The data the form is bound to. Can contain objects, scalar and nested values.
 :namespacePrefix: (string, defaults to `request.getArgumentNamespace()`) The data the form is bound to. Can contain objects, scalar and nested values.
 :data: (mixed, defaults to `Neos.Fusion:DataStructure`) The data the form is bound to. Can contain objects, scalar and nested values.
-:target: (string, default to `Neos.Fusion:UriBuilder`) The target uri the form will be sent to.
+:target: (string, default to `Neos.Fusion:ActionUri`) The target uri the form will be sent to.
 :method:  (string, default to `post`) The form method.
 :encoding: (string, default to `multipart/form-data` when `form.method` == `post`) The form enctype `multipart/form.data` is required for file-uploads.
 :enableReferrer: (bool, defaults to true) Enable the generation of hidden `__referrer` fields. Can be disabled when the `method` is `get` or no flow validation is used

@@ -143,7 +143,7 @@ Neos\Fusion\Form\Domain\Form.getSubmittedValues()
 Neos\Fusion\Form\Domain\Form.getTarget()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Return** (string|null) The target uri for the form, usually defined as Neos.Fusion:UriBuilder
+**Return** (string|null) The target uri for the form, usually defined as Neos.Fusion:ActionUri
 
 Neos\Fusion\Form\Domain\Form.hasErrors()
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
