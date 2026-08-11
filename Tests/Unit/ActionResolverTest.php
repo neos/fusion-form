@@ -12,7 +12,7 @@ namespace Neos\Fusion\Form\Tests\Unit;
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-
+use PHPUnit\Framework\Attributes\Test;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use PHPUnit\Framework\TestCase;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
@@ -47,9 +47,7 @@ class ActionResolverTest extends TestCase
         $reflection_property->setValue($this->actionResolver, $this->mockObjectManager);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createActionThrowsExceptionIfClassDoesNotExist()
     {
         $this->mockObjectManager->expects(self::once())
@@ -61,9 +59,7 @@ class ActionResolverTest extends TestCase
         $this->actionResolver->createAction('Vendor\Site\Action\ExampleAction');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createActionThrowsExceptionIfIdentifierCannotBeResolved()
     {
         $this->mockObjectManager->expects(self::exactly(2))
@@ -75,9 +71,7 @@ class ActionResolverTest extends TestCase
         $this->actionResolver->createAction('Vendor.Site:Example');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createActionReturnsActionIfIdentifierCanBeResolved()
     {
         $mockAction = $this->createMock(ActionInterface::class);
@@ -96,9 +90,7 @@ class ActionResolverTest extends TestCase
         $this->assertSame($mockAction, $action);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createActionReturnsActionIfActionClassExists()
     {
         $mockAction = $this->createMock(ActionInterface::class);
