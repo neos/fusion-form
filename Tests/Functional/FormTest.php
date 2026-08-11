@@ -356,16 +356,20 @@ CONTENT;
         $request->method('getArgumentNamespace')->willReturn('childNamespace');
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
+        $matcher = $this->exactly(2);
 
         // only arguments in each requests namespace are passed to the hashing service
         // so for the parent request the child request namespace is excluded
-        $this->hashService
-            ->method('appendHmac')
-            ->withConsecutive(
-                [base64_encode(serialize($childRequestArguments))],
-                [base64_encode(serialize($parentRequestArguments))]
-            )
-            ->willReturn('--argumentsWithHmac--');
+        $this->hashService->expects($matcher)
+            ->method('appendHmac')->willReturnCallback(function (...$parameters) use ($matcher, $childRequestArguments, $parentRequestArguments) {
+            if ($matcher->numberOfInvocations() === 1) {
+                $this->assertSame(base64_encode(serialize($childRequestArguments)), $parameters[0]);
+            }
+            if ($matcher->numberOfInvocations() === 2) {
+                $this->assertSame(base64_encode(serialize($parentRequestArguments)), $parameters[0]);
+            }
+            return '--argumentsWithHmac--';
+        });
 
         $form = $this->createForm($request);
         $hiddenFields = $form->calculateHiddenFields(null);
@@ -399,16 +403,20 @@ CONTENT;
         $request->method('getArgumentNamespace')->willReturn('childNamespace');
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
+        $matcher = $this->any();
 
         // only arguments in each requests namespace are passed to the hashing service
         // so for the parent request the child request namespace is excluded
-        $this->hashService
-            ->method('appendHmac')
-            ->withConsecutive(
-                [base64_encode(serialize($childRequestArguments))],
-                [base64_encode(serialize($parentRequestArguments))]
-            )
-            ->willReturn('--argumentsWithHmac--');
+        $this->hashService->expects($matcher)
+            ->method('appendHmac')->willReturnCallback(function (...$parameters) use ($matcher, $childRequestArguments, $parentRequestArguments) {
+            if ($matcher->numberOfInvocations() === 1) {
+                $this->assertSame(base64_encode(serialize($childRequestArguments)), $parameters[0]);
+            }
+            if ($matcher->numberOfInvocations() === 2) {
+                $this->assertSame(base64_encode(serialize($parentRequestArguments)), $parameters[0]);
+            }
+            return '--argumentsWithHmac--';
+        });
 
         // @todo adjust to $this->createForm(request: $request, disableReferrer: true); once php 8 is min version
         $form = $this->createForm($request, null, null, null, null, null, false);
@@ -465,13 +473,13 @@ CONTENT;
         $object2 = (object) ['id' => 56789, 'isNew' => false];
 
         $this->persistenceManager->method('isNewObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->isNew;
-            }));
+            });
         $this->persistenceManager->method('getIdentifierByObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->id;
-            }));
+            });
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
@@ -495,13 +503,13 @@ CONTENT;
         $object2 = (object) ['id' => "56789", 'isNew' => false];
 
         $this->persistenceManager->method('isNewObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->isNew;
-            }));
+            });
         $this->persistenceManager->method('getIdentifierByObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->id;
-            }));
+            });
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
@@ -525,13 +533,13 @@ CONTENT;
         $object2 = (object) ['id' => 56789, 'isNew' => true];
 
         $this->persistenceManager->method('isNewObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->isNew;
-            }));
+            });
         $this->persistenceManager->method('getIdentifierByObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->id;
-            }));
+            });
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
