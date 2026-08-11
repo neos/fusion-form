@@ -16,7 +16,7 @@
     },
     "require-dev": {
         "neos/swiftmailer": "*",
-        "phpunit/phpunit": "^7.1 || ^8.0 || ^9.0",
+        "phpunit/phpunit": "~11.5",
         "phpstan/phpstan": "^0.12.78"
     },
     "suggest": {
