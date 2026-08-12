@@ -17,7 +17,7 @@
     "require-dev": {
         "neos/swiftmailer": "*",
         "phpunit/phpunit": "~11.5",
-        "phpstan/phpstan": "^0.12.78"
+        "phpstan/phpstan": "^2.1"
     },
     "suggest": {
         "neos/swiftmailer": "Required for the Neos.Fusion.Form.Runtime:Email action to work"

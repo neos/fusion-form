@@ -4,3 +4,4 @@ parameters:
 		- Classes
 	ignoreErrors:
 		 - '#Unsafe usage of new static\(\).#'
+	treatPhpDocTypesAsCertain: false
