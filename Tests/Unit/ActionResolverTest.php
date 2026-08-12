@@ -65,14 +65,14 @@ class ActionResolverTest extends TestCase
         $matcher = self::exactly(2);
         $this->mockObjectManager->expects($matcher)
             ->method('isRegistered')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->numberOfInvocations() === 1) {
-                $this->assertSame('Vendor.Site:Example', $parameters[0]);
-            }
-            if ($matcher->numberOfInvocations() === 2) {
-                $this->assertSame('Vendor\Site\Action\ExampleAction', $parameters[0]);
-            }
-            return false;
-        });
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertSame('Vendor.Site:Example', $parameters[0]);
+                }
+                if ($matcher->numberOfInvocations() === 2) {
+                    $this->assertSame('Vendor\Site\Action\ExampleAction', $parameters[0]);
+                }
+                return false;
+            });
 
         $this->expectException(NoSuchActionException::class);
         $this->actionResolver->createAction('Vendor.Site:Example');
@@ -86,15 +86,15 @@ class ActionResolverTest extends TestCase
 
         $this->mockObjectManager->expects($matcher)
             ->method('isRegistered')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->numberOfInvocations() === 1) {
-                $this->assertSame('Vendor.Site:Example', $parameters[0]);
-                return false;
-            }
-            if ($matcher->numberOfInvocations() === 2) {
-                $this->assertSame('Vendor\Site\Action\ExampleAction', $parameters[0]);
-                return 'Vendor\Site\Action\ExampleAction';
-            }
-        });
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertSame('Vendor.Site:Example', $parameters[0]);
+                    return false;
+                }
+                if ($matcher->numberOfInvocations() === 2) {
+                    $this->assertSame('Vendor\Site\Action\ExampleAction', $parameters[0]);
+                    return 'Vendor\Site\Action\ExampleAction';
+                }
+            });
 
         $this->mockObjectManager->expects(self::once())
             ->method('get')

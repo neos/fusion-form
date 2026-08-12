@@ -362,14 +362,14 @@ CONTENT;
         // so for the parent request the child request namespace is excluded
         $this->hashService->expects($matcher)
             ->method('appendHmac')->willReturnCallback(function (...$parameters) use ($matcher, $childRequestArguments, $parentRequestArguments) {
-            if ($matcher->numberOfInvocations() === 1) {
-                $this->assertSame(base64_encode(serialize($childRequestArguments)), $parameters[0]);
-            }
-            if ($matcher->numberOfInvocations() === 2) {
-                $this->assertSame(base64_encode(serialize($parentRequestArguments)), $parameters[0]);
-            }
-            return '--argumentsWithHmac--';
-        });
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertSame(base64_encode(serialize($childRequestArguments)), $parameters[0]);
+                }
+                if ($matcher->numberOfInvocations() === 2) {
+                    $this->assertSame(base64_encode(serialize($parentRequestArguments)), $parameters[0]);
+                }
+                return '--argumentsWithHmac--';
+            });
 
         $form = $this->createForm($request);
         $hiddenFields = $form->calculateHiddenFields(null);
@@ -409,14 +409,14 @@ CONTENT;
         // so for the parent request the child request namespace is excluded
         $this->hashService->expects($matcher)
             ->method('appendHmac')->willReturnCallback(function (...$parameters) use ($matcher, $childRequestArguments, $parentRequestArguments) {
-            if ($matcher->numberOfInvocations() === 1) {
-                $this->assertSame(base64_encode(serialize($childRequestArguments)), $parameters[0]);
-            }
-            if ($matcher->numberOfInvocations() === 2) {
-                $this->assertSame(base64_encode(serialize($parentRequestArguments)), $parameters[0]);
-            }
-            return '--argumentsWithHmac--';
-        });
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertSame(base64_encode(serialize($childRequestArguments)), $parameters[0]);
+                }
+                if ($matcher->numberOfInvocations() === 2) {
+                    $this->assertSame(base64_encode(serialize($parentRequestArguments)), $parameters[0]);
+                }
+                return '--argumentsWithHmac--';
+            });
 
         // @todo adjust to $this->createForm(request: $request, disableReferrer: true); once php 8 is min version
         $form = $this->createForm($request, null, null, null, null, null, false);
