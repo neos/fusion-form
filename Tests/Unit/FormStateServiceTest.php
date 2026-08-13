@@ -12,7 +12,7 @@ namespace Neos\Fusion\Form\Tests\Unit;
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-
+use PHPUnit\Framework\Attributes\Test;
 use Neos\Fusion\Form\Runtime\Domain\FormState;
 use Neos\Fusion\Form\Runtime\Domain\FormStateService;
 use PHPUnit\Framework\TestCase;
@@ -42,9 +42,7 @@ class FormStateServiceTest extends TestCase
         $reflection_property->setValue($this->formStateService, $this->mockHashService);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function formStateCanBeSerializedAndUnserialized()
     {
         $stateParts = [
@@ -71,9 +69,7 @@ class FormStateServiceTest extends TestCase
         $this->assertEquals($stateParts, $unserializedState->getAllParts());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function afterMesssingWithSerializedStateAnExceptionIsThrowm()
     {
         $stateString = '__somethingNotSerializedByMe__';

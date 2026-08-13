@@ -12,7 +12,7 @@ namespace Neos\Fusion\Form\Tests\Unit;
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Neos\Flow\Security\Cryptography\HashService;
 use Neos\Flow\Mvc\ActionRequest;
@@ -49,9 +49,7 @@ class FormRequestFactoryTest extends TestCase
         $reflection_property->setValue($this->formRequestFactory, $this->mockHashService);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function formRequestIsEmptyIfNothingWasSubmitted()
     {
         $identifier = 'example';
@@ -68,9 +66,7 @@ class FormRequestFactoryTest extends TestCase
         $this->assertEmpty($formRequest->getArguments());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function formRequestContainsArgumentsWithTrustedProperties()
     {
         $identifier = 'example';
@@ -128,9 +124,7 @@ class FormRequestFactoryTest extends TestCase
         $this->assertEmpty($formRequest->getInternalArguments());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function formRequestContainsInternalArgumentsWithTrustedProperties()
     {
         $identifier = 'example';
@@ -161,9 +155,7 @@ class FormRequestFactoryTest extends TestCase
         $this->assertEmpty($formRequest->getArguments());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function formRequestIgnoresArgumentsInForeignNamespaces()
     {
         $identifier = 'example';
@@ -193,9 +185,7 @@ class FormRequestFactoryTest extends TestCase
         $this->assertEmpty($formRequest->getArguments());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function invalidHashExceptionsAreNotCaught()
     {
         $identifier = 'example';

@@ -12,7 +12,7 @@ namespace Neos\Fusion\Form\Tests\Unit;
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-
+use PHPUnit\Framework\Attributes\Test;
 use Neos\Fusion\Form\Runtime\Domain\ActionInterface;
 use PHPUnit\Framework\TestCase;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
@@ -47,9 +47,7 @@ class ActionResolverTest extends TestCase
         $reflection_property->setValue($this->actionResolver, $this->mockObjectManager);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createActionThrowsExceptionIfClassDoesNotExist()
     {
         $this->mockObjectManager->expects(self::once())
@@ -61,31 +59,42 @@ class ActionResolverTest extends TestCase
         $this->actionResolver->createAction('Vendor\Site\Action\ExampleAction');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createActionThrowsExceptionIfIdentifierCannotBeResolved()
     {
-        $this->mockObjectManager->expects(self::exactly(2))
-            ->method('isRegistered')
-            ->withConsecutive(['Vendor.Site:Example'], ['Vendor\Site\Action\ExampleAction'])
-            ->willReturn(false);
+        $matcher = self::exactly(2);
+        $this->mockObjectManager->expects($matcher)
+            ->method('isRegistered')->willReturnCallback(function (...$parameters) use ($matcher) {
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertSame('Vendor.Site:Example', $parameters[0]);
+                }
+                if ($matcher->numberOfInvocations() === 2) {
+                    $this->assertSame('Vendor\Site\Action\ExampleAction', $parameters[0]);
+                }
+                return false;
+            });
 
         $this->expectException(NoSuchActionException::class);
         $this->actionResolver->createAction('Vendor.Site:Example');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createActionReturnsActionIfIdentifierCanBeResolved()
     {
         $mockAction = $this->createMock(ActionInterface::class);
+        $matcher = self::exactly(2);
 
-        $this->mockObjectManager->expects(self::exactly(2))
-            ->method('isRegistered')
-            ->withConsecutive(['Vendor.Site:Example'], ['Vendor\Site\Action\ExampleAction'])
-            ->willReturnOnConsecutiveCalls(false, 'Vendor\Site\Action\ExampleAction');
+        $this->mockObjectManager->expects($matcher)
+            ->method('isRegistered')->willReturnCallback(function (...$parameters) use ($matcher) {
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertSame('Vendor.Site:Example', $parameters[0]);
+                    return false;
+                }
+                if ($matcher->numberOfInvocations() === 2) {
+                    $this->assertSame('Vendor\Site\Action\ExampleAction', $parameters[0]);
+                    return 'Vendor\Site\Action\ExampleAction';
+                }
+            });
 
         $this->mockObjectManager->expects(self::once())
             ->method('get')
@@ -96,9 +105,7 @@ class ActionResolverTest extends TestCase
         $this->assertSame($mockAction, $action);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createActionReturnsActionIfActionClassExists()
     {
         $mockAction = $this->createMock(ActionInterface::class);

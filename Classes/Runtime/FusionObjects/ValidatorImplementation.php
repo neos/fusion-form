@@ -46,11 +46,14 @@ class ValidatorImplementation extends AbstractFusionObject implements ValidatorI
             $this->fusionValue('type'),
             $this->fusionValue('options')
         );
+        if ($validator === null) {
+            throw new \RuntimeException('Validator could not get created.', 1744410020);
+        }
         return $validator->validate($value);
     }
 
     /**
-     * @return array[]
+     * @return mixed[]
      */
     public function getOptions(): array
     {

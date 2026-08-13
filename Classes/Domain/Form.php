@@ -261,7 +261,7 @@ class Form extends AbstractFormObject
         //
         if ($request && ($this->enableReferrer === true)) {
             $childRequestArgumentNamespace = null;
-            while ($request instanceof ActionRequest) {
+            while ($request) {
                 $requestArgumentNamespace = $request->getArgumentNamespace();
                 $hiddenFields[$this->prefixFieldName('__referrer[@package]', $requestArgumentNamespace)] = $request->getControllerPackageKey();
                 $hiddenFields[$this->prefixFieldName('__referrer[@subpackage]', $requestArgumentNamespace)] = $request->getControllerSubpackageKey();
