@@ -9,13 +9,13 @@
         "php" : ">=8.2",
         "neos/flow": "^8.0 || ^9.0",
         "neos/fusion": "^8.0 || ^9.0",
-        "neos/fusion-afx": "^1.2 || ^7.0 || ^8.0 || ^9.0",
+        "neos/fusion-afx": "^8.0 || ^9.0",
         "neos/utility-arrays": "*",
         "neos/utility-objecthandling": "*",
         "psr/http-factory": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.1 || ^8.0 || ^9.0",
+        "phpunit/phpunit": "~11.5",
         "phpstan/phpstan": "^2.1",
         "neos/symfonymailer": "^0.1.0"
     },

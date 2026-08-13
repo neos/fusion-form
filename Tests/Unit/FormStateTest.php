@@ -12,7 +12,7 @@ namespace Neos\Fusion\Form\Tests\Unit;
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-
+use PHPUnit\Framework\Attributes\Test;
 use Neos\Fusion\Form\Runtime\Domain\FormState;
 use PHPUnit\Framework\TestCase;
 
@@ -28,9 +28,7 @@ class FormStateTest extends TestCase
         $this->formState = new FormState();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function emptyStateHasNoParts()
     {
         $state = new FormState();
@@ -40,9 +38,7 @@ class FormStateTest extends TestCase
         $this->assertEquals([], $state->getCommittedPartNames());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function partsCanBeAcessedAfterBeingComitted()
     {
         $state = new FormState();
@@ -53,9 +49,7 @@ class FormStateTest extends TestCase
         $this->assertEquals(['example'], $state->getCommittedPartNames());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function initialPartsCanBeAcessed()
     {
         $state = new FormState(['example' => ['value' => 'exampleValue']]);
@@ -65,9 +59,7 @@ class FormStateTest extends TestCase
         $this->assertEquals(['example'], $state->getCommittedPartNames());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function comittedPartsOverwriteExistingPartsWithSameName()
     {
         $state = new FormState(['example' => ['value' => 'exampleValue']]);
@@ -78,9 +70,7 @@ class FormStateTest extends TestCase
         $this->assertEquals(['example'], $state->getCommittedPartNames());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function comittedPartsAreAddedIfNamesAreDifferent()
     {
         $state = new FormState(['example1' => ['value' => 'exampleValue']]);

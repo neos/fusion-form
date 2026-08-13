@@ -17,7 +17,6 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Result;
 use Neos\Flow\Validation\Validator\ValidatorInterface;
 use Neos\Flow\Validation\ValidatorResolver;
-use Neos\Fusion\Exception\RuntimeException;
 use Neos\Fusion\FusionObjects\AbstractFusionObject;
 
 class ValidatorImplementation extends AbstractFusionObject implements ValidatorInterface

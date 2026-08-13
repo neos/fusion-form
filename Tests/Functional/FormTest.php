@@ -1,6 +1,7 @@
 <?php
 namespace Neos\Fusion\Form\Tests\Functional;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Neos\Fusion\Form\Domain\Form;
 use Neos\Fusion\Form\Domain\Field;
@@ -64,9 +65,7 @@ class FormTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsReturnsOnlyTrustedPropertiesTokenIfNoFormOrContentIsGiven()
     {
         $form = $this->createForm();
@@ -81,9 +80,7 @@ class FormTest extends TestCase
         $this->assertEquals($expectation, $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsWillSkipTrustedPropertiesTokenIfDisabled()
     {
         // @todo once php 8 is min version adjust to `$this->createForm(disableTrustedProperties: true);`
@@ -94,9 +91,7 @@ class FormTest extends TestCase
         $this->assertArrayNotHasKey('__trustedProperties', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsInContent()
     {
         $form = $this->createForm();
@@ -117,9 +112,7 @@ CONTENT;
         $this->assertEquals($hiddenFields['__trustedProperties'], '--example--');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsCreatesTrustedPropertiesForAllFieldsWithFieldnamePrefix()
     {
         $form = $this->createForm(null, null, 'prefix');
@@ -141,9 +134,7 @@ CONTENT;
         $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsCreatesTrustedPropertiesForMultiSelects()
     {
         $form = $this->createForm(null, null, 'prefix');
@@ -170,9 +161,7 @@ CONTENT;
         $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsCreatesTrustedPropertiesForSingleSelects()
     {
         $form = $this->createForm(null, null, 'prefix');
@@ -199,9 +188,7 @@ CONTENT;
         $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsCreatesTrustedPropertiesForMultipleCheckboxes()
     {
         $form = $this->createForm(null, null, 'prefix');
@@ -223,9 +210,7 @@ CONTENT;
         $this->assertEquals($hiddenFields['prefix[__trustedProperties]'], '--example--');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithActionRequestIsGiven()
     {
         $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
@@ -248,9 +233,7 @@ CONTENT;
         $this->assertArrayNotHasKey('__referrer[arguments]', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsDoesNotAddsReferrerFieldsIfFormWithActionRequestWhenDisabled()
     {
         $request = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
@@ -274,9 +257,7 @@ CONTENT;
         $this->assertArrayNotHasKey('__referrer[arguments]', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsDoesNotAddReferrerFieldsIfFormWithNestedActionRequestWhenDisabled()
     {
         $parentRequest = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
@@ -313,9 +294,7 @@ CONTENT;
         $this->assertArrayNotHasKey('childNamespace[__referrer][arguments]', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsAddsReferrerFieldsIfFormWithNestedActionRequest()
     {
         $parentRequest = $this->getMockBuilder(ActionRequest::class)->disableOriginalConstructor()->getMock();
@@ -352,9 +331,7 @@ CONTENT;
         $this->assertArrayNotHasKey('childNamespace[__referrer][arguments]', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsAddsReferrerFieldArgumentsIfFormWithNestedActionRequestIsGiven()
     {
         $childRequestArguments = ['foo' => 456, 'bar' => 'another string'];
@@ -379,16 +356,20 @@ CONTENT;
         $request->method('getArgumentNamespace')->willReturn('childNamespace');
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
+        $matcher = $this->exactly(2);
 
         // only arguments in each requests namespace are passed to the hashing service
         // so for the parent request the child request namespace is excluded
-        $this->hashService
-            ->method('appendHmac')
-            ->withConsecutive(
-                [base64_encode(serialize($childRequestArguments))],
-                [base64_encode(serialize($parentRequestArguments))]
-            )
-            ->willReturn('--argumentsWithHmac--');
+        $this->hashService->expects($matcher)
+            ->method('appendHmac')->willReturnCallback(function (...$parameters) use ($matcher, $childRequestArguments, $parentRequestArguments) {
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertSame(base64_encode(serialize($childRequestArguments)), $parameters[0]);
+                }
+                if ($matcher->numberOfInvocations() === 2) {
+                    $this->assertSame(base64_encode(serialize($parentRequestArguments)), $parameters[0]);
+                }
+                return '--argumentsWithHmac--';
+            });
 
         $form = $this->createForm($request);
         $hiddenFields = $form->calculateHiddenFields(null);
@@ -397,9 +378,7 @@ CONTENT;
         $this->assertEquals('--argumentsWithHmac--', $hiddenFields['childNamespace[__referrer][arguments]']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsDoesNotAddReferrerFieldArgumentsIfFormWithNestedActionRequestWhenDisabled()
     {
         $childRequestArguments = ['foo' => 456, 'bar' => 'another string'];
@@ -424,16 +403,20 @@ CONTENT;
         $request->method('getArgumentNamespace')->willReturn('childNamespace');
         $request->method('isMainRequest')->willReturn(false);
         $request->method('getParentRequest')->willReturn($parentRequest);
+        $matcher = $this->any();
 
         // only arguments in each requests namespace are passed to the hashing service
         // so for the parent request the child request namespace is excluded
-        $this->hashService
-            ->method('appendHmac')
-            ->withConsecutive(
-                [base64_encode(serialize($childRequestArguments))],
-                [base64_encode(serialize($parentRequestArguments))]
-            )
-            ->willReturn('--argumentsWithHmac--');
+        $this->hashService->expects($matcher)
+            ->method('appendHmac')->willReturnCallback(function (...$parameters) use ($matcher, $childRequestArguments, $parentRequestArguments) {
+                if ($matcher->numberOfInvocations() === 1) {
+                    $this->assertSame(base64_encode(serialize($childRequestArguments)), $parameters[0]);
+                }
+                if ($matcher->numberOfInvocations() === 2) {
+                    $this->assertSame(base64_encode(serialize($parentRequestArguments)), $parameters[0]);
+                }
+                return '--argumentsWithHmac--';
+            });
 
         // @todo adjust to $this->createForm(request: $request, disableReferrer: true); once php 8 is min version
         $form = $this->createForm($request, null, null, null, null, null, false);
@@ -443,9 +426,7 @@ CONTENT;
         $this->assertArrayNotHasKey('childNamespace[__referrer][arguments]', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsAddsEmptyFieldsForCheckboxesAndMultipleSelect()
     {
         $content = <<<CONTENT
@@ -466,9 +447,7 @@ CONTENT;
         $this->assertEquals("", $hiddenFields['input[checkboxMultiple]']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsDoesNotAddsEmptyFieldsForOtherFormControls()
     {
         $content = <<<CONTENT
@@ -487,22 +466,20 @@ CONTENT;
         $this->assertArrayNotHasKey('input[radio]', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsAddsIdentityFieldsForPersistedObjectsInFormData()
     {
         $object1 = (object) ['id' => 12345, 'isNew' => false];
         $object2 = (object) ['id' => 56789, 'isNew' => false];
 
         $this->persistenceManager->method('isNewObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->isNew;
-            }));
+            });
         $this->persistenceManager->method('getIdentifierByObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->id;
-            }));
+            });
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
@@ -519,22 +496,20 @@ CONTENT;
         $this->assertEquals("56789", $hiddenFields['item2[__identity]']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsAddsIdentityIgnoresUnusedObjectsInFormData()
     {
         $object1 = (object) ['id' => "12345", 'isNew' => false];
         $object2 = (object) ['id' => "56789", 'isNew' => false];
 
         $this->persistenceManager->method('isNewObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->isNew;
-            }));
+            });
         $this->persistenceManager->method('getIdentifierByObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->id;
-            }));
+            });
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
@@ -551,22 +526,20 @@ CONTENT;
         $this->assertArrayNotHasKey('item3[__identity]', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsAddsIdentityFieldsForNewObjectsInFormData()
     {
         $object1 = (object) ['id' => 12345, 'isNew' => true];
         $object2 = (object) ['id' => 56789, 'isNew' => true];
 
         $this->persistenceManager->method('isNewObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->isNew;
-            }));
+            });
         $this->persistenceManager->method('getIdentifierByObject')
-            ->will($this->returnCallback(function ($item) {
+            ->willReturnCallback(function ($item) {
                 return $item->id;
-            }));
+            });
 
         $data = ['item1' => $object1, 'item2' => $object2];
 
@@ -583,9 +556,7 @@ CONTENT;
         $this->assertArrayNotHasKey('item2[__identity]', $hiddenFields);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsAddsQueryArgumentsForMethodGet()
     {
         $form = $this->createForm(null, null, null, 'example.com?argument1=Example+%F0%9F%A6%86&nested[argument2]=%3A%2F%3F%23%5B%5D%40%20&nested[argument3]=%21%24%26%27%22%28%29%2A%2B%2C%3B%3D', 'get');
@@ -597,9 +568,7 @@ CONTENT;
         $this->assertEquals("!$&'\"()*+,;=", $hiddenFields['nested[argument3]']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function calculateHiddenFieldsDoesNotAddQueryArgumentsForMethodPost()
     {
         $form = $this->createForm(null, null, null, 'example.com?argument1=Example+%F0%9F%A6%86&nested[argument2]=%3A%2F%3F%23%5B%5D%40%20&nested[argument3]=%21%24%26%27%22%28%29%2A%2B%2C%3B%3D', 'post');

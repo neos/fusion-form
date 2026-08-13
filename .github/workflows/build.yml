@@ -13,14 +13,14 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-versions: [ '8.2', '8.3', '8.4' ]
-                flow-versions: [ '8.3', '9.0' ]
+                php-versions: [ '8.2', '8.3', '8.4', '8.5' ]
+                flow-versions: [ '8.3', '8.4', '9.0', '9.1' ]
 
         runs-on: ubuntu-latest
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v6
               with:
                   path: ${{ env.FLOW_FOLDER }}
 

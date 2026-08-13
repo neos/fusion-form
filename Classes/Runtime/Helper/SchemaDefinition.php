@@ -133,7 +133,7 @@ class SchemaDefinition implements ProtectedContextAwareInterface, SchemaInterfac
                 $validationConfiguration['options'] ?? []
             );
             if ($validator === null) {
-                throw new \RuntimeException('Validator could not get created.', 1744410020);
+                throw new \RuntimeException('Validator could not get created.', 1744410021);
             }
             $propertyValidationResult->merge($validator->validate($data));
         }
