@@ -62,6 +62,15 @@ class FormState
     }
 
     /**
+     * @param string $partName
+     * @return void
+     */
+    public function removePart(string $partName): void
+    {
+        unset($this->parts[$partName]);
+    }
+
+    /**
      * @return string[]
      */
     public function getCommittedPartNames(): array

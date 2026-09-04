@@ -14,6 +14,7 @@ prototype(Neos.Fusion.Form:Runtime.MultiStepProcess) {
     hiddenFields = afx`
         <Neos.Fusion.Form:Hidden field.name="__state" attributes.value={process.state} @if.has={process.state} />
         <Neos.Fusion.Form:Hidden field.name="__current" attributes.value={process.current} @if.has={process.current} />
+        <Neos.Fusion.Form:Hidden field.name="__prev" attributes.value={process.prev} @if.has={process.prev} />
     `
 
     prototype(Neos.Fusion.Form:Runtime.SingleStepProcess) {
