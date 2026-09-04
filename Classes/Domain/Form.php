@@ -166,7 +166,7 @@ class Form extends AbstractFormObject
     }
 
     /**
-     * @return string|null The target uri for the form, usually defined as Neos.Fusion:UriBuilder
+     * @return string|null The target uri for the form, usually defined as Neos.Fusion:ActionUri
      */
     public function getTarget(): ?string
     {

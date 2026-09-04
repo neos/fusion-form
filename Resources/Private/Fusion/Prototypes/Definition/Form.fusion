@@ -16,7 +16,7 @@ prototype(Neos.Fusion.Form:Definition.Form) {
     request = ${request}
     namespace = null
     data = Neos.Fusion:DataStructure
-    target = Neos.Fusion:UriBuilder
+    target = Neos.Fusion:ActionUri
     method = 'post'
     encoding = ${(String.toLowerCase(this.method) == 'post') ? 'multipart/form-data' : null}
     enableReferrer = true
